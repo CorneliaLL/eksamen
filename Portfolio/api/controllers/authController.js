@@ -8,6 +8,13 @@ class AuthController{
         res.send("1")
     }
 
+    logout(req, res){
+        console.log(req.body)
+
+        const { } = req.body; 
+        res.send("you have logged out")
+    }
+
     signup(req, res){
         const {username, email, password} = req.body
 

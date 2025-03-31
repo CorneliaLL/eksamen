@@ -1,7 +1,8 @@
 //API
 const express = require("express")
 
-const cors = require("cors")
+//middleware package
+const cors = require("cors") 
 const userController = require("./controllers/userController")
 const authController = require("./controllers/authController")
 const accountController = require("./controllers/accountController")
@@ -25,9 +26,13 @@ app.get('/users/1', userController.getSingleUser)
     
 app.post('/login', authController.login)
 
+app.post('/logout', authController.logout)
+
 app.post('/signup', authController.signup)
 
 app.post('/withdraw', accountController.withdrawAmount)
+
+
 
 
 app.listen(3001)
