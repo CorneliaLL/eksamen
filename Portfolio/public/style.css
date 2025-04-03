@@ -1,0 +1,38 @@
+body {
+    background-color: black;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 2rem;
+    width: 300px;              /* eller hvad der passer til dit design */
+    margin: 50px auto;         /* top/bund spacing + centrer i midten */
+    padding: 20px; 
+  }
+
+  input {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+
+  button {
+    background-color: #4a90e2;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  h1 {
+    color: white;
+    text-align: center;
+  }
+
+  h2 {
+    color: white;
+    text-align: center;
+  }

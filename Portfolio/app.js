@@ -50,7 +50,7 @@ app.post('/withdraw', accountController.withdrawAmount)
 app.get('/dashboard', dashboardController.renderDashboard)
 
 */
-//port 3000
-app.listen(3001, () => {
+
+app.listen(3002, () => {
     console.log('Server is running on http://localhost:3001');
   });

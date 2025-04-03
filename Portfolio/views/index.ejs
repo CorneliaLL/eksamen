@@ -1,6 +1,10 @@
 <html lang="en">
 <!--adds header-->
 <%- include('./partials/head.ejs') %>
+
+<!-- link to style.css-->
+<link rel="stylesheet" href="style.css">
+
 <body>
 
     <!--links to stylesheet-->
@@ -10,6 +14,7 @@
 <div class="container"> 
     <h1><%= msg %></h1>
 
+    <h2>Log in</h2>
     <!-- Login Form -->
     <form action="/login" method="POST">
       <input type="text" name="username" placeholder="Username" required />
@@ -17,6 +22,7 @@
       <button type="submit">Login</button>
     </form>
 
+    <h2>Sign up</h2>
     <!-- Signup Form -->
     <form action="/signup" method="POST">
       <input type="text" name="name" placeholder="Insert name" required />
