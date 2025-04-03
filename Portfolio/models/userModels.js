@@ -7,6 +7,8 @@ class User {
         this.password = password;
         this.age = age;
     }
+
+    loggedIn
 }
 
 module.exports = { User };

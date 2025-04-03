@@ -7,3 +7,5 @@ class Portfolio{
         this.regDate = regDate;
     }
 }
+
+module.exports = { Portfolio };

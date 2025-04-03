@@ -11,7 +11,7 @@ class Stock{
 
 
 //Class made to keep track of a stock's price history
-class priceHistory{
+class PriceHistory{
     constructor(historyID, stockID, price, date){
         this.historyID = historyID;
         this.stockID = stockID;
@@ -19,3 +19,8 @@ class priceHistory{
         this.date = date;
     }
 }
+
+module.exports = { 
+    Stock,
+    PriceHistory
+};

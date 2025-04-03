@@ -8,3 +8,5 @@ class Trade{
         this.quantity = quantity;
     }
 }
+
+module.exports = { Trade };

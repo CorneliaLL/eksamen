@@ -7,3 +7,5 @@ class Transaction{
         this.date = date;
     }
 }
+
+module.exports = { Transaction };

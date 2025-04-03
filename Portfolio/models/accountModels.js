@@ -9,3 +9,5 @@ class Account{
         this.bankID = bankID;
     }
 }
+
+module.exports = { Account };
