@@ -10,4 +10,13 @@ class Account{
     }
 }
 
+/* 
+funktioner:
+editAccount()
+deactivateAccount
+reopenAccount
+insertAmount
+withdrawAmount
+*/
+
 module.exports = { Account };

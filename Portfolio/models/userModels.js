@@ -8,7 +8,15 @@ class User {
         this.age = age;
     }
 }
+
 /*
+ createAccount() Burde måske bo i accountModel og accountController, ikke user
+
+ Funktioner:
+
+ signUp
+ logIn
+
 //Asyncronic function that handles sign up 
 async function signUp({name, username, email, password, age}) {
     if (username.length < 3) {

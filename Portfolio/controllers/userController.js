@@ -24,6 +24,14 @@ class UserController{
 
 }
 
+/*
+functions to include
+
+logOut - because it is about "clearing the session"
+
+viewAccount - calls for accountModel + 
+*/ 
+
 //exporting class for using elsewhere
 module.exports = { UserController }
 
