@@ -10,7 +10,7 @@ const router = express.Router();
 router.get('/signup', (req, res) => {
     try {
         signup();
-        return res.send('User home route');
+        return res.send('User has signed in');
     } catch (error) {
         return console.log(error);
     }

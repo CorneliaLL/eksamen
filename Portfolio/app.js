@@ -28,7 +28,7 @@ app.get("/", (req, res) => {
 })
 
 
-login post request (fetch req in frontend )
+//login post request (fetch req in frontend )
 
 app.get('/users', userController.getAllUsers)
 
