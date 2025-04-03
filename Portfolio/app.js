@@ -33,7 +33,7 @@ app.get("/", (req, res) => {
 app.get('/users', userController.getAllUsers)
 
  //{ id: 1, name: "cornelia", }
- app.get('/users/1', userController.getSingleUser)
+app.get('/users/1', userController.getSingleUser)
     
 app.post('/login', authController.login)
 
