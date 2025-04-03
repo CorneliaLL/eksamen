@@ -40,6 +40,10 @@ app.post('/logout', authController.logout)
 
 app.post('/signup', authController.signup)
 
+app.post('/createAccount', authController.createAccount)
+
+app.get('/viewAccount', userController.viewAccount)
+
 app.post('/withdraw', accountController.withdrawAmount)
 
 app.get('/dashboard', dashboardController.renderDashboard)
@@ -51,6 +55,8 @@ app.get('/dashboard', dashboardController.renderDashboard)
 
 
 
-app.listen(3000
 
-)
+
+
+//port 3000
+app.listen(3000)
