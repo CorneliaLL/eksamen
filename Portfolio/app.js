@@ -27,12 +27,13 @@ app.get("/", (req, res) => {
     res.render("index", { msg: "Welcome" });
 })
 
-//login post request (fetch req in frontend )
+
+login post request (fetch req in frontend )
 
 app.get('/users', userController.getAllUsers)
 
-//{ id: 1, name: "cornelia", }
-app.get('/users/1', userController.getSingleUser)
+ //{ id: 1, name: "cornelia", }
+ app.get('/users/1', userController.getSingleUser)
     
 app.post('/login', authController.login)
 
@@ -45,10 +46,6 @@ app.post('/withdraw', accountController.withdrawAmount)
 app.get('/dashboard', dashboardController.renderDashboard)
 
 
-
-
-
-
-
-
-app.listen(3000)
+app.listen(3000, () => {
+    console.log('Server is running on http://localhost:3000');
+  });

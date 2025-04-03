@@ -1,3 +1,5 @@
+
+
 class User {
     constructor (name, username, email, password, age){
         this.name = name; 
@@ -7,3 +9,7 @@ class User {
         this.age = age;
     }
 }
+
+module.exports = {
+
+};
