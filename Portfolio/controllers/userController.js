@@ -25,5 +25,5 @@ class UserController{
 }
 
 //exporting class for using elsewhere
-module.exports = new UserController()
+module.exports = { UserController }
 
