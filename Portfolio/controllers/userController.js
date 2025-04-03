@@ -17,6 +17,11 @@ class UserController{
         res.json(users[0])
     }
 
+    viewAccount(req, res){
+        
+
+    }
+
 }
 
 //exporting class for using elsewhere

@@ -1,3 +1,11 @@
-.containerTitle{
-    color: black;
-}
+
+/*important to show nav and content from dashboard*/
+body {
+    display: flex;
+    margin: 0;
+  }
+  
+  .containerTitle {
+    flex: 1;
+    padding: 40px;
+  }

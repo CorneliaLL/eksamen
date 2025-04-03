@@ -9,9 +9,7 @@ class AuthController{
 
     //logout empty 
     logout(req, res){
-        console.log(req.body)
 
-        const { } = req.body; 
         res.send("you have logged out")
     }
 
@@ -29,6 +27,15 @@ class AuthController{
 
         }
     }
+
+    createAccount(req, res){
+        console.log(req.body) 
+
+        const { } = req.body 
+        res.send('you have successfully created an account')
+    }
+
+
 }
 
 /*

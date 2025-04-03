@@ -41,11 +41,17 @@ app.post('/logout', authController.logout)
 
 app.post('/signup', authController.signup)
 
+app.post('/createAccount', authController.createAccount)
+
+app.get('/viewAccount', userController.viewAccount)
+
 app.post('/withdraw', accountController.withdrawAmount)
 
 app.get('/dashboard', dashboardController.renderDashboard)
 
 
+//port 3000
+app.listen(3000)
 app.listen(3000, () => {
     console.log('Server is running on http://localhost:3000');
   });
