@@ -27,7 +27,7 @@ app.get("/", (req, res) => {
     res.render("index", { msg: "Welcome" });
 })
 
-
+//Outcommented for now
 //login post request (fetch req in frontend )
 /*
 app.get('/users', userController.getAllUsers)

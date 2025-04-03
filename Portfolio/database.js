@@ -13,6 +13,7 @@ const config = {
       },
 };
 
+//NOT DONE
 async function connectToDB() {
     
 }
