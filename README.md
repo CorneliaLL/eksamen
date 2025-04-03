@@ -18,3 +18,6 @@
 - Sets up the express server 
 - Connects middleware, routes and controllers to handle HTTP requests
 
+# database.js
+- file to store our database setup
+
