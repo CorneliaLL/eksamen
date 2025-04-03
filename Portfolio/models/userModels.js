@@ -1,5 +1,3 @@
-
-
 class User {
     constructor (name, username, email, password, age){
         this.name = name; 
@@ -10,6 +8,4 @@ class User {
     }
 }
 
-module.exports = {
-
-};
+module.exports = { User };
