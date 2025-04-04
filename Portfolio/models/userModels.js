@@ -13,6 +13,41 @@ class User {
     }
 }
 
+//Asyncronic function we use to create and store users in the DB
+//Function takes the users data and inserts the new user in our DB through a SQL INSERT statement
+async function createUser({ name, username, email, password, age }){
+    const pool = await connectToDb();
+
+//creates the connection to the DB
+// Creates our request, SQL queries.
+    await pool.request()
+    .input("name", sql.NVarChar, name)
+    .input("username", sql.NVarChar, username)
+    .input("email", sql.NVarChar, email)
+    .input("password", sql.NVarChar, password)
+    .input("age", sql.Int, age)
+
+//Query = what is actually being sent to the DB
+// @x matches our input from above. Inserts the data into a new row in the user table with the given values
+    .query(`
+      INSERT INTO Users (name, username, email, password, age)
+      VALUES (@name, @username, @email, @password, @age)
+    `);
+
+    return { username, email };
+}
+
+async function findUserByEmail(email) {
+    const pool = await connectToDb();
+
+    const result = await pool.request()
+        .input("email", sql.NVarChar, email)
+        .query("SELECT * FROM  Users WHERE email = @email");
+
+//Returns the first instance in the DB that matches our query, or undefined
+    return result.recordset[0];
+}
+
 /*
  createAccount() Burde måske bo i accountModel og accountController, ikke user
 
@@ -20,27 +55,9 @@ class User {
 
  signUp
  logIn
-
-//Asyncronic function that handles sign up 
-async function signUp({name, username, email, password, age}) {
-    if (username.length < 3) {
-        throw new Error("Username must be at least 3 characters");
-    } 
-
-//creates new user if the username is at least 3 characters
-    const newUser = new User({
-        name,
-        username,
-        email,
-        password,
-        age,
-      });
-
-    return {
-        id: newUser._id,
-        username: newUser.username,
-        email: newUser.email,
-      };
-}
 */
-module.exports = { User };
+module.exports = { 
+    User,
+    createUser,
+    findUserByEmail
+ };
