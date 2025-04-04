@@ -9,6 +9,12 @@ class Stock{
     }
 }
 
+/* 
+funktioner:
+
+calculateGAK()
+
+*/
 
 //Class made to keep track of a stock's price history
 class PriceHistory{
