@@ -3,9 +3,15 @@
 body {
     display: flex;
     margin: 0;
+    background-color: black;
+
   }
   
   .containerTitle {
     flex: 1;
     padding: 40px;
+  }
+
+  h1 {
+    color: white;
   }

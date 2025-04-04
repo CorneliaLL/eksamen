@@ -18,5 +18,6 @@ function renderDashboard(req, res) {
       topProfitListe
     });
   }
+
   
 module.exports = { renderDashboard }

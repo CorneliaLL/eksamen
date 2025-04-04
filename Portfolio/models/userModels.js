@@ -1,3 +1,7 @@
+//Imports sql and connectToDB functions from /database
+//this way we can store and manage users in the database
+const { sql, connectToDb } = require("../database");
+
 class User {
     constructor (userID, name, username, email, password, age){
         this.userID = userID;

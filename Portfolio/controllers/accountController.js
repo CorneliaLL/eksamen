@@ -9,4 +9,11 @@ class AccountController{
     }
 }
 
-module.exports = new AccountController()
+function createAccount(){
+
+}
+
+module.exports = { 
+    AccountController,
+    createAccount
+}

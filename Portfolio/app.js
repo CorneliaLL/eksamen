@@ -47,10 +47,11 @@ app.post('/createAccount', authController.createAccount)
 
 app.post('/withdraw', accountController.withdrawAmount)
 
+*/
 app.get('/dashboard', dashboardController.renderDashboard)
 
-*/
 
-app.listen(3002, () => {
-    console.log('Server is running on http://localhost:3001');
+
+app.listen(3000, () => {
+    console.log('Server is running on http://localhost:3000');
   });
