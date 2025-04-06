@@ -1,4 +1,3 @@
-//API
 const express = require("express");
 const app = express()
 
@@ -12,8 +11,10 @@ app.use(express.json()) //without this we coukd not return json like we do in th
 
 //Routes
 const authRoutes = require('./routes/authRoute.js');
+const dashboardRoutes = require('./routes/dashboardRoute.js')
 
 app.use('/auth', authRoutes);
+app.use('/dashboard', dashboardRoutes)
 
 //endpoint = URL
 //This is a API endpoint bc it returns data and not a html-page 
