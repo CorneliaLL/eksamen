@@ -1,6 +1,6 @@
 //Imports sql and connectToDB functions from /database
 //this way we can store and manage users in the database
-const { sql, connectToDb } = require("../database");
+const { sql, connectToDB } = require("../database");
 
 class User {
     constructor (userID, name, username, email, password, age){
@@ -16,7 +16,7 @@ class User {
 //Asyncronic function we use to create and store users in the DB
 //Function takes the users data and inserts the new user in our DB through a SQL INSERT statement
 async function createUser({ name, username, email, password, age }){
-    const pool = await connectToDb();
+    const pool = await connectToDB();
 
 //creates the connection to the DB
 // Creates our request, SQL queries.
@@ -39,7 +39,7 @@ async function createUser({ name, username, email, password, age }){
 }
 
 async function findUserByEmail(email) {
-    const pool = await connectToDb();
+    const pool = await connectToDB();
 
     const result = await pool.request()
         .input("email", sql.NVarChar, email)
