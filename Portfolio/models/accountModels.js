@@ -1,7 +1,8 @@
 class Account{
-    constructor(accountID, userID, currency, balance, regDate, accountStatus, bankID){
+    constructor(accountID, userID, name, currency, balance, regDate, accountStatus, bankID){
         this.accountID = accountID;
         this.userID = userID;
+        this.name = name;
         this.currency = currency;
         this.balance = balance;
         this.regDate = regDate;
@@ -11,6 +12,7 @@ class Account{
 }
 
 /* 
+createAccount
 funktioner:
 editAccount()
 deactivateAccount

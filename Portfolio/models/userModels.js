@@ -54,9 +54,7 @@ async function findUserByUsername(username) {
  createAccount() Burde måske bo i accountModel og accountController, ikke user
 
  Funktioner:
-
- signUp
- logIn
+changePassword
 */
 module.exports = { 
     User,
