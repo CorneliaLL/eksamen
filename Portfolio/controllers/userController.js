@@ -1,4 +1,4 @@
-const { createUser, findUserByEmail } = require("../models/userModels");
+const { createUser, findUserByUsername } = require("../models/userModels");
 
 // SIGNUP controller – handles user registration and stores the new user in our DB
 async function signup (req, res){
@@ -29,8 +29,8 @@ async function signup (req, res){
 
   async function login(req, res) {
     try {
-      const { email, password } = req.body;
-      const user = await findUserByEmail(email);
+      const { username, password } = req.body;
+      const user = await findUserByUsername(username);
   
       if (!user) {
         return res.status(404).render("login", { error: "User not found" });

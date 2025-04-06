@@ -38,12 +38,12 @@ async function createUser({ name, username, email, password, age }){
     return { username, email };
 }
 
-async function findUserByEmail(email) {
+async function findUserByUsername(username) {
     const pool = await connectToDB();
 
     const result = await pool.request()
-        .input("email", sql.NVarChar, email)
-        .query("SELECT * FROM  Users WHERE email = @email");
+        .input("username", sql.NVarChar, username)
+        .query("SELECT * FROM  Users WHERE username = @username");
 
 //Returns the first instance in the DB that matches our query, or undefined
 //recordset - property from .query which is a method.
@@ -61,5 +61,5 @@ async function findUserByEmail(email) {
 module.exports = { 
     User,
     createUser,
-    findUserByEmail
+    findUserByUsername
  };
