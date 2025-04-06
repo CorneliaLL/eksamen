@@ -6,6 +6,7 @@ class Trade{
         this.stockID = stockID;
         this.tradeType = tradeType;
         this.quantity = quantity;
+        this.price = price;
     }
 }
 

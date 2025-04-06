@@ -29,6 +29,7 @@ async function createUser({ name, username, email, password, age }){
 
 //Query = what is actually being sent to the DB
 // @x matches our input from above. Inserts the data into a new row in the user table with the given values
+//.query is a method from mssql which handles SQL queries to our DB
     .query(`
       INSERT INTO Users (name, username, email, password, age)
       VALUES (@name, @username, @email, @password, @age)
@@ -45,6 +46,7 @@ async function findUserByEmail(email) {
         .query("SELECT * FROM  Users WHERE email = @email");
 
 //Returns the first instance in the DB that matches our query, or undefined
+//recordset - property from .query which is a method.
     return result.recordset[0];
 }
 
