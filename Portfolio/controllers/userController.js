@@ -27,6 +27,26 @@ async function signup (req, res){
     }
   };
 
+  async function login(req, res) {
+    try {
+      const { email, password } = req.body;
+      const user = await findUserByEmail(email);
+  
+      if (!user) {
+        return res.status(404).render("login", { error: "User not found" });
+      } else if (user.password !== password) {
+        return res.status(401).render("login", { error: "Incorrect password" });
+      } else {
+  
+      // Success – redirect to dashboard
+      res.redirect("/dashboard");
+    }
+    } catch (err) {
+      res.status(500).render("login", { error: "Login failed. Try again." });
+    }
+  }
+
+/*
   // LOGIN controller – checks if the log in is valid and verifies the users access
 async function login(req, res) {
     try {
