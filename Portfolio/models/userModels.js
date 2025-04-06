@@ -31,7 +31,7 @@ async function createUser({ name, username, email, password, age }){
 // @x matches our input from above. Inserts the data into a new row in the user table with the given values
 //.query is a method from mssql which handles SQL queries to our DB
     .query(`
-      INSERT INTO Users (name, username, email, password, age)
+      INSERT INTO dbo.Users (name, username, email, password, age)
       VALUES (@name, @username, @email, @password, @age)
     `);
 

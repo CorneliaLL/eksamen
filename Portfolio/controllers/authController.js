@@ -1,4 +1,4 @@
-const { createUser, findUserByEmail } = require("../models/userModels");
+const { User, createUser, findUserByEmail } = require("../models/userModels");
 
 // SIGNUP controller – handles user registration and stores the new user in our DB
 async function signup (req, res){

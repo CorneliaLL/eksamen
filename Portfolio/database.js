@@ -20,8 +20,9 @@ async function connectToDB() {
   //Await = will only continue if the connection to the DB has been made
   // Pool = connection pool. Creates and keeps connection to the DB
   // Handles and sends our SQL queries
+      console.log("Connecting to DB...");
       const pool = await sql.connect(config);
-      console.log("Connected to Azure SQL");
+      console.log("Connected to DB");
       return pool;
     } catch (err) {
       console.error("Database connection failed:", err.message);
