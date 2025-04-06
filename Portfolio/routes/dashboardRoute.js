@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const dashboardController = require("../controllers/dashboardController");
 
-router.post("/renderDashboard", dashboardController.renderDashboard);
+router.get("/", dashboardController.renderDashboard);
 
 
 module.exports = router ;
