@@ -11,13 +11,13 @@ app.set("view engine", "ejs"); //makes it possible to show dynamic html-pages in
 
 
 //Routes
-const authRoutes = require('./routes/authRoute.js');
+const userRoutes = require('./routes/userRoute.js');
 const dashboardRoutes = require('./routes/dashboardRoute.js')
 const accountRoutes = require('./routes/accountRoute.js')
 
 
 //
-app.use('/auth', authRoutes);
+app.use('/user', userRoutes);
 app.use('/dashboard', dashboardRoutes)
 app.use('/account', accountRoutes)
 
