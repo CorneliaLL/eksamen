@@ -53,10 +53,8 @@ async function login(req, res) {
           email: user.email
         }
       });
-      
-      res.redirect("/dashboard");
-
     }
+    res.redirect("/dashboard");
   
     //Catch error, handles errors in the verification
     } catch (err) {
