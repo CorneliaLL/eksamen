@@ -1,4 +1,4 @@
-const { createUser, findUserByUsername } = require("../models/userModels");
+const { createUser, findUserByUsername, updateUserPassword } = require("../models/userModels");
 
 // SIGNUP controller – handles user registration and stores the new user in our DB
 async function signup (req, res){
@@ -46,7 +46,35 @@ async function signup (req, res){
     }
   }
 
-// changePassword, logOut
+
+  
+
+async function changePassword(req, res) {
+  try {
+    const { username, oldPassword, newPassword } = req.body;
+
+    /*await ensures that the code waits for the result before continuing.
+    Without await, the code would continue with the next line before the user has been retrieved, which can cause errors*/
+    const user = await findUserByUsername(username);
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    if (user.password !== oldPassword) {
+      return res.status(401).json({ error: "Old password is incorrect" });
+    }
+
+    // Update the user's password
+    await updateUserPassword(username, newPassword);
+
+    res.status(200).json({ message: "Password changed successfully" });
+    
+  } catch (err) {
+    // Catch and handle any error
+    res.status(500).json({ error: "Something went wrong while changing the password. Try again" });
+  }
+}
 
 
-module.exports = { signup, login }
+module.exports = { signup, login, changePassword }

@@ -29,7 +29,7 @@ async function createUser({ name, username, email, password, age }){
 
 //Query = what is actually being sent to the DB
 // @x matches our input from above. Inserts the data into a new row in the user table with the given values
-//.query is a method from mssql which handles SQL queries to our DB
+//.query is a method which handles SQL queries to our DB
     .query(`
       INSERT INTO dbo.Users (name, username, email, password, age)
       VALUES (@name, @username, @email, @password, @age)
@@ -50,11 +50,21 @@ async function findUserByUsername(username) {
     return result.recordset[0];
 }
 
+
+async function updateUserPassword(username, newPassword) {
+    const pool = await connectToDB();
+
+    //Update the password of the user with the given username
+
+    await pool.request()
+    .input("username", sql.VarChar, username)
+    .input("password", sql.VarChar, newPassword)
+    .query("UPDATE Users SET password = @password WHERE username = @username");
+}
+
 /*
  createAccount() Burde måske bo i accountModel og accountController, ikke user
 
- Funktioner:
-changePassword
 */
 module.exports = { 
     User,

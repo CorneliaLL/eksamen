@@ -22,6 +22,11 @@
       <button type="submit">Login</button>
     </form>
 
+    <!-- Change password link -->
+  <a href="/user/change-password" class="change-password-link">Forgot Password?</a>
+</p>
+
+
     <h2>Sign up</h2>
     <!-- Signup Form -->
     <form action="/user/signup" method="POST">
@@ -32,6 +37,16 @@
       <input type="password" name="password" placeholder="New password" required />
       <button type="submit">Signup</button>
     </form>
+
+  
+    <!-- 
+    <h2>Change password</h2>
+    <form action="/user/change-password" method="POST">
+      <input type="text" name="username" placeholder="Username" required />
+      <input type="password" name="oldPassword" placeholder="Old password" />
+      <input type="password" name="newPassword" placeholder="New password" />
+      <button type="submit">Change Password</button>
+    </form>-->
 
     <!--adds footer-->
     <%- include('partials/footer') %>

@@ -36,3 +36,19 @@ form {
     color: white;
     text-align: center;
   }
+
+  /*Styling to change password link*/
+  .change-password-link {
+    color: #4a90e2;
+    font-size: smaller;
+    text-align: center;
+    display: block;
+    margin-top: -50px;
+  }
+  .back-link {
+    color: #4a90e2;
+    font-size: smaller;
+    text-align: center;
+    display: block;
+    margin-top: -50px;
+  }
