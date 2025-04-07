@@ -67,9 +67,8 @@ async function changePassword(req, res) {
 
     // Update the user's password
     await updateUserPassword(username, newPassword);
-
-    res.status(200).json({ message: "Password changed successfully" });
-    
+    //res.status(200).json({ message: "Password changed successfully" });
+    res.redirect("/dashboard");
   } catch (err) {
     // Catch and handle any error
     res.status(500).json({ error: "Something went wrong while changing the password. Try again" });
