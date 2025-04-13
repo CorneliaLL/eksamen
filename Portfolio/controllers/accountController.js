@@ -1,5 +1,15 @@
 const {Account, getAllAccounts, createAccount, deactivateAccount, reactivateAccount, findAccountByID } = require("../models/accountModels");
 
+// Show list of all accounts
+async function getAccounts(req, res) {
+    try {
+      const accounts = await getAllAccounts();
+      res.render("accounts", { accounts });
+    } catch (err) {
+      console.error("Error fetching accounts:", err.message);
+      res.status(500).send("Failed to fetch accounts");
+    }
+  }
 
 //Async function that fecthes the accountID from the database
 async function getAccountByID(req, res){
