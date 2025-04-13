@@ -20,15 +20,15 @@ async function createNewAccount({ userID, accountName, currency, balance, regist
 
   await pool.request()
     .input("userID", sql.Int, userID)
-    .input("name", sql.NVarChar, accountName)
+    .input("accountName", sql.NVarChar, accountName)
     .input("currency", sql.VarChar, currency)
     .input("balance", sql.Decimal(18, 2), balance)
     .input("registrationDate", sql.DateTime, registrationDate)
     .input("accountStatus", sql.Bit, accountStatus)
     .input("bankID", sql.Int, bankID)
     .query(`
-      INSERT INTO Accounts (userID, name, currency, balance, registrationDate, accountStatus, bankID)
-      VALUES (@userID, @name, @currency, @balance, @registrationDate, @accountStatus, @bankID)
+      INSERT INTO Accounts (userID, currency, balance, registrationDate, accountStatus, bankID, accountName)
+      VALUES (@userID, @currency, @balance, @registrationDate, @accountStatus, @bankID, @accountName)
     `);
 }
 

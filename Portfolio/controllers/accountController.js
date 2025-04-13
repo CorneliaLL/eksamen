@@ -33,11 +33,11 @@ async function getAccountByID(req, res){
 // Create a new account
 async function createAccount(req, res) {
     try {
-      const { userID, name, currency, balance, bankID } = req.body;
+      const { userID, accountName, currency, balance, bankID } = req.body;
       const registrationDate = new Date();
       const accountStatus = true;
   
-      await createNewAccount({ userID, name, currency, balance, registrationDate, accountStatus, bankID })
+      await createNewAccount({ userID, accountName, currency, balance, registrationDate, accountStatus, bankID })
   
       res.redirect("/accountDashboard"); // After creating account go back to overview
     } catch (err) {
