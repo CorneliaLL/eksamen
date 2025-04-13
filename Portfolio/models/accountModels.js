@@ -1,10 +1,10 @@
 const { connectToDB, sql } = require("../database");
 
 class Account {
-  constructor(accountID, userID, name, currency, balance, registrationDate, accountStatus, bankID) {
+  constructor(accountID, userID, accountName, currency, balance, registrationDate, accountStatus, bankID) {
     this.accountID = accountID;
     this.userID = userID;
-    this.name = name; 
+    this.accountName = accountName; 
     this.currency = currency;
     this.balance = balance;
     this.registrationDate = registrationDate;
@@ -15,12 +15,12 @@ class Account {
 
 
 // Insert a new account into the database
-async function createNewAccount({ userID, name, currency, balance, registrationDate, accountStatus, bankID }) {
+async function createNewAccount({ userID, accountName, currency, balance, registrationDate, accountStatus, bankID }) {
   const pool = await connectToDB();
 
   await pool.request()
     .input("userID", sql.Int, userID)
-    .input("name", sql.NVarChar, name)
+    .input("name", sql.NVarChar, accountName)
     .input("currency", sql.VarChar, currency)
     .input("balance", sql.Decimal(18, 2), balance)
     .input("registrationDate", sql.DateTime, registrationDate)
