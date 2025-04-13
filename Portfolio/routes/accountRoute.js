@@ -8,7 +8,7 @@ const accountController = require("../controllers/accountController");
 router.get("/account/:accountID", accountController.getAccountByID);
 router.get("/account", accountController.getAccounts);
 router.get('/createAccount', (req, res) => {
-    res.render('createAccountForm'); // Sørg for, at 'createAccountForm.ejs' findes i din 'views'-mappe
+    res.render('createAccount'); // Sørg for, at 'createAccountForm.ejs' findes i din 'views'-mappe
   });
 router.post('/createAccount', accountController.createAccount);
 router.get("/deactivateAccount/:accountID", accountController.handleDeactivateAccount);
