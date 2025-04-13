@@ -1,11 +1,13 @@
 const {Account, getAllAccounts, createAccount, deactivateAccount, reactivateAccount, findAccountByID } = require("../models/accountModels");
 
+/*
 async function showAllAccounts(req, res) {
     try {
         const userID = req.params.userID;
         const accounts = await getAllAccounts(userID);
     }
 }
+    */
 
 //Async function that fecthes the accountID from the database
 async function getAccountByID(req, res){
