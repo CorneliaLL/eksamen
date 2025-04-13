@@ -15,6 +15,7 @@ bankName NVARCHAR (100) NOT NULL
 CREATE TABLE Accounts (
   accountID INT PRIMARY KEY IDENTITY(1,1),
   userID INT NOT NULL,
+  accountName NVARCHAR(100) NOT NULL,
   currency VARCHAR(50) NOT NULL,
   balance DECIMAL(18,2) NOT NULL,
   registrationDate DATETIME NOT NULL,
