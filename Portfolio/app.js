@@ -25,6 +25,10 @@ app.get("/accountOverview", (req, res) => {
     res.render("accountOverview");
 });
 
+app.get('/createAccount', (req, res) => {
+    res.render('createAccount');
+  });
+
 //
 app.use('/user', userRoutes);
 app.use('/dashboard', dashboardRoutes)
