@@ -28,7 +28,7 @@ app.get("/accountOverview", (req, res) => {
 //
 app.use('/user', userRoutes);
 app.use('/dashboard', dashboardRoutes)
-app.use('/account', accountRoutes)
+app.get('/account', accountRoutes)
 
 //Standard routes
 //endpoint = URL
