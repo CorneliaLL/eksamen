@@ -69,14 +69,28 @@ async function reactivateAccount(accountID) {
       `);
       return result.recordset[0];
   }
-  
+
+//Async function which fetches all accounts from one user from the DB
+  async function getAllAccounts() {
+    const pool = await connectToDB();
+
+    const result = await pool.request()
+      .input("userID", sql.Int, userID)
+      .query(`
+        SELECT * FROM Accounts
+        WHERE userID = @userID
+      `);
+    //Returns the whole list
+      return result.recordset;
+  }
 
 module.exports = {
   Account,
   createAccount,
   deactivateAccount,
   reactivateAccount,
-  findAccountByID
+  findAccountByID,
+  getAllAccounts
 };
 
 
