@@ -18,9 +18,8 @@ async function signup (req, res){
         message: "User created successfully",
         user: newUser,
       });
-
       res.redirect("/dashboard");
-  
+      
       //Catch error that sends server error respons if sign up is a fail
     } catch (err) {
       res.status(500).json({ error: err.message });

@@ -15,6 +15,10 @@ const userRoutes = require('./routes/userRoute.js');
 const dashboardRoutes = require('./routes/dashboardRoute.js')
 const accountRoutes = require('./routes/accountRoute.js')
 
+//welcome page for login/signup 
+app.get("/", (req, res) => {
+    res.render("index", { msg: "Welcome" });
+});
 
 //
 app.use('/user', userRoutes);
@@ -28,14 +32,11 @@ app.get("/data", (req, res) => {
     res.send("hello")
 })
 
-//welcome page for login/signup 
-app.get("/", (req, res) => {
-    res.render("index", { msg: "Welcome" });
-})
 
 
 
 
-app.listen(3005, () => {
-    console.log('Server is running on http://localhost:3005');
+
+app.listen(3000, () => {
+    console.log('Server is running on http://localhost:3000');
   });
