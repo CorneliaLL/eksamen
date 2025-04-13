@@ -78,5 +78,3 @@ reopenAccount
 insertAmount
 withdrawAmount
 */
-
-module.exports = { Account };
