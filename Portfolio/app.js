@@ -20,6 +20,10 @@ app.get("/", (req, res) => {
     res.render("index", { msg: "Welcome" });
 });
 
+app.get("/accountOverview", (req, res) => {
+    res.render("accountOverview");
+});
+
 //
 app.use('/user', userRoutes);
 app.use('/dashboard', dashboardRoutes)
