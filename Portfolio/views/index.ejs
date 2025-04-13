@@ -12,13 +12,19 @@
 
 <!-- user login formular -->
 <div class="container"> 
+  <% if (typeof msg !== 'undefined' && msg) { %>
     <h1><%= msg %></h1>
+  <% } %>
 
     <h2>Log in</h2>
     <!-- Login Form -->
     <form action="/user/login" method="POST">
+    <div class="input-group">
       <input type="text" name="username" placeholder="Username" required />
+    </div>
+    <div class="input-group">
       <input type="password" name="password" placeholder="Password" required />
+    </div>
       <button type="submit">Login</button>
     </form>
 
@@ -30,11 +36,35 @@
     <h2>Sign up</h2>
     <!-- Signup Form -->
     <form action="/user/signup" method="POST">
-      <input type="text" name="name" placeholder="Insert name" required />
-      <input type="text" name="username" placeholder="New username" required />
-      <input type="text" name="age" placeholder="Insert age" required />
-      <input type="text" name="email" placeholder="E-mail" required/>
-      <input type="password" name="password" placeholder="New password" required />
+      <div class="input-group">
+        <input type="text" name="name" placeholder="Insert name" required />
+      </div>
+  
+      <div class="input-group">
+        <input type="text" name="username" placeholder="New username" required />
+      </div>
+  
+      <div class="input-group">
+        <input type="text" name="age" placeholder="Insert age" required />
+      </div>
+  
+      <div class="input-group">
+        <input type="text" name="email" placeholder="E-mail" required/>
+      </div>
+        
+        <!-- NY password-del -->
+    <div class="input-group <%= typeof error !== 'undefined' && error ? 'error' : '' %>">
+      <input
+        type="password"
+        name="password"
+        placeholder="New password"
+        required
+      />
+      <% if (typeof error !== 'undefined' && error) { %>
+        <div class="error-message"><%= error %></div>
+      <% } %>
+    </div> 
+
       <button type="submit">Signup</button>
     </form>
 

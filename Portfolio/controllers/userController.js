@@ -1,4 +1,26 @@
 const { createUser, findUserByUsername, updateUserPassword } = require("../models/userModels");
+ 
+//validates password and return an error-message if not true 
+ function validatePassword(password){
+  //checks if password is long enough
+  if (!password || password.length < 8) {
+    return "Password has to be at least 8 characters";
+  }
+  //checks if password has at least one lowercase letter
+  if(!/[a-z]/.test(password)){
+    return "Password has to include a lowercase letter";
+  }
+  //checks if password has at least one uppercase letter
+  if(!/[A-Z]/.test(password)){
+    return "Password must include an uppercase letter";
+  }
+  //checks if password has at least one number 
+  if (!/[0-9]/.test(password)){
+    return "Password has to include a number";
+  }
+  //if all criteria are fulfilled then returns null 
+  return null; //password is valid 
+  }
 
 // SIGNUP controller – handles user registration and stores the new user in our DB
 async function signup (req, res){
@@ -8,6 +30,15 @@ async function signup (req, res){
   //Signup validation - username must be at least 3 characters
       if (!username || username.length < 3) {
         return res.status(400).json({ error: "Username must be at least 3 characters" });
+      }
+      
+      //validates password from function
+      const passwordError = validatePassword(password);
+      if (passwordError){
+        return res.render("index", {
+          error: passwordError,
+          msg: null
+        });
       }
   
       // Variable that calls the createUser function from userModels to save the user in our DB

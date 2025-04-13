@@ -8,15 +8,6 @@ router.get("/change-password", (req, res) => {
     res.render("change-password");
   });
 
-/*
-router.post("/user/signout", (req, res) => {
-    // If you're not using sessions, just redirect
-    res.redirect("/");
-  }); 
-  //https://www.loginradius.com/blog/engineering/guest-post/nodejs-authentication-guide/
-  */
-
-
 //handles form submissions
 router.post("/signup", userController.signup);
 router.post("/login", userController.login);

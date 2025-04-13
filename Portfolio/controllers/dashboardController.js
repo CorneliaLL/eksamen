@@ -21,3 +21,7 @@ function renderDashboard(req, res) {
 
   
 module.exports = { renderDashboard }
+
+
+//bruges ikke??
+//evt ryk til user routes?
