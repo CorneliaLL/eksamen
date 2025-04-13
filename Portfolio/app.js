@@ -32,7 +32,7 @@ app.get('/createAccount', (req, res) => {
 //
 app.use('/user', userRoutes);
 app.use('/dashboard', dashboardRoutes)
-app.get('/account', accountRoutes)
+app.use('/', accountRoutes);
 
 //Standard routes
 //endpoint = URL
