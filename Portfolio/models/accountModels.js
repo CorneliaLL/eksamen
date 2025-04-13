@@ -58,13 +58,25 @@ async function reactivateAccount(accountID) {
       `);
   }
   
+  async function findAccountByID(accountID) {
+    const pool = await connectToDB();
+
+    const result = await pool.request()
+      .input("accountID", sql.Int, accountID)
+      .query(`
+        SELECT * FROM Accounts 
+        WHERE accountID = @accountID
+      `);
+      return result.recordset[0];
+  }
+  
 
 module.exports = {
   Account,
-  getAllAccounts,
   createAccount,
   deactivateAccount,
-  reactivateAccount
+  reactivateAccount,
+  findAccountByID
 };
 
 
