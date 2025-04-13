@@ -15,7 +15,7 @@ class Account {
 
 
 // Insert a new account into the database
-async function createAccount({ userID, name, currency, balance, registrationDate, accountStatus, bankID }) {
+async function createNewAccount({ userID, name, currency, balance, registrationDate, accountStatus, bankID }) {
   const pool = await connectToDB();
 
   await pool.request()
@@ -86,7 +86,7 @@ async function reactivateAccount(accountID) {
 
 module.exports = {
   Account,
-  createAccount,
+  createNewAccount,
   deactivateAccount,
   reactivateAccount,
   findAccountByID,

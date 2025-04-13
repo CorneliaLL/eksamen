@@ -1,4 +1,4 @@
-const {Account, getAllAccounts, createAccount, deactivateAccount, reactivateAccount, findAccountByID } = require("../models/accountModels");
+const {Account, getAllAccounts, createNewAccount, deactivateAccount, reactivateAccount, findAccountByID } = require("../models/accountModels");
 
 // Show list of all accounts
 async function getAccounts(req, res) {
@@ -21,11 +21,11 @@ async function getAccountByID(req, res){
         } else {
 
             //change to res.render
-            res.status(200).json({ account});
+            res.render("accountDetail", { account });
         } 
 
     } catch (err) {
-      console.error("Error in getAccountByID:", err);
+      console.error("Error in getAccountByID", err);
       res.status(500).json({ error: "Server error" });
     }
 }
@@ -37,14 +37,9 @@ async function createAccount(req, res) {
       const registrationDate = new Date();
       const accountStatus = true;
   
-      await createAccount({ userID, name, currency, balance, registrationDate, accountStatus, bankID });
+      await createNewAccount({ userID, name, currency, balance, registrationDate, accountStatus, bankID })
   
-      res.status(201).json({
-        message: "Account created successfully",
-        user: newUser,
-      });
-  
-      res.redirect("/account"); // After creating account go back to overview
+      res.redirect("/accountDashboard"); // After creating account go back to overview
     } catch (err) {
       console.error("Error creating account:", err.message);
       res.status(500).send("Failed to create account");
@@ -52,7 +47,7 @@ async function createAccount(req, res) {
   }
   
   // Deactivate an account (set status = 0)
-  async function deactivateAccount(req, res) {
+  async function handleDeactivateAccount(req, res) {
     try {
       const { accountID } = req.params;
       await deactivateAccount(accountID);
@@ -64,7 +59,7 @@ async function createAccount(req, res) {
   }
   
   // Reactivate a deactivated account (set status = 1)
-  async function reactivateAccount(req, res) {
+  async function handleReactivateAccount(req, res) {
     try {
       const { accountID } = req.params;
       await reactivateAccount(accountID);
@@ -77,6 +72,7 @@ async function createAccount(req, res) {
 module.exports = {
     getAccountByID,
     createAccount,
-    deactivateAccount,
-    reactivateAccount
+    handleDeactivateAccount,
+    handleReactivateAccount,
+    getAccounts
 }
