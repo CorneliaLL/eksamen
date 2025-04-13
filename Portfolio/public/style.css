@@ -52,3 +52,57 @@ form {
     display: block;
     margin-top: -50px;
   }
+
+  /**error message for password/
+/* Styling wrapper for input elements, including label and error message */
+.input-group {
+  color: #333; /* Sets text color to dark gray for improved readability */
+  font-family: Helvetica, Arial, sans-serif; /* Applies sans-serif typeface */
+  font-size: 13px; /* Sets base font size for consistency */
+  line-height: 20px; /* Controls vertical spacing between lines */
+  margin-bottom: 6px; /* Adds spacing below each input group */
+  width: 100%; /* Ensures input group spans full width of parent container */
+}
+
+/* Label element styling */
+label {
+  display: block; /* Forces label to occupy full line above input */
+  margin-bottom: 2px; /* Adds spacing between label and corresponding input */
+  font-weight: bold; /* Emphasizes label text for better UX */
+}
+
+/* Default input field styling inside input groups */
+.input-group input {
+  background: #fff; /* Sets white background for inputs */
+  border: 1px solid #999; /* Adds light gray border for input visibility */
+  font-size: 13px; /* Matches font size with input group container */
+  height: 33px; /* Sets fixed height for consistent alignment */
+  padding: 0 0 0 15px; /* Adds left padding for text inside the input */
+  width: 100%; /* Makes input fill its container */
+  border-radius: 4px; /* Slight rounding of corners for modern look */
+  box-sizing: border-box; /* Includes padding and border in total width */
+}
+
+/* Error message styling rendered below the input field */
+.error-message {
+  color: #cc0033; /* Sets text color to standard error red */
+  display: inline-block; /* Allows vertical margins while flowing with layout */
+  font-size: 12px; /* Slightly smaller font for secondary text */
+  line-height: 15px; /* Optimizes spacing within error message */
+  margin: 5px 0 0; /* Adds top spacing between input and error message */
+}
+
+/* Changes label color when input group has validation errors */
+.input-group.error label {
+  color: #cc0033; /* Inherits standard error red for label text */
+}
+
+/* Applies error styling to input field when validation fails */
+.input-group.error input {
+  background-color: #fce4e4; /* Light red background indicating error state */
+  border: 1px solid #cc0033; /* Prominent red border for visual error cue */
+  outline: none; /* Removes default focus outline for custom styling */
+}
+
+/* Source: https://sarahholleydesign.com/pure-css-custom-error-messaging-for-default-form-elements */
+
