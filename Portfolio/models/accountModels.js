@@ -71,7 +71,7 @@ async function reactivateAccount(accountID) {
   }
 
 //Async function which fetches all accounts from one user from the DB
-  async function getAllAccounts() {
+  async function getAllAccounts(userID) {
     const pool = await connectToDB();
 
     const result = await pool.request()

@@ -1,12 +1,28 @@
 const {Account, getAllAccounts, createNewAccount, deactivateAccount, reactivateAccount, findAccountByID } = require("../models/accountModels");
 
+// Create a new account
+async function createAccount(req, res) {
+  try {
+    const { userID, accountName, currency, balance, bankID } = req.body;
+    const registrationDate = new Date();
+    const accountStatus = true;
+
+    await createNewAccount({ userID, accountName, currency, balance, registrationDate, accountStatus, bankID })
+
+    res.redirect("/accountDashboard"); // After creating account go back to overview
+  } catch (err) {
+    console.error("Error creating account:", err.message);
+    res.status(500).send("Failed to create account");
+  }
+}
+
 // Show list of all accounts
 async function getAccounts(req, res) {
     try {
-      const accounts = await getAllAccounts();
-      res.render("accounts", { accounts });
+      const userID = 1;
+      const accounts = await getAllAccounts(userID);
+      return res.render("accountOverview.ejs", { accounts });
     } catch (err) {
-      console.error("Error fetching accounts:", err.message);
       res.status(500).send("Failed to fetch accounts");
     }
   }
@@ -14,40 +30,24 @@ async function getAccounts(req, res) {
 //Async function that fecthes the accountID from the database
 async function getAccountByID(req, res){
     try{
-        const accountID = req.params.accountID;
-        const account = await findAccountByID(accountID);
-        if (!account) {
-            return res.status(404).json({ error: "Account not found" });
-        } else {
+      const accountID = req.params.accountID;
+      const account = await findAccountByID(accountID);
+      if (!account) {
+          return res.status(404).json({ error: "Account not found" });
+      } else {
 
-            //change to res.render
-            res.render("accountDetail", { account });
-        } 
+          //change to res.render
+          res.render("accountDetail", { account });
+      } 
 
     } catch (err) {
       console.error("Error in getAccountByID", err);
       res.status(500).json({ error: "Server error" });
     }
 }
-
-// Create a new account
-async function createAccount(req, res) {
-    try {
-      const { userID, accountName, currency, balance, bankID } = req.body;
-      const registrationDate = new Date();
-      const accountStatus = true;
-  
-      await createNewAccount({ userID, accountName, currency, balance, registrationDate, accountStatus, bankID })
-  
-      res.redirect("/accountDashboard"); // After creating account go back to overview
-    } catch (err) {
-      console.error("Error creating account:", err.message);
-      res.status(500).send("Failed to create account");
-    }
-  }
   
   // Deactivate an account (set status = 0)
-  async function handleDeactivateAccount(req, res) {
+async function handleDeactivateAccount(req, res) {
     try {
       const { accountID } = req.params;
       await deactivateAccount(accountID);
@@ -59,7 +59,7 @@ async function createAccount(req, res) {
   }
   
   // Reactivate a deactivated account (set status = 1)
-  async function handleReactivateAccount(req, res) {
+async function handleReactivateAccount(req, res) {
     try {
       const { accountID } = req.params;
       await reactivateAccount(accountID);
@@ -70,9 +70,9 @@ async function createAccount(req, res) {
     }
   }
 module.exports = {
-    getAccountByID,
-    createAccount,
-    handleDeactivateAccount,
-    handleReactivateAccount,
-    getAccounts
+  createAccount,
+  getAccountByID,
+  handleDeactivateAccount,
+  handleReactivateAccount,
+  getAccounts
 }

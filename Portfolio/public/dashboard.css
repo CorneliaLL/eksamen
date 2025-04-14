@@ -15,3 +15,9 @@ body {
   h1 {
     color: white;
   }
+
+  .container {
+    display: flex;
+    flex-wrap: wrap; /* så det ikke flyder ud over siden */
+    gap: 20px; /* mellemrum mellem boksene */
+  }
