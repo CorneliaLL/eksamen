@@ -14,13 +14,20 @@
         <h1>Welcome to your account overview</h1> <!--gets username from database-->
     </div>
     <div class="box1">
-       <h2>Account overview:</h2>
-       <ul>
+      <h1>Account Overview</h1>
+      <% if (accounts && accounts.length > 0) { %>
+        <ul>
+          <% accounts.forEach(account => { %>
             <li>
-              <strong><%= account.name %></strong><br>
-              Balance: <%= account.balance %> kr
+              <strong><%= account.accountName %></strong><br>
+              Balance: <%= account.balance %> <%= account.currency %><br>
+              Status: <%= account.accountStatus ? "Active" : "Inactive" %>
             </li>
-      </ul>
+          <% }); %>
+        </ul>
+      <% } else { %>
+        <p>No accounts found.</p>
+      <% } %>
     </div>
 
 
