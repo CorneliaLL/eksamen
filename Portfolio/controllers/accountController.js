@@ -1,5 +1,5 @@
 const {getAllAccounts, createNewAccount, deactivateAccount, reactivateAccount, findAccountByID } = require("../models/accountModels");
-const { getBanks } = require("../models/bankModels");
+const { getBanks, findBankByName } = require("../models/bankModels");
 
 async function fetchBanks(req, res) {
   try {
@@ -14,7 +14,7 @@ async function fetchBanks(req, res) {
 // Create a new account
 async function createAccount(req, res) {
   try {
-    const { accountName, currency, balance, bankID } = req.body;
+    const { accountName, currency, balance, bankName } = req.body;
     const userID = req.session.userID; //Accessing userID from session
     const registrationDate = new Date();
     const accountStatus = true;
@@ -24,11 +24,14 @@ async function createAccount(req, res) {
     }
 
     // Fetch all banks and validate the bankID
-    const banks = await getBankByName(bankName);
-    const validBank = banks.find(bank => bank.bankName === bankName);
+    //const banks = await findBankByName(bankName);
+    const validBank = await findBankByName(bankName);
     if (!validBank) {
       return res.status(400).send("Invalid bank ID");
     }
+
+    // Extract bankID from the bank chosen by user, so we can use it in createNewAccount function
+    const bankID = validBank.bankID;
 
     const newAccount = await createNewAccount({ userID, accountName, currency, balance, registrationDate, accountStatus, bankID })
 
@@ -101,6 +104,7 @@ async function handleReactivateAccount(req, res) {
     }
   }
 module.exports = {
+  fetchBanks,
   createAccount,
   getAccountByID,
   handleDeactivateAccount,
