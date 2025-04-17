@@ -21,3 +21,35 @@ body {
     flex-wrap: wrap; /* så det ikke flyder ud over siden */
     gap: 20px; /* mellemrum mellem boksene */
   }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 2rem;
+    width: 300px;              /* eller hvad der passer til dit design */
+    margin: 200px auto;         /* top/bund spacing + centrer i midten */
+    padding: 20px; 
+  }
+
+  .createAccounts{ 
+      padding: 20px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+    
+  }
+
+  input {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+
+  button {
+    background-color: #4a90e2;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+  }

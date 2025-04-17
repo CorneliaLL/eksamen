@@ -4,7 +4,7 @@ calculateExpectedValue, calculateUnrealizedGain} = require("../models/portfolioM
 // Create a new account
 async function createPortfolio(req, res) {
     try {
-      const {userID, portfolioName } = req.body;
+      const {userID, accountID, portfolioName } = req.body;
       const registrationDate = new Date();
   
       await createNewPortfolio({ userID, accountID, portfolioName, registrationDate })

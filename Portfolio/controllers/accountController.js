@@ -3,13 +3,18 @@ const {getAllAccounts, createNewAccount, deactivateAccount, reactivateAccount, f
 // Create a new account
 async function createAccount(req, res) {
   try {
-    const { userID, accountName, currency, balance, bankID } = req.body;
+    const { accountName, currency, balance, bankID } = req.body;
+    const userID = req.session.userID; //Accessing userID from session
     const registrationDate = new Date();
     const accountStatus = true;
 
     await createNewAccount({ userID, accountName, currency, balance, registrationDate, accountStatus, bankID })
 
-    res.redirect("/accountDashboard"); // After creating account go back to overview
+    // Variable that calls the createUser function from accountModels to save the user in our DB
+    const newAccount = await createNewAccount({ accountName, currency, balance, bankID });
+    
+
+    res.redirect("/account"); // After creating account go back to overview
   } catch (err) {
     console.error("Error creating account:", err.message);
     res.status(500).send("Failed to create account");

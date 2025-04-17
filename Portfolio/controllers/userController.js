@@ -43,12 +43,13 @@ async function signup (req, res){
   
       // Variable that calls the createUser function from userModels to save the user in our DB
       const newUser = await createUser({ name, username, email, password, age });
-  
+      /*
       //Sends us a response that the sign up is a success
       res.status(201).json({
         message: "User created successfully",
         user: newUser,
       });
+      */
       res.redirect("/dashboard");
       
       //Catch error that sends server error respons if sign up is a fail
