@@ -1,4 +1,5 @@
-const { connectToDB, sql } = require("../database");
+const { getAllPortfolios, findPortfolioByID, createNewPortfolio, calculateGAK, calculateExpectedValue,
+  calculateUnrealizedGain } = require("../models/portfolioModels");
 
 
 
@@ -14,11 +15,10 @@ async function getPortfolios(req, res) {
     }
 
     const portfolios = await getAllPortfolios(userID);
-
-    return res.render("portfolioOverview", { portfolios });
+    console.log("Fetched portfolios:", portfolios);
+    return res.render("portfolioOverview.ejs", { portfolios });
 
   } catch (err) {
-    console.error("Error fetching portfolios:", err.message);
     res.status(500).send("Failed to fetch portfolios");
   }
 }
@@ -27,6 +27,9 @@ async function getPortfolios(req, res) {
 // Show one portfolio by ID
 async function getPortfolioByID(req, res) {
   try {
+    const userID = req.session.userID;
+    if (!userID) return res.status(401).send("Unauthorized");
+
     const { portfolioID } = req.params;
     const portfolio = await findPortfolioByID(portfolioID);
 
@@ -34,8 +37,8 @@ async function getPortfolioByID(req, res) {
       return res.status(404).send("Portfolio not found");
     }
 
-    // check if portfolio is logged in users 
-    if (portfolio.userID !== req.session.userID) {
+    // Ensure portfolio belongs to logged-in user
+    if (portfolio.userID !== userID) {
       return res.status(403).send("Not authorized");
     }
 
@@ -50,17 +53,12 @@ async function getPortfolioByID(req, res) {
 async function handleCreatePortfolio(req, res) {
   try {
     const userID = req.session.userID;
-    if (!userID) return res.redirect("/");
+    if (!userID) return res.status(401).send("Unauthorized");
 
     const { accountID, portfolioName } = req.body;
     const registrationDate = new Date();
 
-    await createNewPortfolio({
-      userID,
-      accountID,
-      portfolioName,
-      registrationDate
-    });
+    await createNewPortfolio({ userID, accountID, portfolioName, registrationDate});
 
     res.redirect("/portfolio"); // After creating, go back to overview
 
@@ -70,16 +68,18 @@ async function handleCreatePortfolio(req, res) {
   }
 }
 
-
-// Show portfolio analysis for one stock in a portfolio
+// Portfolio analysis for one stock
 async function showPortfolioAnalysis(req, res) {
   try {
-    const { portfolioID, stockID } = req.params;
+    const userID = req.session.userID;
+    if (!userID) return res.status(401).send("Unauthorized");
 
+    const { portfolioID, stockID } = req.params;
     const portfolio = await findPortfolioByID(portfolioID);
+
     if (!portfolio) return res.status(404).send("Portfolio not found");
 
-    if (portfolio.userID !== req.session.userID) {
+    if (portfolio.userID !== userID) {
       return res.status(403).send("Unauthorized");
     }
 
@@ -88,12 +88,7 @@ async function showPortfolioAnalysis(req, res) {
     const unrealizedGain = await calculateUnrealizedGain(portfolioID, stockID);
 
     res.render("portfolioAnalysis", {
-      portfolio,
-      stockID,
-      gak,
-      expectedValue,
-      unrealizedGain
-    });
+      portfolio, stockID, gak, expectedValue, unrealizedGain });
 
   } catch (err) {
     console.error("Error showing portfolio analysis:", err.message);

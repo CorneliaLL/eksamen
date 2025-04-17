@@ -1,12 +1,19 @@
 const { connectToDB, sql } = require("../database");
 
-class Portfolio{
-    constructor(portfolioID, accountID, portfolioName, registrationDate){
-        this.portfolioID = portfolioID;
-        this.accountID = accountID;
-        this.portfolioName = portfolioName;
-        this.registrationDate = registrationDate;
-    }
+
+// Async function to fetch all portfolios from one user from the DB
+async function getAllPortfolios(userID) {
+  const pool = await connectToDB();
+
+  const result = await pool.request()
+    .input("userID", sql.Int, userID)
+    .query(`
+      SELECT * FROM Portfolios
+      WHERE userID = @userID
+    `);
+
+  // Returns the whole list of portfolios for this user
+  return result.recordset;
 }
 
 // Fetch a specific portfolio by ID
@@ -163,8 +170,7 @@ async function createNewPortfolio({ userID, accountID, portfolioName, registrati
   }
   
   module.exports = {
-    Portfolio,
-    //getPortfoliosByUserID,
+    getAllPortfolios,
     findPortfolioByID,
     createNewPortfolio,
     calculateGAK,
