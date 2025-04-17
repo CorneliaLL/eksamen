@@ -67,15 +67,25 @@ async function signup (req, res){
       } else if (user.password !== password) {
         return res.status(401).render("login", { error: "Incorrect password" });
       } else {
-  
-      // Success – redirect to dashboard
-      res.redirect("/dashboard");
+      
+        req.session.userID = user.userID; // Store user in session
+        res.redirect("/dashboard");
     }
     } catch (err) {
       res.status(500).render("login", { error: "Login failed. Try again." });
     }
   }
 
+
+  async function logout(req, res) {
+    req.session.destroy((err) => {
+      if (err) {
+        console.error("Error destroying session:", err);
+        return res.status(500).send("Failed to log out");
+      }
+      res.redirect("/");
+    });
+  }
 
   
 
@@ -106,4 +116,4 @@ async function changePassword(req, res) {
 }
 
 
-module.exports = { signup, login, changePassword }
+module.exports = { signup, login, changePassword, logout }

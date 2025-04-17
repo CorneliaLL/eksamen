@@ -13,7 +13,17 @@
     <div class="containerTitle">
         <h1>Create new account</h1> <!--gets username from database-->
     </div>
-
+        <div class="accountForm">
+            <form action="/user/createAccount" method="POST">
+                <div class="input-group">
+                  <input type="text" name="username" placeholder="Username" required />
+                </div>
+                <div class="input-group">
+                  <input type="password" name="password" placeholder="Password" required />
+                </div>
+                  <button type="submit">Login</button>
+                </form>
+        </div>
 
     </div>
 </body>

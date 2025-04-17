@@ -12,6 +12,11 @@ router.get("/change-password", (req, res) => {
 router.post("/signup", userController.signup);
 router.post("/login", userController.login);
 router.post("/change-password", userController.changePassword);
-
+router.get("/dashboard", (req, res) => {
+  if (!req.session.userID) {
+    return res.redirect("/login");
+  }
+  res.render("dashboard", { userID: req.session.userID });
+});
 
 module.exports = router ;

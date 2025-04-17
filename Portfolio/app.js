@@ -1,4 +1,5 @@
 const express = require("express");
+const session = require("express-session");
 const app = express()
 //middleware package
 const cors = require("cors") 
@@ -9,11 +10,29 @@ app.use(express.urlencoded({ extended: true })); //makes it possible to read dat
 app.use(express.static("public")); //makes content in public visible and accessible in the browser 
 app.set("view engine", "ejs"); //makes it possible to show dynamic html-pages in ejs 
 
+//Configure session middleware
+app.use(
+    session({
+        secret: "token",
+        resave: false, //Prevents resaving session if nothing has changed
+        saveUninitialized: true, //Saves session even if it is not initialized
+        cookie: { secure: false, maxAge: 60000 }, //cookie will expire after 1 minute
+    })
+);
 
 //Routes
 const userRoutes = require('./routes/userRoute.js');
 const dashboardRoutes = require('./routes/dashboardRoute.js')
 const accountRoutes = require('./routes/accountRoute.js')
+
+app.get('/test-session', (req, res) => {
+    if (!req.session.testdata) {
+      req.session.testdata = "Hello, session!";
+      console.log("Session has been set.");
+    } else {
+      res.send("Session is working: " + req.session.testdata);
+    }
+  });
 
 //welcome page for login/signup 
 app.get("/", (req, res) => {
@@ -28,6 +47,18 @@ app.get("/accountOverview", (req, res) => {
 app.get('/createAccount', (req, res) => {
     res.render('createAccount');
   });
+
+
+ //Isn't functional when we put it in userRoute.js, so for our log out to work we have put the endpoint here 
+app.get("/logout", (req, res) => {
+req.session.destroy((err) => {
+    if (err) {
+     console.error("Error destroying session:", err);
+    return res.status(500).send("Failed to log out");
+    }
+    res.redirect("/"); // Redirect to the homepage after logout
+    });
+});
 
 //
 app.use('/user', userRoutes);

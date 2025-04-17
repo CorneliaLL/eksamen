@@ -2,8 +2,6 @@
 //this way we can store and manage users in the database
 const { sql, connectToDB } = require("../database");
 
-localStorage.setItem("user", userID);
-localStroage.getItem("user");
 
 class User {
     constructor (userID, name, username, email, password, age){

@@ -19,7 +19,15 @@ async function createAccount(req, res) {
 // Show list of all accounts
 async function getAccounts(req, res) {
     try {
-      const userID = 1;
+      console.log("Session data:", req.session); // Debugging: Check session data
+      const userID = req.session.userID; // Accessing userID from session
+
+      //Check if the userID is set in the session
+      //If not it will return 401 error
+      if (!userID) {
+        return res.status(401).send("Unauthorized");
+      }
+
       const accounts = await getAllAccounts(userID);
       return res.render("accountOverview.ejs", { accounts });
     } catch (err) {
