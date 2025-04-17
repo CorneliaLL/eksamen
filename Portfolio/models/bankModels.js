@@ -1,16 +1,23 @@
 const { sql, connectToDB } = require("../database");
 
-    class Banks {
-        constructor(bankID, bankName){
-            this.bankID = bankID;
+class Banks {
+  constructor(bankID, bankName){
+    this.bankID = bankID;
             this.bankName = bankName;
         }
 }
 
 async function getBanks() {
-    const query = "SELECT bankID, bankName FROM Banks";
-    const [rows] = await db.execute(query);
-    return rows; // Returns an array of bank objects
+  const pool = await connectToDB();
+
+  const result = await pool.request()
+    .input("userID", sql.Int, userID)
+    .query(`
+      SELECT bankID, bankName
+      FROM Banks
+      `);
+    //Returns the whole list
+      return result.recordset;
   }
 
   async function findBankByID(bankID) {
