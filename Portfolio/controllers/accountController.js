@@ -1,4 +1,4 @@
-const {Account, getAllAccounts, createNewAccount, deactivateAccount, reactivateAccount, findAccountByID } = require("../models/accountModels");
+const {getAllAccounts, createNewAccount, deactivateAccount, reactivateAccount, findAccountByID } = require("../models/accountModels");
 
 // Create a new account
 async function createAccount(req, res) {
