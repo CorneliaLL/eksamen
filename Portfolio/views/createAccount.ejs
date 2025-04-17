@@ -25,11 +25,11 @@
                     <input type="balance" name="balance" placeholder="Balance" required />
                   </div>
                   <div class="createAccounts">
-                    <label for="bankID">Select Bank:</label>
-                    <select name="bankID" id="bankID" required>
-                        <% banks.forEach(bank => { %>
-                            <option value="<%= bank.bankID %>"><%= bank.bankName %></option>
-                        <% }); %>
+                    <label for="bankName">Select Bank:</label>
+                    <select name="bankName" id="bankName" required>
+                      <option value="danskebank">Danske Bank</option>
+                      <option value="jyskebank">Jyske Bank</option>
+                      <option value="nordea">Nordea</option>
                     </select>
                   </div>
                   <button type="Create account">Create account</button>

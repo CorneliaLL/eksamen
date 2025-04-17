@@ -1,4 +1,15 @@
 const {getAllAccounts, createNewAccount, deactivateAccount, reactivateAccount, findAccountByID } = require("../models/accountModels");
+const { getBanks } = require("../models/bankModels");
+
+async function fetchBanks(req, res) {
+  try {
+    const banks = await getBanks(); // Fetch all banks from the database
+    return banks; // Return the list of banks
+  } catch (err) {
+    console.error("Error fetching banks:", err.message);
+    throw new Error("Failed to fetch banks");
+  }
+}
 
 // Create a new account
 async function createAccount(req, res) {
@@ -7,6 +18,17 @@ async function createAccount(req, res) {
     const userID = req.session.userID; //Accessing userID from session
     const registrationDate = new Date();
     const accountStatus = true;
+
+    if (!userID) {
+      return res.status(401).send("Unauthorized");
+    }
+
+    // Fetch all banks and validate the bankID
+    const banks = await fetchBanks();
+    const validBank = banks.find(bank => bank.bankID === parseInt(bankID));
+    if (!validBank) {
+      return res.status(400).send("Invalid bank ID");
+    }
 
     await createNewAccount({ userID, accountName, currency, balance, registrationDate, accountStatus, bankID })
 

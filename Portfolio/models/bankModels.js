@@ -18,3 +18,8 @@ async function getBanks() {
     const [rows] = await db.execute(query, [bankID]);
     return rows[0]; // Returns the bank object or undefined if not found
   }
+
+  module.exports = {
+    getBanks,
+    findBankByID
+  };
