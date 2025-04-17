@@ -11,7 +11,6 @@ async function getBanks() {
   const pool = await connectToDB();
 
   const result = await pool.request()
-    .input("userID", sql.Int, userID)
     .query(`
       SELECT bankID, bankName
       FROM Banks
@@ -20,13 +19,17 @@ async function getBanks() {
       return result.recordset;
   }
 
-  async function findBankByID(bankID) {
-    const query = "SELECT bankID, bankName FROM Banks WHERE bankID = ?";
-    const [rows] = await db.execute(query, [bankID]);
-    return rows[0]; // Returns the bank object or undefined if not found
+  async function findBankByName(bankName) {
+    const pool = await connectToDB();
+    const result = await pool.request()
+      .input("bankName", sql.NVarChar, bankName)
+      .query("SELECT bankID FROM Banks WHERE bankName = @bankName");
+  
+    return result.recordset[0];
   }
+  
 
   module.exports = {
     getBanks,
-    findBankByID
+    findBankByName
   };
