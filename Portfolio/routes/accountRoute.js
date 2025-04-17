@@ -11,6 +11,7 @@ router.get('/createAccount', (req, res) => {
     res.render('createAccount'); // Sørg for, at 'createAccountForm.ejs' findes i din 'views'-mappe
   });
 router.post('/createAccount', accountController.createAccount);
+//router.post("/account", accountController.getAccounts);
 router.get("/deactivateAccount/:accountID", accountController.handleDeactivateAccount);
 router.get("/reactivateAccount/:accountID", accountController.handleReactivateAccount)
 
