@@ -30,11 +30,7 @@ async function createAccount(req, res) {
       return res.status(400).send("Invalid bank ID");
     }
 
-    await createNewAccount({ userID, accountName, currency, balance, registrationDate, accountStatus, bankID })
-
-    // Variable that calls the createUser function from accountModels to save the user in our DB
-    const newAccount = await createNewAccount({ accountName, currency, balance, bankID });
-    
+    const newAccount = await createNewAccount({ userID, accountName, currency, balance, registrationDate, accountStatus, bankID })
 
     res.redirect("/account"); // After creating account go back to overview
   } catch (err) {
