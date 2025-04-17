@@ -164,7 +164,7 @@ async function createNewPortfolio({ userID, accountID, portfolioName, registrati
   
   module.exports = {
     Portfolio,
-    getPortfoliosByUserID,
+    //getPortfoliosByUserID,
     findPortfolioByID,
     createNewPortfolio,
     calculateGAK,

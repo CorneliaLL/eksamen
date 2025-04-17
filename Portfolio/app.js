@@ -24,6 +24,7 @@ app.use(
 const userRoutes = require('./routes/userRoute.js');
 const dashboardRoutes = require('./routes/dashboardRoute.js')
 const accountRoutes = require('./routes/accountRoute.js')
+const portfolioRoutes = require("./routes/portfolioRoute.js");
 
 app.get('/test-session', (req, res) => {
     if (!req.session.testdata) {
@@ -64,6 +65,7 @@ req.session.destroy((err) => {
 app.use('/user', userRoutes);
 app.use('/dashboard', dashboardRoutes)
 app.use('/', accountRoutes);
+app.use("/", portfolioRoutes);
 
 //Standard routes
 //endpoint = URL
