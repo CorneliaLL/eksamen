@@ -64,7 +64,9 @@ body {
   }
 
   .box1,
-  .box2 {
+  .box2,
+  .box3,
+  .box4 {
     background-color: darkgray;
     border-radius: 12px;
     padding: 30px;
