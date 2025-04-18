@@ -49,7 +49,7 @@ app.get('/createAccount', (req, res) => {
     res.render('createAccount');
   });
 
-  app.get("/portfolio", (req, res) => {
+app.get("/portfolio", (req, res) => {
     res.render("portfolio");
 });
 

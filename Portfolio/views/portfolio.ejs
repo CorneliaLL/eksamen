@@ -1,25 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
-<%- include("./partials/head") %>
+<%- include ('./partials/head.ejs') %>
 
-<link rel="stylesheet" href="/dashboard.css">
+<!--link to dashboard stylesheet-->
+<link rel="stylesheet" href="dashboard.css">
 
 <body>
-        <!--main content-->
-        <%- include ('./partials/nav.ejs') %>
-        <div class="container">
-        <div class="containerTitle">
-            <h1>Welcome to your portfolio overview</h1> <!--gets username from database-->
-        </div>
-        <div class="boxContainer">
-        <div class="box3">
-          <h2>My portfolios</h2>
-        </div>
-        <div class="box4">
-          <a href="/createPortfolio">Create portfolio</a>
-        </div>
-        </div>
-        </div>
-    </body>
-    
-    </html>
+
+  <!--main content-->
+  <%- include ('./partials/nav.ejs') %>
+
+  <div class="container">
+    <div class="containerTitle">
+      <h1>Welcome to your portfolio overview</h1> <!-- gets username from session -->
+    </div>
+
+    <div class="boxContainer">
+      <div class="box3">
+        <h2>Create new portfolio:</h2>
+        <a href="/portfolio/create">Create portfolio!</a>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>
