@@ -1,5 +1,13 @@
 const { connectToDB, sql } = require("../database");
 
+class Portfolio{
+  constructor(portfolioID, accountID, portfolioName, registrationDate){
+      this.portfolioID = portfolioID;
+      this.accountID = accountID;
+      this.portfolioName = portfolioName;
+      this.registrationDate = registrationDate;
+  }
+}
 
 // Async function to fetch all portfolios from one user from the DB
 async function getAllPortfolios(userID) {
@@ -170,6 +178,7 @@ async function createNewPortfolio({ userID, accountID, portfolioName, registrati
   }
   
   module.exports = {
+    Portfolio,
     getAllPortfolios,
     findPortfolioByID,
     createNewPortfolio,

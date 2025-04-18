@@ -1,26 +1,21 @@
 const express = require("express");
 const router = express.Router();
 
-const {
-  getPortfolios,
-  getPortfolioByID,
-  handleCreatePortfolio,
-  showPortfolioAnalysis
-} = require("../controllers/portfolioController");
+const portfolioController = require("../controllers/portfolioController");
 
 
-router.get("/portfolio", getPortfolios);
-router.get("/:portfolioID", getPortfolioByID);
+router.get("/portfolio", portfolioController.getPortfolios);
+router.get("/:portfolioID", portfolioController.getPortfolioByID);
 
 router.get("/createPortfolio", (req, res) => {
   res.render("createPortfolio");
 });
 
-router.post("/createPortfolio", handleCreatePortfolio);
+router.post("/createPortfolio", portfolioController.handleCreatePortfolio);
 
 
 
-router.get("portfolioAnalysis/:portfolioID", showPortfolioAnalysis)
+router.get("portfolioAnalysis/:portfolioID", portfolioController.showPortfolioAnalysis)
 
 
 module.exports = router;

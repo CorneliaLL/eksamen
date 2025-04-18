@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include("./partials/head") %>
+
+<link rel="stylesheet" href="/dashboard.css">
+
+<body>
+        <!--main content-->
+        <%- include ('./partials/nav.ejs') %>
+        <div class="container">
+        <div class="containerTitle">
+            <h1>Welcome to your portfolio overview</h1> <!--gets username from database-->
+        </div>
+        <div class portfolioContainer>
+        <div class="box3">
+          <h2>My portfolios</h2>
+        </div>
+        <div class="box4">
+          <a href="/createPortfolio">Create portfolio</a>
+        </div>
+        </div>
+        </div>
+    </body>
+    
+    </html>

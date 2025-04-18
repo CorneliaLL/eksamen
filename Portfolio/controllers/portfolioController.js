@@ -11,12 +11,13 @@ async function getPortfolios(req, res) {
 
     // Check if the user is logged in
     if (!userID) {
+      console.log("User not logged in"); 
       return res.status(401).send("Unauthorized");
     }
 
-    const portfolios = await getAllPortfolios(userID);
-    console.log("Fetched portfolios:", portfolios);
-    return res.render("portfolioOverview.ejs", { portfolios });
+    const portfolios = await getAllPortfolios(userID); 
+    
+    return res.render("portfolio.ejs", { portfolios });
 
   } catch (err) {
     res.status(500).send("Failed to fetch portfolios");
