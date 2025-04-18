@@ -82,6 +82,7 @@ async function reactivateAccount(accountID) {
       `);
     //Returns the whole list
       return result.recordset;
+      
   }
 
 module.exports = {
