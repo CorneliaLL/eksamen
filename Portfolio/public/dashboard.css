@@ -7,19 +7,27 @@ body {
 
   }
   
+  .container {
+    display: flex;
+    align-items: center;    /* centrér alt vandret */
+    gap: 20px;
+  }
+
   .containerTitle {
     flex: 1;
     padding: 40px;
   }
 
-  h1 {
-    color: white;
+  .account-boxes {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 40px;
+    margin-top: 40px;
   }
 
-  .container {
-    display: flex;
-    flex-wrap: wrap; /* så det ikke flyder ud over siden */
-    gap: 20px; /* mellemrum mellem boksene */
+  h1 {
+    color: white;
   }
 
   form {
@@ -52,4 +60,16 @@ body {
     padding: 10px;
     border-radius: 5px;
     cursor: pointer;
+  }
+
+  .box1,
+  .box2 {
+    color: white;
+    display: flex;
+    flex-direction: column;
+    width: 300px;
+    border: 15px solid navy;
+    padding: 50px;
+    margin: 20px;
+    margin-top: 250px;
   }
