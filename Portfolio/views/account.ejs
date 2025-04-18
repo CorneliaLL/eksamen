@@ -20,6 +20,9 @@
         <ul>
           <% accounts.forEach(account => { %>
             <li>
+
+      <!--ADD: show date and time of deactivation and add links to redirect to the single account-->
+
               <strong><%= account.accountName %></strong><br>
               Balance: <%= account.balance %> <%= account.currency %><br>
               Status: <%= account.accountStatus ? "Active" : "Inactive" %>
@@ -49,7 +52,7 @@
       <% } else { %>
         <p>No accounts found.</p>
       <% } %>
-      
+
     </div>
     <div class="box2">
       <h2>Create new account:</h2>
