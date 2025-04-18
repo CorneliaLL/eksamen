@@ -56,7 +56,7 @@ async function getAccounts(req, res) {
 
       const accounts = await getAllAccounts(userID);
       console.log("Fetched accounts:", accounts);
-      return res.render("accountOverview.ejs", { accounts });
+      return res.render("account.ejs", { accounts });
     } catch (err) {
       res.status(500).send("Failed to fetch accounts");
     }

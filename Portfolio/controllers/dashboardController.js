@@ -2,7 +2,7 @@ const { findUserByUsername } = require("../models/userModels");
 
 function renderDashboard(req, res) {
     //dummy data
-    const username = username ; //hardcoded username 
+    const username = this.username ; //hardcoded username 
 
   
     //list to show 
@@ -11,11 +11,6 @@ function renderDashboard(req, res) {
   
     res.render("dashboard", {
       username,
-      totalVaerdi,
-      realiseretGevinst,
-      urealisaretGevinst,
-      topVaerdiListe,
-      topProfitListe
     });
   }
 
