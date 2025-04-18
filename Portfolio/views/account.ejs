@@ -23,15 +23,33 @@
               <strong><%= account.accountName %></strong><br>
               Balance: <%= account.balance %> <%= account.currency %><br>
               Status: <%= account.accountStatus ? "Active" : "Inactive" %>
+              <% if (account.accountStatus) { %>
+                <div class="deactivateForm">
+                <form action="/account/deactivateAccount/<%= account.accountID %>" method="POST">
+                  <button type="submit">Deactivate</button>
+                </form>
+                </div>
+                <% } %>
+
               <% if (!account.accountStatus && account.deactivationDate) { %>
                 Deactivated on: <%= new Date(account.deactivationDate).toLocaleString() %>
               <% } %>
+              <% if (!account.accountStatus) { %>
+                <div class="reactivateForm">
+                  <form action="/account/reactivateAccount/<%= account.accountID %>" method="POST">
+                    <button type="submit">Reactivate</button>
+                  </form>
+                </div>
+                  <% } %>
+                
             </li>
           <% }); %>
         </ul>
+
       <% } else { %>
         <p>No accounts found.</p>
       <% } %>
+      
     </div>
     <div class="box2">
       <h2>Create new account:</h2>

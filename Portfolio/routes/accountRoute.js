@@ -12,8 +12,8 @@ router.get('/createAccount', (req, res) => {
   });
 router.post('/createAccount', accountController.createAccount);
 //router.post("/account", accountController.getAccounts);
-router.get("/deactivateAccount/:accountID", accountController.handleDeactivateAccount);
-router.get("/reactivateAccount/:accountID", accountController.handleReactivateAccount)
+router.post("/account/deactivateAccount/:accountID", accountController.handleDeactivateAccount);
+router.post("/account/reactivateAccount/:accountID", accountController.handleReactivateAccount)
 
 
 

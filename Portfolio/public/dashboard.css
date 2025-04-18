@@ -37,7 +37,6 @@ body {
     gap: 10px;
     margin-bottom: 2rem;
     width: 300px;              /* eller hvad der passer til dit design */
-    margin: 200px auto;         /* top/bund spacing + centrer i midten */
     padding: 20px; 
   }
 
@@ -67,7 +66,7 @@ body {
   .box2,
   .box3,
   .box4 {
-    background-color: darkgray;
+    background-color: gray;
     border-radius: 12px;
     padding: 30px;
     width: 300px;
@@ -78,10 +77,25 @@ body {
     align-items: center;
   }
 
+  .deactivateForm,
+  .reactivateForm {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .deactivateForm button {
+    background-color: maroon;
+  }
+
+  .reactivateForm button {
+    background-color: seagreen;
+  }
+
   h2 {
     text-align: center;
   }
 
   a {
-    color: white
+    color: white;
   }
