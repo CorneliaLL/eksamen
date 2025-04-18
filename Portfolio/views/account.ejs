@@ -16,6 +16,19 @@
     <div class="accountContainer">
     <div class="box1">
       <h2>My accounts</h2>
+      <% if (accounts && accounts.length > 0) { %>
+        <ul>
+          <% accounts.forEach(account => { %>
+            <li>
+              <strong><%= account.accountName %></strong><br>
+              Balance: <%= account.balance %> <%= account.currency %><br>
+              Status: <%= account.accountStatus ? "Active" : "Inactive" %>
+            </li>
+          <% }); %>
+        </ul>
+      <% } else { %>
+        <p>No accounts found.</p>
+      <% } %>
     </div>
     <div class="box2">
       <h2>Create new account:</h2>
