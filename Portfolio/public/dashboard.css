@@ -21,7 +21,7 @@ body {
     padding: 20px;
   }
 
-  .accountContainer {
+  .boxContainer {
     display: flex;
     gap: 40px;
     align-items: center;
