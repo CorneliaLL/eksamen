@@ -23,7 +23,9 @@
               <strong><%= account.accountName %></strong><br>
               Balance: <%= account.balance %> <%= account.currency %><br>
               Status: <%= account.accountStatus ? "Active" : "Inactive" %>
-
+              <% if (!account.accountStatus && account.deactivationDate) { %>
+                Deactivated on: <%= new Date(account.deactivationDate).toLocaleString() %>
+              <% } %>
           <% }); %>
         </ul>
       <% } else { %>
