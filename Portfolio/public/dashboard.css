@@ -9,7 +9,8 @@ body {
   
   .container {
     display: flex;
-    align-items: flex-start;
+    flex-direction: column;
+    align-items: center;
     gap: 20px;
   }
 
@@ -66,10 +67,7 @@ body {
   .box2 {
     color: white;
     display: flex;
-    flex-direction: column;
     width: 300px;
-    border: 15px solid navy;
     padding: 50px;
     margin: 20px;
-    margin-top: 250px;
   }
