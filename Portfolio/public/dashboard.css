@@ -9,7 +9,7 @@ body {
   
   .container {
     display: flex;
-    align-items: center;    /* centrér alt vandret */
+    align-items: flex-start;
     gap: 20px;
   }
 
@@ -23,7 +23,7 @@ body {
     justify-content: center;
     align-items: flex-start;
     gap: 40px;
-    margin-top: 40px;
+    margin-top: 250px;
   }
 
   h1 {

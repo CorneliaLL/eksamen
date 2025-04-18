@@ -1,9 +1,9 @@
+const { findUserByUsername } = require("../models/userModels");
+
 function renderDashboard(req, res) {
     //dummy data
-    const username = "Celina"; //hardcoded username 
-    const totalVaerdi = "a";
-    const realiseretGevinst = "a"; 
-    const urealisaretGevinst = "a";
+    const username = username ; //hardcoded username 
+
   
     //list to show 
     const topVaerdiListe = [];
