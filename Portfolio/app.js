@@ -41,7 +41,7 @@ app.get("/", (req, res) => {
 });
 
 
-app.get("/accountw", (req, res) => {
+app.get("/account", (req, res) => {
     res.render("account");
 });
 
