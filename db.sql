@@ -26,6 +26,9 @@ CREATE TABLE Accounts (
   FOREIGN KEY (bankID) REFERENCES Banks(bankID)
 );
 
+ALTER TABLE Accounts
+ADD deactivationDate DATETIME NULL;
+
 CREATE TABLE Portfolios (
   portfolioID INT PRIMARY KEY IDENTITY(1,1),
   accountID INT NOT NULL,
