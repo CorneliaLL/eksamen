@@ -54,7 +54,7 @@ async function reactivateAccount(accountID) {
       .input("accountID", sql.Int, accountID)
       .query(`
         UPDATE Accounts
-        SET accountStatus = 1
+        SET accountStatus = 1, deactivationDate = NULL
         WHERE accountID = @accountID
       `);
   }
