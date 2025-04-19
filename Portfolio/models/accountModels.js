@@ -33,16 +33,16 @@ async function createNewAccount({ userID, accountName, currency, balance, regist
 }
 
 // set accountStatus to 0 for deactivating
-async function deactivateAccount(accountID) {
+async function deactivateAccount(accountID, deactivationDate) {
   const pool = await connectToDB();
 
   return await pool.request()
     .input("accountID", sql.Int, accountID)
-    .input("deactivationDate", sql.DateTime, deactivateDate) // Set current date and time
+    .input("deactivationDate", sql.DateTime, deactivationDate) // Set current date and time
     .query(`
       UPDATE Accounts
-      SET accountStatus = 0
-      deactivationDate = @deactivationDate
+      SET accountStatus = 0,
+          deactivationDate = @deactivationDate
       WHERE accountID = @accountID
     `);
 }
