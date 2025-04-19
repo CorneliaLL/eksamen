@@ -1,54 +1,12 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const { storeStockData} = require('../services/fetchStockData.js');
-//imports function that gets stock data
+const stockController = require("../controllers/stockController");
 
-//endpoint to get stocks 
-router.get('/fetchStock/:ticker', async (req, res) => {
-    const { ticker } = req.params; //gets ticker from URL
-    await storeStockData(ticker);
-    res.send(`Stock data for ${ticker} is updated`);
-});
+router.get('/fetchStock/:ticker', stockController.fetchStock);
+router.get('/chart/:ticker', stockController.showChart);
+router.get('/list', stockController.listStocks);
 
-//endpoint for chart 
-router.get('/chart/:ticker', async (req, res) => {
-    try {
-        const { ticker } = req.params;
-        const { recordset } = await sql.query`
-            SELECT Date, ClosePrice FROM Stocks
-            WHERE Ticker = ${ticker}
-            ORDER BY Date ASC
-        `;
-
-        res.render('stockChart', { //ejs-file 
-            ticker,
-            dates: recordset.map(r => r.Date.toISOString().split('T')[0]), //For hver række (r) i dataen: Tag datoen, lav den om til tekst (toISOString()), og tag kun dato-delen før T (fordi en ISO-dato ser ud som "2024-04-20T00:00:00.000Z")
-            prices: recordset.map(r => r.ClosePrice) //For hver række (r): Tag lukkeprisen (close price) ud
-        }); //data for graph 
-    } catch (err) {
-        console.error('Fejl:', err);
-        res.status(500).send('Noget gik galt');
-    }
-});
-
-//list of all stocks 
-router.get('/list', async (req, res) => {
-    try {
-        const result = await sql.query`
-            SELECT Ticker, Date, ClosePrice FROM Stocks
-            ORDER BY Ticker, Date DESC
-        `;
-
-        res.render('stockList', { stocks: result.recordset }); //shows ejs-file for stockdata
-    } catch (error) {
-        console.error('Cannot get stock list:', error);
-        res.status(500).send('Cannot get stocks');
-    }
-});
-
-module.exports = router; 
-
- 
+module.exports = router;
 
 /*Kilder: aktiekurser 
 **Server og routing:**
@@ -72,4 +30,6 @@ module.exports = router;
   - [Chart.js Documentation](https://www.chartjs.org/docs/latest/)
   - [Chart.js Line Chart Example](https://www.chartjs.org/docs/latest/charts/line.html)
 
-Alle kilder er anvendt til at sikre korrekt opsætning af server, ruter, API, databaseforbindelse og frontend-visualisering.*/
+---
+
+Alle kilder er anvendt til at sikre korrekt opsætning af server, ruter, API-integration, databaseforbindelse og frontend-visualisering.*/
