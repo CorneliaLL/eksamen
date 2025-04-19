@@ -2,7 +2,7 @@ const express = require("express");
 const session = require("express-session");
 const app = express()
 const cors = require("cors") //middleware package
-const { connectToDB } = require('./db/database.js');
+const { connectToDB } = require('./database.js');
 
 app.use(cors()) //without we get errors when we get request to the endpoints 
 app.use(express.json()) //without this we coukd not return json like we do in the /users  endpoint 

@@ -1,7 +1,7 @@
 //service folder: handles functionality - calls api (stock data) and saves data
 
 const axios = require('axios'); //to get data from the internet -> npm install axios
-const { sql } = require('../db/database'); //saves in the SQL database
+const { sql } = require('../database'); //saves in the SQL database
 
 async function storeStockData(ticker) {
     const apiKey = '5WEYK0DRXVCFWJPW' //personal alpha vantage api key
