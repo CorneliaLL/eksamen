@@ -85,7 +85,8 @@ async function getAccountByID(req, res){
 async function handleDeactivateAccount(req, res) {
     try {
       const { accountID } = req.params;
-      await deactivateAccount(accountID);
+      const deactivationDate = new Date();
+      await deactivateAccount(accountID, deactivationDate);
       res.redirect("/account");
     } catch (err) {
       console.error("Error deactivating account:", err.message);

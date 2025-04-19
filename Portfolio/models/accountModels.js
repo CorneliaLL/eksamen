@@ -38,10 +38,11 @@ async function deactivateAccount(accountID) {
 
   return await pool.request()
     .input("accountID", sql.Int, accountID)
-    .input("deactivationDate", sql.DateTime, new Date()) // Set current date and time
+    .input("deactivationDate", sql.DateTime, deactivateDate) // Set current date and time
     .query(`
       UPDATE Accounts
       SET accountStatus = 0
+      deactivationDate = @deactivationDate
       WHERE accountID = @accountID
     `);
 }
