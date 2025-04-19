@@ -14,7 +14,6 @@ function renderDashboard(req, res) {
     });
   }
 
-  
 module.exports = { renderDashboard }
 
 
