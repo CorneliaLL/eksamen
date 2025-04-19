@@ -1,8 +1,8 @@
 const express = require("express");
 const session = require("express-session");
 const app = express()
-//middleware package
-const cors = require("cors") 
+const cors = require("cors") //middleware package
+const { connectToDB } = require('./db/database.js');
 
 app.use(cors()) //without we get errors when we get request to the endpoints 
 app.use(express.json()) //without this we coukd not return json like we do in the /users  endpoint 
@@ -22,9 +22,10 @@ app.use(
 
 //Routes
 const userRoutes = require('./routes/userRoute.js');
-const dashboardRoutes = require('./routes/dashboardRoute.js')
-const accountRoutes = require('./routes/accountRoute.js')
+const dashboardRoutes = require('./routes/dashboardRoute.js');
+const accountRoutes = require('./routes/accountRoute.js');
 const portfolioRoutes = require("./routes/portfolioRoute.js");
+const stockRoutes = require('./routes/stockRoute.js');
 
 app.get('/test-session', (req, res) => {
     if (!req.session.testdata) {
@@ -64,11 +65,12 @@ req.session.destroy((err) => {
     });
 });
 
-//
+
 app.use('/user', userRoutes);
 app.use('/dashboard', dashboardRoutes)
 app.use('/', accountRoutes);
 app.use("/", portfolioRoutes);
+app.use('/stocks', stockRoutes);
 
 //Standard routes
 //endpoint = URL
@@ -79,9 +81,8 @@ app.get("/data", (req, res) => {
 
 
 
-
-
-
-app.listen(3000, () => {
-    console.log('Server is running on http://localhost:3000');
+//port 3000
+app.listen(3000, async () => {
+  await connectToDB(); 
+  console.log('Server is running on http://localhost:3000');
   });
