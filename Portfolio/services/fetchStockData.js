@@ -10,7 +10,7 @@ async function storeStockData(ticker) {
 
     try {
         const response = await axios.get(url); //gets data from api
-        const data = response.data; //saves response answer 
+        const data = response.data; //saves response answer
 
         if (data['Time Series (Daily)']) { //reads newest share price 
             const latestDate = Object.keys(data['Time Series (Daily)'])[0]; //finds newest day 
