@@ -177,7 +177,36 @@ async function createNewPortfolio({ userID, accountID, portfolioName, registrati
       return null;
     }
   }
+
+  // Get holdings for a specific portfolio
+  async function getHoldings(portfolioID) {
+    const pool = await connectToDB();
+
+    // Fetch all stocks in the portfolio
+    const result = await pool.request()
+    .input("portfolioID", sql.Int, portfolioID)
+    .query(`
+      SELECT DISTINCT stockID
+      FROM Trade
+      WHERE portfolioID = @portfolioID
+    `);
+
+    const stocks = result.recordset;
   
+  // calculate for each stock in the portfolio
+  const holdings = [];
+  for (let stock of stocks) {
+    const stockID = stock.stockID;
+
+    const gak = await calculateGAK(portfolioID, stockID);
+    const expectedValue = await calculateExpectedValue(portfolioID, stockID);
+    const unrealizedGain = await calculateUnrealizedGain(portfolioID, stockID);
+
+    holdings.push({stockID, gak, expectedValue, unrealizedGain});
+  }
+  return holdings;
+}
+
   module.exports = {
     Portfolio,
     getAllPortfolios,

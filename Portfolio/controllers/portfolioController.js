@@ -1,5 +1,5 @@
 const { getAllPortfolios, findPortfolioByID, createNewPortfolio, calculateGAK, calculateExpectedValue,
-  calculateUnrealizedGain } = require("../models/portfolioModels");
+  calculateUnrealizedGain, getHoldings } = require("../models/portfolioModels");
 
 
 
@@ -38,12 +38,9 @@ async function getPortfolioByID(req, res) {
       return res.status(404).send("Portfolio not found");
     }
 
-    // Ensure portfolio belongs to logged-in user
-    if (portfolio.userID !== userID) {
-      return res.status(403).send("Not authorized");
-    }
+    const holdings = await getHoldings(portfolioID);  //Fetch holdings for the portfolio
 
-    res.render("portfolioDetail", { portfolio });
+    res.render("portfolioDetail", { portfolio, holdings });
 
   } catch (err) {
     console.error("Error fetching portfolio:", err.message);
