@@ -15,7 +15,7 @@ router.post("/createPortfolio", portfolioController.handleCreatePortfolio);
 
 
 
-router.get("portfolioAnalysis/:portfolioID", portfolioController.showPortfolioAnalysis)
+router.get("/portfolioAnalysis/:portfolioID", portfolioController.showPortfolioAnalysis)
 
 
 module.exports = router;
