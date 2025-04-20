@@ -17,6 +17,7 @@ async function getAllPortfolios(userID) {
     .input("userID", sql.Int, userID)
     .query(`
       SELECT * FROM Portfolios
+      JOIN Accounts ON Portfolios.accountID = Accounts.accountID
       WHERE userID = @userID
     `);
 
