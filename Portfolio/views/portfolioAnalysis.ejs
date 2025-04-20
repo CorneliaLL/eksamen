@@ -1,0 +1,30 @@
+<h2>Analysis: Portfolio "<%= portfolio.portfolioName %>"</h2>
+
+<h3>Stock: <%= stockID %></h3>
+
+<table>
+  <tr>
+    <th>Metric</th>
+    <th>Value</th>
+  </tr>
+  <tr>
+    <td>GAK (Average Acquisition Price)</td>
+    <td><%= gak ? gak.toFixed(2) : "N/A" %></td>
+  </tr>
+  <tr>
+    <td>Expected Value</td>
+    <td><%= expectedValue ? expectedValue.toFixed(2) : "N/A" %></td>
+  </tr>
+  <tr>
+    <td>Unrealized Gain/Loss</td>
+    <td><%= unrealizedGain ? unrealizedGain.toFixed(2) : "N/A" %></td>
+  </tr>
+</table>
+
+<!-- Placeholder til kurs-graf -->
+<div>
+  <h4>Price chart coming here (future)</h4>
+</div>
+
+<!-- Tilbageknap -->
+<a href="/portfolio/<%= portfolio.portfolioID %>">← Back to Portfolio</a>
