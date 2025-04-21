@@ -23,7 +23,7 @@
 
       <!--ADD: show date and time of deactivation and add links to redirect to the single account-->
 
-              <strong><%= account.accountName %></strong><br>
+              <a href="/account/<%= account.accountID %>"><strong><%= account.accountName %></strong></a><br>
               Balance: <%= account.balance %> <%= account.currency %><br>
               Status: <%= account.accountStatus ? "Active" : "Inactive" %>
               <% if (account.accountStatus) { %>
