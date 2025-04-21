@@ -16,7 +16,7 @@ async function handleTrade(req, res) {
 
     // check if the user has enough funds in the account;
     if (tradeType === "buy") {
-        const hasFunds = await cheackFunds(accountID, totalCost);
+        const hasFunds = await checkFunds(accountID, totalCost);
         if (!hasFunds) {
             return res.status(400).send("Insufficient funds");
         }
