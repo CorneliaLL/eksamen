@@ -66,10 +66,11 @@ body {
   .box2,
   .box3,
   .box4 {
-    background-color: 84837E;
+    background-color: 1B1B19;
+    color: white;
     border-radius: 12px;
     padding: 30px;
-    width: 300px;
+    width: 400px;
     min-height: 180px;
     display: flex;
     flex-direction: column;
