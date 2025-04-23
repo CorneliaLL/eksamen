@@ -18,7 +18,7 @@
                 <div class="createPortfolios">
                     <label for="accountName">Select Account:</label>
                     <select name="accountID" id="accountID" required>
-                        <% if (accounts && accounts.length > 0) { %>
+                        <% if (typeof accounts !== 'undefined' && accounts.length > 0) { %>
                             <% accounts.forEach(account => { %>
                               <option value="<%= account.accountID %>"><%= account.accountName %> - Balance: <%= account.balance %> <%= account.currency %></option>
                             <% }); %>
