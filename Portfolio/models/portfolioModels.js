@@ -48,13 +48,12 @@ async function findPortfolioByID(portfolioID) {
 async function createNewPortfolio({ userID, accountID, portfolioName, registrationDate }) {
     const pool = await connectToDB();
     await pool.request()
-      .input("userID", sql.Int, userID)
       .input("accountID", sql.Int, accountID)
       .input("portfolioName", sql.NVarChar, portfolioName)
       .input("registrationDate", sql.DateTime, registrationDate)
       .query(`
-        INSERT INTO Portfolios (userID, accountID, portfolioName, registrationDate)
-        VALUES (@userID, @accountID, @portfolioName, @registrationDate)
+        INSERT INTO Portfolios ( accountID, portfolioName, registrationDate)
+        VALUES ( @accountID, @portfolioName, @registrationDate)
       `);
   }
   

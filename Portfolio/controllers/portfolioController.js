@@ -56,7 +56,7 @@ async function handleCreatePortfolio(req, res) {
     const { accountID, portfolioName } = req.body;
     const registrationDate = new Date();
 
-    await createNewPortfolio({ userID, accountID, portfolioName, registrationDate});
+    await createNewPortfolio({ accountID, portfolioName, registrationDate});
 
     res.redirect("/portfolio"); // After creating, go back to overview
 
