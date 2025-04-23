@@ -45,7 +45,7 @@ async function findPortfolioByID(portfolioID) {
   }
 
 // Create a new portfolio 
-async function createNewPortfolio({ userID, accountID, portfolioName, registrationDate }) {
+async function createNewPortfolio({ accountID, portfolioName, registrationDate }) {
     const pool = await connectToDB();
     await pool.request()
       .input("accountID", sql.Int, accountID)
