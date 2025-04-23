@@ -52,9 +52,10 @@ async function handleCreatePortfolio(req, res) {
   try {
     const userID = req.session.userID;
     if (!userID) return res.status(401).send("Unauthorized");
-    const account = await Account.getAccountsByUserID(userID);
 
     const { accountID, portfolioName } = req.body;
+    const account = await Account.findAccountByID(accountID);
+
     const registrationDate = new Date();
 
     const portfolio = new Portfolio(null, accountID, portfolioName, registrationDate);
