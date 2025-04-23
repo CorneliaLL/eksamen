@@ -16,6 +16,16 @@
         <div class="portfolioForm">
             <form action="/createPortfolio" method="POST">
                 <div class="createPortfolios">
+                    <label for="accountID">Select Account:</label>
+                    <select name="accountID" id="accountID" required>
+                        <% if (accounts && accounts.length > 0) { %>
+                            <% accounts.forEach(account => { %>
+                              <option value="<%= account.accountID %>"><%= account.accountName %> - Balance: <%= account.balance %> <%= account.currency %></option>
+                            <% }); %>
+                        <% } else { %>
+                        <option value="">No accounts available</option>
+                        <% } %>
+                </select>
                   <input type="text" name="portfolioName" placeholder="Portfolio name" required />
                   <button type="submit">Create portfolio</button>
                 </form>
