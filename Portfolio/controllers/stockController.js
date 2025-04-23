@@ -1,5 +1,5 @@
 const { storeStockData } = require("../services/fetchStockData.js"); //imports function that gets stockdata from alpha vantage
-const { getAllStocks, getStockData } = require("../models/stockModels.js"); //imports function that gets data from database 
+const { Stocks } = require("../models/stockModels.js"); //imports function that gets data from database 
 
 //handles calling api: get stockdata from alpha vantage and saves in database
 exports.fetchStock = async (req, res) => {
@@ -17,7 +17,7 @@ exports.fetchStock = async (req, res) => {
 exports.showChart = async (req, res) => {
     const { ticker } = req.params; //gets ticket from URL
     try {
-        const { dates, prices } = await getStockData(ticker); //gets dates and prices for stocks from database 
+        const { dates, prices } = await stock.getStockData(ticker); //gets dates and prices for stocks from database 
         res.render('stockChart', { ticker, dates, prices }); //sends data for graph 
     } catch (error) {
         console.error('Cannot get stock chart:', error);
@@ -28,7 +28,7 @@ exports.showChart = async (req, res) => {
 //handles visualizing of lists of stocks 
 exports.listStocks = async (req, res) => {
     try {
-        const stocks = await getAllStocks(); //gets all stocks from database
+        const stocks = await Stocks.getAllStocks(); //gets all stocks from database
         res.render('stockList', { stocks }); //gets stocks for lists
     } catch (error) {
         console.error('Cannot get stock list:', error);

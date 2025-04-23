@@ -1,4 +1,4 @@
-const { createUser, findUserByUsername, updateUserPassword } = require("../models/userModels");
+const { User } = require("../models/userModels");
  
 //validates password and return an error-message if not true 
  function validatePassword(password){
@@ -42,7 +42,8 @@ async function signup (req, res){
       }
   
       // Variable that calls the createUser function from userModels to save the user in our DB
-      const newUser = await createUser({ name, username, email, password, age });
+      const user = new User(null, name, username, email, password, age );
+      await user.createUser();
       /*
       //Sends us a response that the sign up is a success
       res.status(201).json({
@@ -61,7 +62,8 @@ async function signup (req, res){
   async function login(req, res) {
     try {
       const { username, password } = req.body;
-      const user = await findUserByUsername(username);
+      //Måske skal være static
+      const user = await User.findUserByUsername(username);
   
       if (!user) {
         return res.status(404).render("login", { error: "User not found" });
@@ -96,7 +98,7 @@ async function changePassword(req, res) {
 
     /*await ensures that the code waits for the result before continuing.
     Without await, the code would continue with the next line before the user has been retrieved, which can cause errors*/
-    const user = await findUserByUsername(username);
+    const user = await User.findUserByUsername(username);
 
     if (!user) {
       return res.status(404).json({ error: "User not found" });
@@ -107,7 +109,7 @@ async function changePassword(req, res) {
     }
 
     // Update the user's password
-    await updateUserPassword(username, newPassword);
+    await User.updateUserPassword(username, newPassword);
     //res.status(200).json({ message: "Password changed successfully" });
     res.redirect("/dashboard");
   } catch (err) {

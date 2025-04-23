@@ -16,7 +16,7 @@
         <div class="portfolioForm">
             <form action="/createPortfolio" method="POST">
                 <div class="createPortfolios">
-                    <label for="accountID">Select Account:</label>
+                    <label for="accountName">Select Account:</label>
                     <select name="accountID" id="accountID" required>
                         <% if (accounts && accounts.length > 0) { %>
                             <% accounts.forEach(account => { %>

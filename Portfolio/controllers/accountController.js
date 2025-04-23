@@ -1,9 +1,9 @@
-const {getAllAccounts, createNewAccount, deactivateAccount, reactivateAccount, findAccountByID } = require("../models/accountModels");
-const { getBanks, findBankByName } = require("../models/bankModels");
+const { Account } = require("../models/accountModels");
+const { Banks } = require("../models/bankModels");
 
 async function fetchBanks(req, res) {
   try {
-    const banks = await getBanks(); // Fetch all banks from the database
+    const banks = await Banks.getBanks(); // Fetch all banks from the database
     return banks; // Return the list of banks
   } catch (err) {
     console.error("Error fetching banks:", err.message);
@@ -25,15 +25,16 @@ async function createAccount(req, res) {
 
     // Fetch all banks and validate the bankID
     //const banks = await findBankByName(bankName);
-    const validBank = await findBankByName(bankName);
+    const bank = new Banks();
+    const validBank = await bank.findBankByName(bankName);
     if (!validBank) {
       return res.status(400).send("Invalid bank ID");
     }
 
     // Extract bankID from the bank chosen by user, so we can use it in createNewAccount function
     const bankID = validBank.bankID;
-
-    const newAccount = await createNewAccount({ userID, accountName, currency, balance, registrationDate, accountStatus, bankID })
+    const account = new Account(null, userID, accountName, currency, balance, registrationDate, accountStatus, bankID, null);
+    await account.createNewAccount();
 
     res.redirect("/account"); // After creating account go back to overview
   } catch (err) {
@@ -53,8 +54,8 @@ async function getAccounts(req, res) {
       if (!userID) {
         return res.status(401).send("Unauthorized");
       }
-
-      const accounts = await getAllAccounts(userID);
+      //Fetch all accounts for the user
+      const accounts = await Account.getAllAccounts(userID);
       console.log("Fetched accounts:", accounts);
       res.render("account", { accounts });
     } catch (err) {
@@ -66,7 +67,7 @@ async function getAccounts(req, res) {
 async function getAccountByID(req, res){
     try{
       const accountID = req.params.accountID;
-      const account = await findAccountByID(accountID);
+      const account = await Account.findAccountByID(accountID);
       if (!account) {
           return res.status(404).json({ error: "Account not found" });
       } else {
@@ -86,7 +87,7 @@ async function handleDeactivateAccount(req, res) {
     try {
       const { accountID } = req.params;
       const deactivationDate = new Date();
-      await deactivateAccount(accountID, deactivationDate);
+      await Account.deactivateAccount(accountID, deactivationDate);
       res.redirect("/account");
     } catch (err) {
       console.error("Error deactivating account:", err.message);
@@ -98,7 +99,7 @@ async function handleDeactivateAccount(req, res) {
 async function handleReactivateAccount(req, res) {
     try {
       const { accountID } = req.params;
-      await reactivateAccount(accountID);
+      await Account.reactivateAccount(accountID);
       res.redirect("/account");
     } catch (err) {
       console.error("Error reactivating account:", err.message);

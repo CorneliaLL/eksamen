@@ -12,11 +12,9 @@ class Account {
     this.bankID = bankID;
     this.deactivationDate = deactivationDate;
   }
-}
 
-
-// Insert a new account into the database
-async function createNewAccount({ userID, accountName, currency, balance, registrationDate, accountStatus, bankID }) {
+  // Insert a new account into the database
+async createNewAccount({ userID, accountName, currency, balance, registrationDate, accountStatus, bankID }) {
   const pool = await connectToDB();
 
   await pool.request()
@@ -34,7 +32,7 @@ async function createNewAccount({ userID, accountName, currency, balance, regist
 }
 
 // set accountStatus to 0 for deactivating
-async function deactivateAccount(accountID, deactivationDate) {
+static async deactivateAccount(accountID, deactivationDate) {
   const pool = await connectToDB();
 
   return await pool.request()
@@ -49,52 +47,49 @@ async function deactivateAccount(accountID, deactivationDate) {
 }
 
 // Set accountStatus to 1 (reactivate the account)
-async function reactivateAccount(accountID) {
-    const pool = await connectToDB();
-  
-    return await pool.request()
-      .input("accountID", sql.Int, accountID)
-      .query(`
-        UPDATE Accounts
-        SET accountStatus = 1, deactivationDate = NULL
-        WHERE accountID = @accountID
-      `);
-  }
-  
-  async function findAccountByID(accountID) {
-    const pool = await connectToDB();
+static async reactivateAccount(accountID) {
+  const pool = await connectToDB();
 
-    const result = await pool.request()
-      .input("accountID", sql.Int, accountID)
-      .query(`
-        SELECT * FROM Accounts 
-        WHERE accountID = @accountID
-      `);
-      return result.recordset[0];
-  }
+  return await pool.request()
+    .input("accountID", sql.Int, accountID)
+    .query(`
+      UPDATE Accounts
+      SET accountStatus = 1, deactivationDate = NULL
+      WHERE accountID = @accountID
+    `);
+}
+
+static async findAccountByID(accountID) {
+  const pool = await connectToDB();
+
+  const result = await pool.request()
+    .input("accountID", sql.Int, accountID)
+    .query(`
+      SELECT * FROM Accounts 
+      WHERE accountID = @accountID
+    `);
+    return result.recordset[0];
+}
 
 //Async function which fetches all accounts from one user from the DB
-  async function getAllAccounts(userID) {
-    const pool = await connectToDB();
+//Static method so we can call the method without instantiating an account object
+static async getAllAccounts(userID) {
+  const pool = await connectToDB();
 
-    const result = await pool.request()
-      .input("userID", sql.Int, userID)
-      .query(`
-        SELECT * FROM Accounts
-        WHERE userID = @userID
-      `);
-    //Returns the whole list
-      return result.recordset;
-      
-  }
+  const result = await pool.request()
+    .input("userID", sql.Int, userID)
+    .query(`
+      SELECT * FROM Accounts
+      WHERE userID = @userID
+    `);
+  //Returns the whole list
+    return result.recordset;
+    
+}
+}
 
 module.exports = {
-  Account,
-  createNewAccount,
-  deactivateAccount,
-  reactivateAccount,
-  findAccountByID,
-  getAllAccounts
+  Account
 };
 
 

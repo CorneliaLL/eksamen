@@ -12,15 +12,13 @@ class User {
         this.password = password;
         this.age = age;
     }
-}
-
-//Asyncronic function we use to create and store users in the DB
-//Function takes the users data and inserts the new user in our DB through a SQL INSERT statement
-async function createUser({ name, username, email, password, age }){
+    //Asyncronic function we use to create and store users in the DB
+    //Function takes the users data and inserts the new user in our DB through a SQL INSERT statement
+async createUser(){
     const pool = await connectToDB();
 
-//creates the connection to the DB
-// Creates our request, SQL queries.
+    //creates the connection to the DB
+    // Creates our request, SQL queries.
     await pool.request()
     .input("name", sql.NVarChar, name)
     .input("username", sql.NVarChar, username)
@@ -28,9 +26,9 @@ async function createUser({ name, username, email, password, age }){
     .input("password", sql.NVarChar, password)
     .input("age", sql.Int, age)
 
-//Query = what is actually being sent to the DB
-// @x matches our input from above. Inserts the data into a new row in the user table with the given values
-//.query is a method which handles SQL queries to our DB
+    //Query = what is actually being sent to the DB
+    // @x matches our input from above. Inserts the data into a new row in the user table with the given values
+    //.query is a method which handles SQL queries to our DB
     .query(`
       INSERT INTO dbo.Users (name, username, email, password, age)
       VALUES (@name, @username, @email, @password, @age)
@@ -39,7 +37,7 @@ async function createUser({ name, username, email, password, age }){
     return { username, email };
 }
 
-async function findUserByUsername(username) {
+static async findUserByUsername(username) {
     const pool = await connectToDB();
 
     const result = await pool.request()
@@ -51,8 +49,7 @@ async function findUserByUsername(username) {
     return result.recordset[0];
 }
 
-
-async function updateUserPassword(username, newPassword) {
+static async updateUserPassword(username, newPassword) {
     const pool = await connectToDB();
 
     //Update the password of the user with the given username
@@ -63,13 +60,12 @@ async function updateUserPassword(username, newPassword) {
     .query("UPDATE Users SET password = @password WHERE username = @username");
 }
 
+}
+
 /*
  createAccount() Burde måske bo i accountModel og accountController, ikke user
 
 */
 module.exports = { 
-    User,
-    createUser,
-    findUserByUsername,
-    updateUserPassword
+    User
  };
