@@ -52,11 +52,12 @@ async function handleCreatePortfolio(req, res) {
   try {
     const userID = req.session.userID;
     if (!userID) return res.status(401).send("Unauthorized");
+    const account = await getAccountsByUserID(userID);
 
     const { accountID, portfolioName } = req.body;
     const registrationDate = new Date();
 
-    await createNewPortfolio({ accountID, portfolioName, registrationDate});
+    await createNewPortfolio({ account, accountID, portfolioName, registrationDate});
 
     res.redirect("/portfolio"); // After creating, go back to overview
 
