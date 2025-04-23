@@ -1,7 +1,7 @@
 const { storeExchangeRate } = require('../services/fetchExchangeRate');
 const { getExchangeRate } = require('../models/exchangeRateModel');
 
-exports.updateExchangeRate = async (req, res) => {
+const updateExchangeRate = async (req, res) => {
     const { from, to } = req.params;
 
     try {
@@ -12,7 +12,7 @@ exports.updateExchangeRate = async (req, res) => {
     }
 };
 
-exports.showExchangeRate = async (req, res) => {
+const showExchangeRate = async (req, res) => {
     const { from, to } = req.params;
 
     try {
@@ -29,3 +29,8 @@ exports.showExchangeRate = async (req, res) => {
         res.status(500).send("Could not fetch exchange rate.");
     }
 };
+
+module.exports = {
+    updateExchangeRate,
+    showExchangeRate
+}

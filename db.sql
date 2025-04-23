@@ -81,3 +81,11 @@ CREATE TABLE Transactions (
     FOREIGN KEY (tradeID) REFERENCES Trades(tradeID),
     FOREIGN KEY (accountID) REFERENCES Accounts(accountID)
 );
+
+CREATE TABLE ExchangeRates (
+    ExchangeRateID INT PRIMARY KEY,
+    Ticker NVARCHAR,
+    FromCurrency FLOAT,
+    ToCurrency FLOAT,
+    Rate FLOAT,
+);
