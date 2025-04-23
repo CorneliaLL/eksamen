@@ -50,6 +50,8 @@ app.get('/createAccount', (req, res) => {
     res.render('createAccount');
   });
 
+app.get('/createPortfolio', (req, res) => {
+    res.render('createPortfolio');})
 
   
  //Isn't functional when we put it in userRoute.js, so for our log out to work we have put the endpoint here 
