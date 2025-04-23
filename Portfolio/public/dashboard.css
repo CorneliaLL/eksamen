@@ -4,7 +4,7 @@ body {
     display: flex;
     margin: 0;
     background-color: black;
-    font: arial;
+    font-family: arial;
   }
   
   .container {
