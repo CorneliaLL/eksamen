@@ -1,7 +1,7 @@
 import { expect } from 'chai'; //imports expect from Chai - used to write whats expected 
 import sinon from 'sinon'; //import sinon - used to make fake functions 
 import { login } from '../controllers/userController.js'; //import wanted to test login function 
-import User from '../models/userModels.js'; //import user model with .findUserByUsername
+import { User } from '../models/userModels.js'; //import user model with .findUserByUsername
 
 describe('login', () => { //describe: all login in groups 
     let req, res;
