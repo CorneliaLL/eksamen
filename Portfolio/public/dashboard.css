@@ -103,4 +103,7 @@ body {
 
   .tableContainer {
     color: white;
+    tr {
+      color: white;
+    }
   }

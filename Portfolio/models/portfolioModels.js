@@ -189,17 +189,20 @@ static async getHoldings(portfolioID) {
   const stocks = result.recordset;
 
 // calculate for each stock in the portfolio
-const holdings = [];
-for (let stock of stocks) {
-  const stockID = stock.stockID;
+  const holdings = [];
+    for (let stock of stocks) {
+    const stockID = stock.stockID;
+      try {
+        const gak = await Portfolio.calculateGAK(portfolioID, stockID);
+        const expectedValue = await Portfolio.calculateExpectedValue(portfolioID, stockID);
+        const unrealizedGain = await Portfolio.calculateUnrealizedGain(portfolioID, stockID);
 
-  const gak = await Portfolio.calculateGAK(portfolioID, stockID);
-  const expectedValue = await Portfolio.calculateExpectedValue(portfolioID, stockID);
-  const unrealizedGain = await Portfolio.calculateUnrealizedGain(portfolioID, stockID);
-
-  holdings.push({stockID, gak, expectedValue, unrealizedGain});
-}
-return holdings;
+      holdings.push({stockID, gak, expectedValue, unrealizedGain}); 
+      return holdings;
+    } catch (err) {
+      console.error("Error calculating holdings:", err.message);
+    }
+  }
 }
 
 }

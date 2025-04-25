@@ -7,9 +7,9 @@ form {
     display: flex;
     flex-direction: column;
     gap: 10px;
-    margin-bottom: 2rem;
-    width: 300px;              /* eller hvad der passer til dit design */
-    margin: 50px auto;         /* top/bund spacing + centrer i midten */
+    width: 300px;              
+    margin: 40px auto;
+    margin-top: 10px;      
     padding: 20px; 
   }
 
@@ -31,12 +31,19 @@ form {
   h1 {
     color: white;
     text-align: center;
+    margin-top: 20px;
   }
 
   h2 {
     color: white;
+    margin-bottom: 10px;
     text-align: center;
   }
+
+  p {
+   margin: 30px; 
+  }
+
 
   /*Styling to change password link*/
   .change-password-link {
@@ -44,7 +51,7 @@ form {
     font-size: smaller;
     text-align: center;
     display: block;
-    margin-top: -50px;
+    margin-top: -20px;
   }
   .back-link {
     color: #4a90e2;
