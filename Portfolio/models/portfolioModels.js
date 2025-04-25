@@ -186,7 +186,7 @@ static async getHoldings(portfolioID) {
     WHERE portfolioID = @portfolioID
   `);
 
-  const stocks = result.recordset;
+  const stocks = result.recordset || []; // Ensure result.recordset is an array
 
 // calculate for each stock in the portfolio
   const holdings = [];
@@ -198,13 +198,12 @@ static async getHoldings(portfolioID) {
         const unrealizedGain = await Portfolio.calculateUnrealizedGain(portfolioID, stockID);
 
       holdings.push({stockID, gak, expectedValue, unrealizedGain}); 
-      return holdings;
     } catch (err) {
       console.error("Error calculating holdings:", err.message);
     }
   }
+  return holdings;
 }
-
 }
 
   module.exports = {
