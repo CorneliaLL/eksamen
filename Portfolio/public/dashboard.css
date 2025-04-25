@@ -70,12 +70,21 @@ body {
     color: white;
     border-radius: 12px;
     padding: 30px;
-    width: 400px;
+    width: 1000px;
     min-height: 180px;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
+
+  }
+
+  .createNewAccountBtn {
+    background-color: gray;
+    align-self: center;
+    margin-bottom: 10px;
+    padding: 8px 14px;
+    font-size: 0.9rem;
   }
 
   .deactivateForm,
@@ -103,7 +112,18 @@ body {
 
   .tableContainer {
     color: white;
-    tr {
+    td {
+      color: white;
+    }
+    th {
+      color: white;
+    }
+  }
+
+  .portfolioContainer {
+    h1,
+    h2,
+    p {
       color: white;
     }
   }

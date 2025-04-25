@@ -15,6 +15,9 @@
     </div>
     <div class="boxContainer">
     <div class="box1">
+      <form action="/createAccount" method="GET">
+      <button class="createNewAccountBtn">Create new account</button>
+      </form>
       <h2>My accounts</h2>
       <% if (accounts && accounts.length > 0) { %>
         <ul>
@@ -51,10 +54,6 @@
         <p>No accounts found.</p>
       <% } %>
 
-    </div>
-    <div class="box2">
-      <h2>Create new account:</h2>
-      <a href="/createAccount">Create account!</a>
     </div>
     </div>
     </div>
