@@ -50,8 +50,8 @@ async createNewPortfolio({ accountID, portfolioName, registrationDate }) {
     .input("portfolioName", sql.NVarChar, portfolioName)
     .input("registrationDate", sql.DateTime, registrationDate)
     .query(`
-      INSERT INTO Portfolios ( accountID, portfolioName, registrationDate)
-      VALUES ( @accountID, @portfolioName, @registrationDate)
+      INSERT INTO Portfolios (accountID, portfolioName, registrationDate)
+      VALUES (@accountID, @portfolioName, @registrationDate)
     `);
 }
 

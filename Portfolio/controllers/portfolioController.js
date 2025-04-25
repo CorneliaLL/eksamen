@@ -56,18 +56,25 @@ async function handleCreatePortfolio(req, res) {
     const { accountID, portfolioName } = req.body;
     const account = await Account.findAccountByID(accountID);
 
+    if (!account) {
+      console.error("Account not found for ID:", accountID);
+      return res.status(400).send("Invalid account ID");
+    }
+
     const registrationDate = new Date();
 
     const portfolio = new Portfolio(null, accountID, portfolioName, registrationDate);
-    await portfolio.createNewPortfolio({ accountID, portfolioName, registrationDate});
+    await portfolio.createNewPortfolio({ accountID, portfolioName, registrationDate });
 
     res.redirect("/portfolio/:portfolioID");
+
 
   } catch (err) {
     console.error("Error creating portfolio:", err.message);
     res.status(500).send("Failed to create portfolio");
   }
 }
+
 
 // Portfolio analysis for one stock
 async function showPortfolioAnalysis(req, res) {
