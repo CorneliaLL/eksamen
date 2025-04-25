@@ -30,9 +30,16 @@ static async findPortfolioByID(portfolioID) {
     const result = await pool.request()
       .input("portfolioID", sql.Int, portfolioID)
       .query(`
-        SELECT * FROM Portfolios 
-        WHERE portfolioID = @portfolioID
+        SELECT Portfolios. *, Accounts.userID 
+        FROM Portfolios
+        JOIN Accounts ON Portfolios.accountID = Accounts.accountID
+        WHERE Portfolios.portfolioID = @portfolioID
       `);
+  /*// We use a JOIN with the Accounts table to retrieve the userID,
+because the Portfolios table does not store userID directly. Instead, each portfolio is linked to an account (via accountID),
+and the account is linked to the user. This allows us to verify ownership of the portfolio by checking the userID.
+We use Portfolios.* to select all columns from the Portfolios table specifically, 
+to avoid confusion when joining with the Accounts table (which may contain similar column names).*/
 
     const portfolio = result.recordset[0];
     return portfolio || null;

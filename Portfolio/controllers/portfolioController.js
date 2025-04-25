@@ -79,6 +79,7 @@ async function handleCreatePortfolio(req, res) {
 // Portfolio analysis for one stock
 async function showPortfolioAnalysis(req, res) {
   try {
+    console.log("Session data:", req.session); // Debugging: Check session data
     const userID = req.session.userID;
     if (!userID) return res.status(401).send("Unauthorized");
 
@@ -86,8 +87,8 @@ async function showPortfolioAnalysis(req, res) {
     const portfolio = await Portfolio.findPortfolioByID(portfolioID);
 
     if (!portfolio) return res.status(404).send("Portfolio not found");
-//Changed from userID to accountID!!!! Is that alright?
-    if (portfolio.accountID !== accountID) {
+
+    if (portfolio.userID !== userID) {
       return res.status(403).send("Unauthorized");
     }
 
