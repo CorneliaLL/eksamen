@@ -26,27 +26,27 @@
         </thead>
         <tbody>
           <% holdings.forEach(stock => { %>
-            <tr>
-<<<<<<< Updated upstream
-              <td><%= stock.stockID %></td>
-              <td><%= stock.gak ? stock.gak.toFixed(2) : "N/A" %></td>
-              <td><%= stock.expectedValue ? stock.expectedValue.toFixed(2) : "N/A" %></td>
-              <td><%= stock.unrealizedGain ? stock.unrealizedGain.toFixed(2) : "N/A" %></td>
-              <td>
-                <a href="/portfolioAnalysis/<%= portfolio.portfolioID %>/<%= stock.stockID %>">Analyze</a>
-=======
-              <td><%= portfolio.portfolioName %></td>
-              <td><%= portfolio.accountID %></td>
-              <td>
-                <%= portfolio.registrationDate
-                    ? new Date(portfolio.registrationDate).toLocaleDateString()
-                    : "N/A" %>
-              </td>
+            <% holdings.forEach(stock => { %>
+              <tr>
 
-                <a href="/portfolio/<%= portfolio.portfolioID %>">View</a>
->>>>>>> Stashed changes
-              </td>
-            </tr>
+                <td><%= stock.stockID %></td>
+                <td><%= stock.gak ? stock.gak.toFixed(2) : "N/A" %></td>
+                <td><%= stock.expectedValue ? stock.expectedValue.toFixed(2) : "N/A" %></td>
+                <td><%= stock.unrealizedGain ? stock.unrealizedGain.toFixed(2) : "N/A" %></td>
+                <td>
+                  <a href="/portfolioAnalysis/<%= portfolio.portfolioID %>/<%= stock.stockID %>">Analyze</a>
+
+                <td><%= portfolio.portfolioName %></td>
+                <td><%= portfolio.accountID %></td>
+                <td>
+                  <%= portfolio.registrationDate
+                      ? new Date(portfolio.registrationDate).toLocaleDateString()
+                      : "N/A" %>
+                </td>
+  
+                  <a href="/portfolio/<%= portfolio.portfolioID %>">View</a>
+                </td>
+              </tr>
           <% }) %>
         </tbody>
       </table>
