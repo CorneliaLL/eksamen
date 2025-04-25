@@ -61,7 +61,7 @@ async function handleCreatePortfolio(req, res) {
     const portfolio = new Portfolio(null, accountID, portfolioName, registrationDate);
     await portfolio.createNewPortfolio({ accountID, portfolioName, registrationDate});
 
-    res.redirect("/portfolio/:portfolioID"); // After creating, go back to overview
+    res.redirect("/portfolio/:portfolioID");
 
   } catch (err) {
     console.error("Error creating portfolio:", err.message);

@@ -26,7 +26,7 @@ class Trade{
         .input("totalPrice", sql.Decimal(18, 2), totalPrice)
         .input("date", sql.DateTime, date)
         .query(`
-            INSERT INTO Trade (portfolioID, accountID, stockID, tradeType, quantity, price, fee, totalPrice, tradeDate)
+            INSERT INTO Trades (portfolioID, accountID, stockID, tradeType, quantity, price, fee, totalPrice, tradeDate)
             OUTPUT INSERTED.tradeID
             VALUES (@portfolioID, @accountID, @stockID, @tradeType, @quantity, @price, @fee, @totalPrice, @date)
         `);
@@ -42,7 +42,7 @@ class Trade{
         .input("accountID", sql.Int, accountID)
         .query(`
             SELECT balance
-            FROM account
+            FROM Accounts
             WHERE accountID = @accountID
             `);
 
@@ -61,7 +61,7 @@ class Trade{
         .input("stockID", sql.Int, stockID)
         .query(`
             SELECT SUM(quantity) AS totalQuantity
-            FROM Trade
+            FROM Trades
             WHERE portfolioID = @portfolioID AND stockID = @stockID AND tradeType = 'buy'`
         );
     

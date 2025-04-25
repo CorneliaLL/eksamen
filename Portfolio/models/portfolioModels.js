@@ -66,7 +66,7 @@ async createNewPortfolio({ accountID, portfolioName, registrationDate }) {
           SELECT
             SUM(price * quantity) AS totalCost,
             SUM(quantity) AS totalQuantity
-          FROM Trade
+          FROM Trades
           WHERE portfolioID = @portfolioID AND stockID = @stockID AND tradeType = 'buy'
         `);
   
@@ -94,7 +94,7 @@ static async calculateExpectedValue(portfolioID, stockID) {
       .input("stockID", sql.Int, stockID)
       .query(`
         SELECT SUM(quantity) AS totalQuantity
-        FROM Trade
+        FROM Trades
         WHERE portfolioID = @portfolioID AND stockID = @stockID AND tradeType = 'buy'
       `);
 
@@ -108,7 +108,7 @@ static async calculateExpectedValue(portfolioID, stockID) {
       .input("stockID", sql.Int, stockID)
       .query(`
         SELECT currentPrice 
-        FROM Stock 
+        FROM Stocks
         WHERE stockID = @stockID
       `);
 
@@ -138,7 +138,7 @@ static async calculateUnrealizedGain(portfolioID, stockID) {
         SELECT 
           SUM(quantity * price) AS totalCost,
           SUM(quantity) AS totalQuantity
-        FROM Trade
+        FROM Trades
         WHERE portfolioID = @portfolioID AND stockID = @stockID AND tradeType = 'buy'
       `);
 
@@ -182,7 +182,7 @@ static async getHoldings(portfolioID) {
   .input("portfolioID", sql.Int, portfolioID)
   .query(`
     SELECT DISTINCT stockID
-    FROM Trade
+    FROM Trades
     WHERE portfolioID = @portfolioID
   `);
 
