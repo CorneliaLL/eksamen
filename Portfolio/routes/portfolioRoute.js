@@ -5,7 +5,6 @@ const portfolioController = require("../controllers/portfolioController");
 const { Account } = require("../models/accountModels");
 
 
-router.get("/portfolio", portfolioController.getPortfolios);
 router.get('/createPortfolio', async (req, res) => {
   try{
     const userID = req.session.userID;
@@ -20,8 +19,6 @@ router.get('/createPortfolio', async (req, res) => {
 });
 router.get("/portfolio/:portfolioID", portfolioController.getPortfolioByID);
 router.post("/createPortfolio", portfolioController.handleCreatePortfolio);
-
-
 
 router.get("/portfolioAnalysis/:portfolioID/:stockID", portfolioController.showPortfolioAnalysis)
 

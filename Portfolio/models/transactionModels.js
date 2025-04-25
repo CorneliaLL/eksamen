@@ -28,7 +28,7 @@ class Transaction{
         .input("accountID", sql.Int, accountID)
         .input("amount", sql.Decimal(10, 2), amount)
         .query(`
-        UPDATE Account
+        UPDATE Accounts
         SET balance = balance + @amount
         WHERE accountID = @accountID
         `);
@@ -50,7 +50,7 @@ class Transaction{
                 Trade.stockID, 
                 Trade.tradeType
             FROM Transactions
-            JOIN Trade ON Transactions.tradeID = Trade.tradeID
+            JOIN Trades ON Transactions.tradeID = Trades.tradeID
             WHERE Transactions.accountID = @accountID
             `);
 

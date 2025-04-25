@@ -30,9 +30,16 @@ static async findPortfolioByID(portfolioID) {
     const result = await pool.request()
       .input("portfolioID", sql.Int, portfolioID)
       .query(`
-        SELECT * FROM Portfolios 
-        WHERE portfolioID = @portfolioID
+        SELECT Portfolios. *, Accounts.userID 
+        FROM Portfolios
+        JOIN Accounts ON Portfolios.accountID = Accounts.accountID
+        WHERE Portfolios.portfolioID = @portfolioID
       `);
+  /*// We use a JOIN with the Accounts table to retrieve the userID,
+because the Portfolios table does not store userID directly. Instead, each portfolio is linked to an account (via accountID),
+and the account is linked to the user. This allows us to verify ownership of the portfolio by checking the userID.
+We use Portfolios.* to select all columns from the Portfolios table specifically, 
+to avoid confusion when joining with the Accounts table (which may contain similar column names).*/
 
     const portfolio = result.recordset[0];
     return portfolio || null;
@@ -50,8 +57,8 @@ async createNewPortfolio({ accountID, portfolioName, registrationDate }) {
     .input("portfolioName", sql.NVarChar, portfolioName)
     .input("registrationDate", sql.DateTime, registrationDate)
     .query(`
-      INSERT INTO Portfolios ( accountID, portfolioName, registrationDate)
-      VALUES ( @accountID, @portfolioName, @registrationDate)
+      INSERT INTO Portfolios (accountID, portfolioName, registrationDate)
+      VALUES (@accountID, @portfolioName, @registrationDate)
     `);
 }
 
@@ -66,7 +73,7 @@ async createNewPortfolio({ accountID, portfolioName, registrationDate }) {
           SELECT
             SUM(price * quantity) AS totalCost,
             SUM(quantity) AS totalQuantity
-          FROM Trade
+          FROM Trades
           WHERE portfolioID = @portfolioID AND stockID = @stockID AND tradeType = 'buy'
         `);
   
@@ -94,7 +101,7 @@ static async calculateExpectedValue(portfolioID, stockID) {
       .input("stockID", sql.Int, stockID)
       .query(`
         SELECT SUM(quantity) AS totalQuantity
-        FROM Trade
+        FROM Trades
         WHERE portfolioID = @portfolioID AND stockID = @stockID AND tradeType = 'buy'
       `);
 
@@ -108,7 +115,7 @@ static async calculateExpectedValue(portfolioID, stockID) {
       .input("stockID", sql.Int, stockID)
       .query(`
         SELECT currentPrice 
-        FROM Stock 
+        FROM Stocks
         WHERE stockID = @stockID
       `);
 
@@ -138,7 +145,7 @@ static async calculateUnrealizedGain(portfolioID, stockID) {
         SELECT 
           SUM(quantity * price) AS totalCost,
           SUM(quantity) AS totalQuantity
-        FROM Trade
+        FROM Trades
         WHERE portfolioID = @portfolioID AND stockID = @stockID AND tradeType = 'buy'
       `);
 
@@ -182,26 +189,28 @@ static async getHoldings(portfolioID) {
   .input("portfolioID", sql.Int, portfolioID)
   .query(`
     SELECT DISTINCT stockID
-    FROM Trade
+    FROM Trades
     WHERE portfolioID = @portfolioID
   `);
 
-  const stocks = result.recordset;
+  const stocks = result.recordset || []; // Ensure result.recordset is an array
 
 // calculate for each stock in the portfolio
-const holdings = [];
-for (let stock of stocks) {
-  const stockID = stock.stockID;
+  const holdings = [];
+    for (let stock of stocks) {
+    const stockID = stock.stockID;
+      try {
+        const gak = await Portfolio.calculateGAK(portfolioID, stockID);
+        const expectedValue = await Portfolio.calculateExpectedValue(portfolioID, stockID);
+        const unrealizedGain = await Portfolio.calculateUnrealizedGain(portfolioID, stockID);
 
-  const gak = await Portfolio.calculateGAK(portfolioID, stockID);
-  const expectedValue = await Portfolio.calculateExpectedValue(portfolioID, stockID);
-  const unrealizedGain = await Portfolio.calculateUnrealizedGain(portfolioID, stockID);
-
-  holdings.push({stockID, gak, expectedValue, unrealizedGain});
+      holdings.push({stockID, gak, expectedValue, unrealizedGain}); 
+    } catch (err) {
+      console.error("Error calculating holdings:", err.message);
+    }
+  }
+  return holdings;
 }
-return holdings;
-}
-
 }
 
   module.exports = {

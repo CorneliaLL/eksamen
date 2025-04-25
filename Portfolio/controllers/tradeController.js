@@ -1,5 +1,5 @@
-const { Trade } = require("../models/tradeModel");
-const { Transaction } = require("../models/transactionModel");
+const { Trade } = require("../models/tradeModels");
+const { Transaction } = require("../models/transactionModels");
 
 async function handleTrade(req, res) {
     try {
@@ -9,14 +9,18 @@ async function handleTrade(req, res) {
         const { portfolioID, accountID, stockID, tradeType, quantity, price, fee} = req.body;
 
         //convert the quantity, price and fee from string to float/number
+        // Convert quantity, price, and fee from string to number.
+        // All form or JSON input values from req.body are strings by default, 
+        // so we use parseFloat to ensure numeric calculations (like totalPrice) work correctly
         const qty = parseFloat(quantity);
         const prc = parseFloat(price);
         const transactionFee = parseFloat(fee);
-        const totalCost = qty * prc + transactionFee; //calculate the total cost of the trade
-
+        //calculate the total cost of the trade
+        // This will later be used to validate funds and update the account balance.
+        const totalPrice = qty * prc + transactionFee; 
         // check if the user has enough funds in the account;
         if (tradeType === "buy") {
-            const hasFunds = await Trade.checkFunds(accountID, totalCost);
+            const hasFunds = await Trade.checkFunds(accountID, totalPrice);
             if (!hasFunds) {
                 return res.status(400).send("Insufficient funds");
             }
@@ -31,10 +35,10 @@ async function handleTrade(req, res) {
         }
 
         //create the trade
-        const tradeID = await Trade.createTrade({portfolioID, accountID, stockID, tradeType, quantity: qty, price: prc, fee: transactionFee, totalPrice: totalCost, date: new Date()});
+        const tradeID = await Trade.createTrade({portfolioID, accountID, stockID, tradeType, quantity: qty, price: prc, fee: transactionFee, totalPrice, date: new Date()});
         
         //Register the transaction
-        const transactionAmount = tradeType === "buy" ? -totalCost : totalCost; //if its a buy, substract the total cost from the account, if sell add the total cost to the account
+        const transactionAmount = tradeType === "buy" ? -totalPrice : totalPrice; //if its a buy, substract the total cost from the account, if sell add the total cost to the account
         const transaction = new Transaction(null, accountID, tradeID, transactionAmount, new Date());
         await transaction.registerTransaction();
 

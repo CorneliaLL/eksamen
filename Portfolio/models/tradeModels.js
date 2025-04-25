@@ -1,4 +1,4 @@
-const { connectToDB } = require("../database");
+const { connectToDB, sql } = require("../database");
 
 class Trade{
     constructor(tradeID, portfolioID, accountID, stockID, tradeType, quantity, price){
@@ -12,7 +12,7 @@ class Trade{
     }
 
     //Async function that creates a trade in the db
-    static async createTrade({portfolioID, accountID, stockID, tradeType, quantity, price, fee, totalCost, date}) {
+    static async createTrade({portfolioID, accountID, stockID, tradeType, quantity, price, fee, totalPrice, date}) {
         const pool = await connectToDB();
         
         const result = await pool.request()
@@ -26,7 +26,7 @@ class Trade{
         .input("totalPrice", sql.Decimal(18, 2), totalPrice)
         .input("date", sql.DateTime, date)
         .query(`
-            INSERT INTO Trade (portfolioID, accountID, stockID, tradeType, quantity, price, fee, totalPrice, tradeDate)
+            INSERT INTO Trades (portfolioID, accountID, stockID, tradeType, quantity, price, fee, totalPrice, tradeDate)
             OUTPUT INSERTED.tradeID
             VALUES (@portfolioID, @accountID, @stockID, @tradeType, @quantity, @price, @fee, @totalPrice, @date)
         `);
@@ -37,42 +37,34 @@ class Trade{
     //check if the user has enough funds in the account 
     static async checkFunds(accountID, totalCost) {
         const pool = await connectToDB();
-
-        const result = await pool.request()
-        .input("accountID", sql.Int, accountID)
-        .query(`
-            SELECT balance
-            FROM account
-            WHERE accountID = @accountID
-            `);
-
-        if (result.recordset.length === 0) {
-            console.error("account not found");
-        }
-        const balance = result.recordset[0].balance; //get the balance of the account
-        return balance >= totalCost; //check if the balance is greater than or equal to the total cost of the trade 
-    }
-
-    static async checkHoldings(portfolioID, stockID, quantity) {
-        const pool = await connectToDB();
-       
-        const result =await pool.request()
-        .input("portfolioID", sql.Int, portfolioID)
-        .input("stockID", sql.Int, stockID)
-        .query(`
-            SELECT SUM(quantity) AS totalQuantity
-            FROM Trade
-            WHERE portfolioID = @portfolioID AND stockID = @stockID AND tradeType = 'buy'`
-        );
     
-        if (result.recordset.length === 0) {
-            console.error("portfolio or stock not found");
+        try {
+            const result = await pool.request()
+                .input("accountID", sql.Int, accountID)
+                .query(`
+                    SELECT balance
+                    FROM Accounts
+                    WHERE accountID = @accountID
+                `);
+    
+            if (result.recordset.length === 0) {
+                console.error(`Account with ID ${accountID} not found.`);
+                return false; // Return false if the account does not exist
+            }
+    
+            const balance = result.recordset[0].balance; // Get the balance of the account
+            if (balance === null || balance === undefined) {
+                console.error(`Balance is undefined for account ID ${accountID}.`);
+                return false;
+            }
+    
+            return balance >= totalCost; // Check if the balance is sufficient
+        } catch (err) {
+            console.error("Error checking funds:", err.message);
+            return false; // Return false in case of an error
         }
-        const totalQuantity = result.recordset[0].totalQuantity; //get the total quantity of the stock in the portfolio
-        return totalQuantity >= quantity; //check if the total quantity is greater than or equal to the quantity of the trade 
     }
 }
-
 
 module.exports = {
     Trade

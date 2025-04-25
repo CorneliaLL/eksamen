@@ -15,6 +15,34 @@
     <div class="boxContainer">
     <div class="box1">
       <h2>My portfolios</h2>
+      <div class="tableContainer">
+        <table>
+          <thead>
+            <tr>
+              <th>Portfolio Name</th>
+              <th>Account ID</th>
+              <th>Created</th>
+              <th>Details</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% if (portfolios.length > 0) { %>
+              <% portfolios.forEach(portfolio => { %>
+                <tr>
+                  <td><%= portfolio.portfolioName %></td>
+                  <td><%= portfolio.accountID %></td>
+                  <td><%= new Date(portfolio.registrationDate).toLocaleDateString() %></td>
+                  <td>
+                    <a href="/portfolio/<%= portfolio.portfolioID %>">View</a>
+                  </td>
+                </tr>
+              <% }) %>
+            <% } else { %>
+              <p>No portfolios found.</p>
+            <% } %>
+          </tbody>
+        </table>
+      </div>
     </div>
     <div class="box2">
       <h2>Create new portfolio:</h2>

@@ -8,7 +8,6 @@ async function getPortfolios(req, res) {
   try {
     console.log("Session data:", req.session); // Debugging: Check session data
     const userID = req.session.userID; // Access userID from session
-
     // Check if the user is logged in
     if (!userID) {
       console.log("User not logged in"); 
@@ -17,7 +16,8 @@ async function getPortfolios(req, res) {
 
     const portfolios = await Portfolio.getAllPortfolios(userID); 
     
-    return res.render("portfolio.ejs", { portfolios });
+    console.log("Fetched portfolios:", portfolios);
+    return res.render("accountDashboard", { portfolios });
 
   } catch (err) {
     res.status(500).send("Failed to fetch portfolios");
@@ -40,7 +40,7 @@ async function getPortfolioByID(req, res) {
 
     const holdings = await Portfolio.getHoldings(portfolioID);  //Fetch holdings for the portfolio
 
-    res.render("portfolioDetail", { portfolio, holdings });
+    res.render("portfolio", { portfolio, holdings });
 
   } catch (err) {
     console.error("Error fetching portfolio:", err.message);
@@ -56,12 +56,18 @@ async function handleCreatePortfolio(req, res) {
     const { accountID, portfolioName } = req.body;
     const account = await Account.findAccountByID(accountID);
 
+    if (!account) {
+      console.error("Account not found for ID:", accountID);
+      return res.status(400).send("Invalid account ID");
+    }
+
     const registrationDate = new Date();
 
     const portfolio = new Portfolio(null, accountID, portfolioName, registrationDate);
-    await portfolio.createNewPortfolio({ accountID, portfolioName, registrationDate});
+    await portfolio.createNewPortfolio({ accountID, portfolioName, registrationDate });
 
-    res.redirect("/portfolio"); // After creating, go back to overview
+    res.redirect("/portfolio/:portfolioID");
+
 
   } catch (err) {
     console.error("Error creating portfolio:", err.message);
@@ -69,9 +75,11 @@ async function handleCreatePortfolio(req, res) {
   }
 }
 
+
 // Portfolio analysis for one stock
 async function showPortfolioAnalysis(req, res) {
   try {
+    console.log("Session data:", req.session); // Debugging: Check session data
     const userID = req.session.userID;
     if (!userID) return res.status(401).send("Unauthorized");
 
@@ -79,8 +87,8 @@ async function showPortfolioAnalysis(req, res) {
     const portfolio = await Portfolio.findPortfolioByID(portfolioID);
 
     if (!portfolio) return res.status(404).send("Portfolio not found");
-//Changed from userID to accountID!!!! Is that alright?
-    if (portfolio.accountID !== accountID) {
+
+    if (portfolio.userID !== userID) {
       return res.status(403).send("Unauthorized");
     }
 

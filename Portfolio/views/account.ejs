@@ -15,13 +15,14 @@
     </div>
     <div class="boxContainer">
     <div class="box1">
+      <form action="/createAccount" method="GET">
+      <button class="createNewAccountBtn">Create new account</button>
+      </form>
       <h2>My accounts</h2>
       <% if (accounts && accounts.length > 0) { %>
         <ul>
           <% accounts.forEach(account => { %>
             <li>
-
-      <!--ADD: show date and time of deactivation and add links to redirect to the single account-->
 
               <a href="/account/<%= account.accountID %>"><strong><%= account.accountName %></strong></a><br>
               Balance: <%= account.balance %> <%= account.currency %><br>
@@ -53,10 +54,6 @@
         <p>No accounts found.</p>
       <% } %>
 
-    </div>
-    <div class="box2">
-      <h2>Create new account:</h2>
-      <a href="/createAccount">Create account!</a>
     </div>
     </div>
     </div>
