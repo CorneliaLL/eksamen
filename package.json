@@ -2,5 +2,9 @@
   "dependencies": {
     "express": "^5.1.0",
     "git": "^0.1.5"
+  },
+  "devDependencies": {
+    "chai": "^5.2.0",
+    "mocha": "^11.1.0"
   }
 }
