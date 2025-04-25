@@ -13,7 +13,7 @@
     <p><strong>Created:</strong> <%= new Date(portfolio.registrationDate).toLocaleDateString() %></p>
 
     <h2>Holdings</h2>
-    <% if (holdings.length > 0) { %>
+    <% if (typeof holdings !== 'undefined' && holdings.length > 0) { %>
       <table>
         <thead>
           <tr>
@@ -55,7 +55,7 @@
     <% } %>
 
     <br>
-    <a href="/portfolio" class="btn">← Back to My Portfolios</a>
+    <a href="/account/:accountID" class="btn">← Back to my account</a>
 
   </div>
 </body>
