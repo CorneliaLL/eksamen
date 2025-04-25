@@ -43,7 +43,7 @@ describe('login', () => { //describe: all login in groups
 
     //test 2 - wrong password 
     it('should show "Incorrect password"', async () => {
-        req.body = { username: 'testuser', password: 'forkert' };
+        req.body = { username: 'testuser', password: 'incorrect' };
        //user exist but password is incorrect 
         sinon.stub(User, 'findUserByUsername').resolves({ password: 'rigtigt' });
        
@@ -56,10 +56,10 @@ describe('login', () => { //describe: all login in groups
     });
 
     //test 3 - correct login 
-    it('should login correct', async () => {
+    it('login correct', async () => {
         req.body = { username: 'testuser', password: 'correct' };
         //Username and password is correct
-        sinon.stub(User, 'findUserByUsername').resolves({ userID: 1, password: 'rigtigt' });
+        sinon.stub(User, 'findUserByUsername').resolves({ userID: 1, password: 'correct' });
 
         await login(req, res);
 
