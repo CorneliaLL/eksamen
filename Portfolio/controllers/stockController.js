@@ -13,16 +13,10 @@ exports.fetchStock = async (req, res) => {
     }
 };
 
-//handles visualizing of graph for one stock 
-exports.showChart = async (req, res) => {
-    const { ticker } = req.params; //gets ticket from URL
-    try {
-        const { dates, prices } = await stock.getStockData(ticker); //gets dates and prices for stocks from database 
-        res.render('stockChart', { ticker, dates, prices }); //sends data for graph 
-    } catch (error) {
-        console.error('Cannot get stock chart:', error);
-        res.status(500).send('Cannot get stock chart'); //error message 
-    }
+// handles visualizing of graph for one stock 
+exports.showChart = (req, res) => {
+    const { ticker } = req.params; // gets ticker from URL
+    res.render('stockChart', { ticker }); //one ticker
 };
 
 //handles visualizing of lists of stocks 

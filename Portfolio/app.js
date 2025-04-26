@@ -28,6 +28,7 @@ const portfolioRoutes = require("./routes/portfolioRoute.js");
 const stockRoutes = require('./routes/stockRoute.js');
 const tradeRoutes = require('./routes/tradeRoute.js');
 
+
 app.get('/test-session', (req, res) => {
     if (!req.session.testdata) {
       req.session.testdata = "Hello, session!";

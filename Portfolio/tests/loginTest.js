@@ -1,7 +1,7 @@
-import { expect } from 'chai'; //imports expect from Chai - used to write whats expected 
-import sinon from 'sinon'; //import sinon - used to make fake functions 
-import { login } from '../controllers/userController.js'; //import wanted to test login function 
-import { User } from '../models/userModels.js'; //import user model with .findUserByUsername
+const { expect } = require ('chai'); //imports expect from Chai - used to write whats expected 
+const sinon = require ('sinon'); //import sinon - used to make fake functions 
+const { login } = require ('../controllers/userController.js'); //import wanted to test login function 
+const { User } = require ('../models/userModels.js'); //import user model with .findUserByUsername
 
 describe('login', () => { //describe: all login in groups 
     let req, res;
@@ -74,3 +74,8 @@ describe('login', () => { //describe: all login in groups
 //package.json: scripts; test: mocha 
 //kør test: npm test
 //stub: fake (fx an already existing function)
+
+
+//chai old version?
+//mjs eller js?
+//require eller from?

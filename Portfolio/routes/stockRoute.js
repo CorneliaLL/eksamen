@@ -1,10 +1,38 @@
 const express = require("express");
 const router = express.Router();
 const stockController = require("../controllers/stockController");
+const { sql } = require('../database');
 
 router.get('/fetchStock/:ticker', stockController.fetchStock);
 router.get('/chart/:ticker', stockController.showChart);
 router.get('/list', stockController.listStocks);
+
+
+//data for a specific stock
+router.get('/api/stocks/:ticker', async (req, res) => {
+  const { ticker } = req.params;
+
+  try {
+    const result = await sql.query`
+      SELECT Date, Closeprice
+      FROM Stocks
+      WHERE Ticker = ${ticker}
+      ORDER BY Date ASC
+    `;
+
+    const formattedData = result.recordset.map(row => ({
+      date: row.Date,
+      closePrice: row.Closeprice
+    }));
+
+    res.json(formattedData);
+
+  } catch (error) {
+    console.error('Error getting stock data:', error);
+    res.status(500).send('Server error');
+  }
+});
+
 
 module.exports = router;
 
