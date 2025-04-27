@@ -33,11 +33,22 @@ const config = {
     },
 };
 
+const { Stocks } = require('./models/stockModels');
+
 (async () => {
     try {
-        const result = await storeStockData('AAPL'); // Test med f.eks. 'AAPL' for Apple
-        console.log('Result:', result);
+        await Stocks.storeStockData(
+            'AAPL', 
+            'Apple Inc', 
+            new Date(), 
+            'USD', 
+            165.30, 
+            null, 
+            'Common Stock'
+        );
+        console.log("Stock inserted successfully!");
     } catch (err) {
-        console.error('Test error:', err.message);
+        console.error("Error inserting stock:", err.message);
     }
 })();
+

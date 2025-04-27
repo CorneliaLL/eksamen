@@ -1,4 +1,4 @@
-const { connectToDB, sql } = require('../database'); //sql connection from database.js 
+const {connectToDB, sql } = require('../database'); //sql connection from database.js 
 
 class Stocks{
     constructor(stockID, ticker, date, portfolioID, stockName, currency, closePrice, stockType){
@@ -60,8 +60,6 @@ class Stocks{
     }
 
 }
-
-
 
 class PriceHistory{
     constructor(historyID, stockID, price, date){
