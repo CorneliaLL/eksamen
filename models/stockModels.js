@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 const {connectToDB, sql } = require('../database'); //sql connection from database.js 
-=======
-const { connectToDB, sql } = require('../database'); //sql connection from database.js 
->>>>>>> fd345800b286bd463b0df4dbc7b8b7fc98f6ef76
 
 class Stocks{
     constructor(stockID, ticker, date, portfolioID, stockName, currency, closePrice, stockType){
@@ -34,26 +30,33 @@ class Stocks{
 
     //gets stockdata for graph for a specific tickerr 
     async getStockData(ticker) {
-        const result = await sql.query`
-            SELECT Date, ClosePrice FROM Stocks
-            WHERE Ticker = ${ticker}
-            ORDER BY Date ASC
-        `; //gets all dates and closing prices for specific stock ordered by date 
-    
+        const pool = await connectToDB();
+        const result = await pool.request()
+            .input('ticker', ticker) // Sikker måde at undgå SQL Injection
+            .query(`
+                SELECT Date, ClosePrice 
+                FROM Stocks
+                WHERE Ticker = @ticker
+                ORDER BY Date ASC
+            `);
+
         return {
-            dates: result.recordset.map(r => r.Date.toISOString().split('T')[0]), //For hver række (r) i dataen: Tag datoen, lav den om til tekst (toISOString()), og tag kun dato-delen før T (fordi en ISO-dato ser ud som "2024-04-20T00:00:00.000Z")
-            prices: result.recordset.map(r => r.ClosePrice)  //For hver række (r): Tag lukkeprisen (close price) ud
+            dates: result.recordset.map(r => r.Date.toISOString().split('T')[0]),
+            prices: result.recordset.map(r => r.ClosePrice)
         };
     }
 
     //gets all stock for list
     static async getAllStocks() {
-        const result = await sql.query`
-            SELECT Ticker, Date, ClosePrice FROM Stocks
-            ORDER BY Ticker, Date DESC
-        `; //gets all stocks from database ordered by ticker and newest date 
-
-        return result.recordset; //returns all stocks as a list
+        const pool = await connectToDB();
+        const result = await pool.request()
+            .query(`
+                SELECT Ticker, Date, ClosePrice 
+                FROM Stocks
+                ORDER BY Ticker, Date DESC
+            `);
+    
+        return result.recordset;
     }
 
 }
