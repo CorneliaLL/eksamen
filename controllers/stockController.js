@@ -1,33 +1,15 @@
 const { storeStockData } = require("../services/fetchStockData.js"); //imports function that gets stockdata from alpha vantage
 const { Stocks } = require("../models/stockModels.js"); //imports function that gets data from database 
 
-// Map der kobler ticker til firmanavn
-const stockNameMap = {
-    'AAPL': 'Apple Inc.',
-    'MSFT': 'Microsoft Corporation',
-    'GOOG': 'Alphabet Inc.',
-    'AMZN': 'Amazon.com, Inc.',
-    'TSLA': 'Tesla, Inc.'
-};
-
-const stockTypeMap = {
-    'AAPL': 'Stock',
-    'MSFT': 'Stock',
-    'GOOG': 'Stock',
-    'AMZN': 'Stock',
-    'TSLA': 'Stock'
-}
-async function addStockToPortfolioID(req,res) {
+//Handles fetching stock data from the API and storing it in our database + assigning its respective portfolioID as well
+async function fetchStock(req,res) {
     const { ticker, portfolioID } = req.body;
 
     try {
         //Gets data from extern API
-        const { ticker, latestDate, closePrice } = await storeStockData(ticker);
+        const { stockName, latestDate, currency, closePrice, stockType } = await storeStockData(ticker);
 
-        const stockName = stockNameMap[ticker] || 'Unknown Company';
-        const stockType = stockTypeMap[ticker] || 'Unknown Type';
-
-        await Stocks.storeStockData(ticker, stockName, latestDate, closePrice, portfolioID, stockType);
+        await Stocks.storeStockData(ticker, stockName, latestDate, currency, closePrice, portfolioID, stockType);
         res.status(201).send(`Stock ${stockName} added to portfolio ${portfolioID}`);
     } catch (error) {
         console.error('Error adding stock to portfolio:', error);
@@ -35,11 +17,32 @@ async function addStockToPortfolioID(req,res) {
     }
 }
 
+async function fetchSpecificStock(req, res) {
+    const { ticker } = req.params;
+
+    try {
+        
+        const stock = new Stocks();
+        const result = await stock.getStockData(ticker);
+  
+ 
+        res.render('stockChart', { 
+            ticker: ticker,
+            dates: result.dates, 
+            prices: result.prices 
+        });
+    
+      } catch (error) {
+        console.error('Error getting stock data:', error);
+        res.status(500).send('Server error');
+      }
+}
+
 //handles calling api: get stockdata from alpha vantage and saves in database
-async function fetchStock(req, res) {
+async function updateStock(req, res) {
     const { ticker } = req.params; //gets ticker from URL
     try {
-        await storeStockData(ticker); //gets service function to get and save data 
+        await Stocks.storeStockData(ticker); //gets service function to get and save data 
         res.send(`Stock data for ${ticker} is updated`);
     } catch (error) {
         console.error('Cannot fetch stock data:', error);
@@ -66,7 +69,10 @@ async function listStocks(req, res){
 
 module.exports = {
     addStockToPortfolioID,
+    createStock,
     fetchStock,
+    fetchSpecificStock,
+    updateStock,
     showChart,
     listStocks
 }

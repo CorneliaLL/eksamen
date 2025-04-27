@@ -20,6 +20,7 @@ app.get('/test-session', (req, res) => {
 
 const { sql } = require('./database');
 const { storeExchangeRate } = require('./services/fetchExchangeRate');
+const { storeStockData } = require('./services/fetchStockData'); // Ret stien så den passer til din mappe!
 
 const config = {
   user: "celina",
@@ -32,14 +33,22 @@ const config = {
     },
 };
 
+const { Stocks } = require('./models/stockModels');
+
 (async () => {
     try {
-        await sql.connect(config);
-        const rate = await storeExchangeRate('USD', 'DKK');
-        console.log('Gemte valutakurs:', rate);
+        await Stocks.storeStockData(
+            'AAPL', 
+            'Apple Inc', 
+            new Date(), 
+            'USD', 
+            165.30, 
+            null, 
+            'Common Stock'
+        );
+        console.log("Stock inserted successfully!");
     } catch (err) {
-        console.error('Fejl:', err.message);
+        console.error("Error inserting stock:", err.message);
     }
 })();
 
-console.log('test');

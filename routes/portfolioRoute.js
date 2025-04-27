@@ -22,7 +22,7 @@ router.post("/createPortfolio", portfolioController.handleCreatePortfolio);
 router.get("/portfolioAnalysis/:portfolioID/:stockID", portfolioController.showPortfolioAnalysis)
 
 
-
+//SKAL ÆNDRES
 // API: Total portfolio value over time
 router.get('/api/portfolio/total-value', async (req, res) => {
   try {

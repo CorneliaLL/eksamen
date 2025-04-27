@@ -3,22 +3,30 @@ const axios = require('axios'); //to get data from the internet -> npm install a
 
 async function storeStockData(ticker) {
     const apiKey = '5WEYK0DRXVCFWJPW' //personal alpha vantage api key
-    const url = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${ticker}&apikey=${apiKey}`
+    const priceUrl = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${ticker}&apikey=${apiKey}`;
+    const overviewUrl = `https://www.alphavantage.co/query?function=OVERVIEW&symbol=${ticker}&apikey=${apiKey}`;
     //base url - request daily stock prices - specific stock data - personal api key to get data
 
     try {
-        const response = await axios.get(url); //gets data from api
-        const data = response.data; //saves response answer
+        const priceResponse = await axios.get(priceUrl); //gets data from api
+        const priceData = priceResponse.data; //saves response answer
 
-        if (data['Time Series (Daily)']) { //reads newest share price 
-            const latestDate = Object.keys(data['Time Series (Daily)'])[0]; //finds newest day 
-            const latestInfo = data['Time Series (Daily)'][latestDate]; //finds date for specific day
+        if (priceData['Time Series (Daily)']) { //reads newest share price 
+            const latestDate = Object.keys(priceData['Time Series (Daily)'])[0]; //finds newest day 
+            const latestInfo = priceData['Time Series (Daily)'][latestDate]; //finds date for specific day
             const closePrice = latestInfo['4. close']; //close prise for specific day 
 
-        
+        const overviewResponse = await axios.get(overviewUrl);
+        const overviewData = overviewResponse.data;
 
-            console.log(`Saved ${ticker}: ${latestDate} - ${closePrice}`);
-            return { ticker, latestDate, closePrice}
+        const stockName = overviewData.Name || ticker;
+        const currency = overviewData.Currency || 'Unknown';
+        const stockType = overviewData.AssetType || 'Unknown';
+
+        console.log(`Saved stock ${ticker} (${stockName}) successfully!`);
+
+            return { ticker, latestDate, closePrice, stockName, currency, stockType };
+
         } else {
             console.error(`No data was found for`, ticker);
         }

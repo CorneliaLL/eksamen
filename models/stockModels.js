@@ -1,47 +1,65 @@
-const { sql } = require('../database'); //sql connection from database.js 
+const {connectToDB, sql } = require('../database'); //sql connection from database.js 
 
-class Stock{
-    constructor(stockID, portfolioID, stockName, currency, currentPrice, stockType){
+class Stocks{
+    constructor(stockID, ticker, date, portfolioID, stockName, currency, closePrice, stockType){
         this.stockID = stockID;
+        this.ticker = ticker;
+        this.date = date;
         this.portfolioID = portfolioID;
         this.stockName = stockName;
         this.currency = currency;
-        this.currentPrice = currentPrice;
+        this.closePrice = closePrice;
         this.stockType = stockType;
     }
-    static async storeStockData(ticker, date, closePrice){
-        await sql.query`
-        INSERT INTO Stocks (Ticker, StockName, Date, ClosePrice, PortfolioID, StockType)
-        VALUES (${ticker}, ${stockName}, ${date}, ${closePrice}, ${portfolioID}, ${stockType})
-    `;
+    static async storeStockData(ticker, stockName, date, currency, closePrice, portfolioID, stockType){
+        const pool = await connectToDB();
+
+        const result = await pool.request()
+            .input("ticker", sql.NVarChar(100), ticker)
+            .input("stockName", sql.NVarChar(100), stockName)
+            .input("date", sql.Date, date)
+            .input("currency", sql.NVarChar(100), currency)
+            .input("closePrice", sql.Decimal(10, 2), closePrice)
+            .input("portfolioID", sql.Int, portfolioID)
+            .input("stockType", sql.NVarChar(100), stockType)
+            .query(`
+                INSERT INTO Stocks (Ticker, stockName, Date, currency, ClosePrice, portfolioID, stockType)
+                VALUES (@ticker, @stockName, @date, @currency, @closePrice, @portfolioID, @stockType)
+                `);
     }
+
     //gets stockdata for graph for a specific tickerr 
     async getStockData(ticker) {
-        const result = await sql.query`
-            SELECT Date, ClosePrice FROM Stocks
-            WHERE Ticker = ${ticker}
-            ORDER BY Date ASC
-        `; //gets all dates and closing prices for specific stock ordered by date 
-    
+        const pool = await connectToDB();
+        const result = await pool.request()
+            .input('ticker', ticker) // Sikker måde at undgå SQL Injection
+            .query(`
+                SELECT Date, ClosePrice 
+                FROM Stocks
+                WHERE Ticker = @ticker
+                ORDER BY Date ASC
+            `);
+
         return {
-            dates: result.recordset.map(r => r.Date.toISOString().split('T')[0]), //For hver række (r) i dataen: Tag datoen, lav den om til tekst (toISOString()), og tag kun dato-delen før T (fordi en ISO-dato ser ud som "2024-04-20T00:00:00.000Z")
-            prices: result.recordset.map(r => r.ClosePrice)  //For hver række (r): Tag lukkeprisen (close price) ud
+            dates: result.recordset.map(r => r.Date.toISOString().split('T')[0]),
+            prices: result.recordset.map(r => r.ClosePrice)
         };
     }
 
     //gets all stock for list
     static async getAllStocks() {
-        const result = await sql.query`
-            SELECT Ticker, Date, ClosePrice FROM Stocks
-            ORDER BY Ticker, Date DESC
-        `; //gets all stocks from database ordered by ticker and newest date 
-
-        return result.recordset; //returns all stocks as a list
+        const pool = await connectToDB();
+        const result = await pool.request()
+            .query(`
+                SELECT Ticker, Date, ClosePrice 
+                FROM Stocks
+                ORDER BY Ticker, Date DESC
+            `);
+    
+        return result.recordset;
     }
 
 }
-
-
 
 class PriceHistory{
     constructor(historyID, stockID, price, priceDate){
@@ -53,6 +71,6 @@ class PriceHistory{
 }
 
 module.exports = { 
-    Stock,
+    Stocks,
     PriceHistory
 };
