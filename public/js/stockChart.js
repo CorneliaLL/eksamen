@@ -1,7 +1,7 @@
 //gets ticker from ejs (server side)
 const ticker = document.getElementById('myChart').dataset.ticker;
 
-fetch(`/stocks/api/stocks/${ticker}`)
+fetch(`js/stocks/api/stocks/${ticker}`)
   .then(response => response.json())
   .then(data => {
     const labels = data.map(entry => entry.date); //dates

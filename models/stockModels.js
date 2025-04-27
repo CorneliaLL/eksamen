@@ -17,6 +17,7 @@ class Stocks{
         VALUES (${ticker}, ${stockName}, ${date}, ${currency} ${closePrice}, ${portfolioID}, ${stockType})
     `;
     }
+    
     //gets stockdata for graph for a specific tickerr 
     async getStockData(ticker) {
         const result = await sql.query`
