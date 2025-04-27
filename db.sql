@@ -66,10 +66,31 @@ CREATE TABLE Trades (
     fee DECIMAL(18,4) NOT NULL,
     totalPrice DECIMAL(18,4) NOT NULL,
     date DATETIME NOT NULL,
+    accountID INT NOT NULL,
 
     FOREIGN KEY (portfolioID) REFERENCES Portfolios(portfolioID),
-    FOREIGN KEY (stockID) REFERENCES Stocks(stockID)
+    FOREIGN KEY (stockID) REFERENCES Stocks(stockID),
+    FOREIGN KEY (accountID) REFERENCES Accounts(accountID)
 );
+-- We had issues with our original Trades SQL code, so here we have made some changes so it is more functional 
+-- We forgot to give tradeID an IDENTITY property, so we had to drop key contraints, remove the column and readd it with the right properties
+-- 1. Drop foreign key constraints first
+ALTER TABLE Transactions
+DROP CONSTRAINT FK__Transacti__trade__29221CFB;
+
+-- 2. Drop primary key constraint on Trades
+ALTER TABLE Trades
+DROP CONSTRAINT PK__Trades__F7D149FD2A7F9344;
+
+-- 3. Drop tradeID column
+ALTER TABLE Trades
+DROP COLUMN tradeID;
+
+-- 4. Add tradeID again with IDENTITY and PRIMARY KEY
+ALTER TABLE Trades
+ADD tradeID INT IDENTITY(1,1) PRIMARY KEY;
+
+
 
 CREATE TABLE Transactions (
     transactionID INT PRIMARY KEY,
