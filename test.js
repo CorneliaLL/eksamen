@@ -42,3 +42,4 @@ const config = {
     }
 })();
 
+console.log('test');
