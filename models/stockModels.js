@@ -10,7 +10,7 @@ class Stock{
         this.stockType = stockType;
     }
 
-    //gets stockdata for graph for a specific ticker 
+    //gets stockdata for graph for a specific tickerr 
     async getStockData(ticker) {
         const result = await sql.query`
             SELECT Date, ClosePrice FROM Stocks
