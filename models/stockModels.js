@@ -48,12 +48,15 @@ class Stocks{
 
     //gets all stock for list
     static async getAllStocks() {
-        const result = await sql.query`
-            SELECT Ticker, Date, ClosePrice FROM Stocks
-            ORDER BY Ticker, Date DESC
-        `; //gets all stocks from database ordered by ticker and newest date 
-
-        return result.recordset; //returns all stocks as a list
+        const pool = await connectToDB();
+        const result = await pool.request()
+            .query(`
+                SELECT Ticker, Date, ClosePrice 
+                FROM Stocks
+                ORDER BY Ticker, Date DESC
+            `);
+    
+        return result.recordset;
     }
 
 }
