@@ -1,12 +1,15 @@
 const express = require("express");
 const router = express.Router();
 const stockController = require("../controllers/stockController");
-const { sql } = require('../database');
+
 
 router.get('/fetchStock/:ticker', stockController.fetchStock);
 router.get('/chart/:ticker', stockController.showChart);
 router.get('/list', stockController.listStocks);
 router.get('/api/stocks/:ticker', stockController.fetchSpecificStock);
+
+router.post('/addStock', stockController.addStockToPortfolioID);
+
 
 
 module.exports = router;
