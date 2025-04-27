@@ -66,7 +66,6 @@ async function listStocks(req, res){
 
 module.exports = {
     addStockToPortfolioID,
-    createStock,
     fetchStock,
     showChart,
     listStocks
