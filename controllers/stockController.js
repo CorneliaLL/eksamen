@@ -7,7 +7,7 @@ async function addStockToPortfolioID(req,res) {
 
     try {
         //Gets data from extern API
-        const { ticker, stockName, date, currency, closePrice, portfolioID, stockType } = await storeStockData(ticker);
+        const { stockName, date, currency, closePrice, stockType } = await storeStockData(ticker);
 
         await Stocks.storeStockData(ticker, stockName, date, currency, closePrice, portfolioID, stockType);
         res.status(201).send(`Stock ${stockName} added to portfolio ${portfolioID}`);
