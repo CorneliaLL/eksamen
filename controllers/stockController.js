@@ -7,9 +7,9 @@ async function fetchStock(req,res) {
 
     try {
         //Gets data from extern API
-        const { stockName, date, currency, closePrice, stockType } = await storeStockData(ticker);
+        const { stockName, latestDate, currency, closePrice, stockType } = await storeStockData(ticker);
 
-        await Stocks.storeStockData(ticker, stockName, date, currency, closePrice, portfolioID, stockType);
+        await Stocks.storeStockData(ticker, stockName, latestDate, currency, closePrice, portfolioID, stockType);
         res.status(201).send(`Stock ${stockName} added to portfolio ${portfolioID}`);
     } catch (error) {
         console.error('Error adding stock to portfolio:', error);
