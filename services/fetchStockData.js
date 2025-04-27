@@ -1,7 +1,5 @@
 //service folder: handles functionality - calls api (stock data) and saves data
-
 const axios = require('axios'); //to get data from the internet -> npm install axios
-const { sql } = require('../database'); //saves in the SQL database
 
 async function storeStockData(ticker) {
     const apiKey = '5WEYK0DRXVCFWJPW' //personal alpha vantage api key
@@ -17,14 +15,10 @@ async function storeStockData(ticker) {
             const latestInfo = data['Time Series (Daily)'][latestDate]; //finds date for specific day
             const closePrice = latestInfo['4. close']; //close prise for specific day 
 
-            //saves in sql database
-            //saves ticker, dato and price in database
-            await sql.query`  
-            INSERT INTO Stocks (Ticker, Date, Closeprice)
-            VALUES (${ticker}, ${latestDate}, ${closePrice})
-            `;
+        
 
             console.log(`Saved ${ticker}: ${latestDate} - ${closePrice}`);
+            return { ticker, latestDate, closePrice}
         } else {
             console.error(`No data was found for`, ticker);
         }

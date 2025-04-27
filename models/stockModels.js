@@ -9,7 +9,12 @@ class Stock{
         this.currentPrice = currentPrice;
         this.stockType = stockType;
     }
-
+    static async storeStockData(ticker, date, closePrice){
+        await sql.query`
+        INSERT INTO Stocks (Ticker, Date, ClosePrice)
+        VALUES (${ticker}, ${date}, ${closePrice})
+    `;
+    }
     //gets stockdata for graph for a specific tickerr 
     async getStockData(ticker) {
         const result = await sql.query`
