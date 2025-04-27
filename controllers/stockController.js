@@ -1,6 +1,26 @@
 const { storeStockData } = require("../services/fetchStockData.js"); //imports function that gets stockdata from alpha vantage
 const { Stocks } = require("../models/stockModels.js"); //imports function that gets data from database 
 
+// Map der kobler ticker til firmanavn
+const stockNameMap = {
+    'AAPL': 'Apple Inc.',
+    'MSFT': 'Microsoft Corporation',
+    'GOOG': 'Alphabet Inc.',
+    'AMZN': 'Amazon.com, Inc.',
+    'TSLA': 'Tesla, Inc.'
+};
+
+const stockTypeMap = {
+    'AAPL': 'Stock',
+    'MSFT': 'Stock',
+    'GOOG': 'Stock',
+    'AMZN': 'Stock',
+    'TSLA': 'Stock'
+}
+async function createStock(req,res) {
+
+}
+
 //handles calling api: get stockdata from alpha vantage and saves in database
 async function fetchStock(req, res) {
     const { ticker } = req.params; //gets ticker from URL
@@ -31,6 +51,7 @@ async function listStocks(req, res){
 };
 
 module.exports = {
+    createStock,
     fetchStock,
     showChart,
     listStocks
