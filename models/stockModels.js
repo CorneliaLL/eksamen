@@ -14,10 +14,10 @@ class Stocks{
     static async storeStockData(ticker, stockName, date, currency, closePrice, portfolioID, stockType){
         await sql.query`
         INSERT INTO Stocks (Ticker, StockName, Date, currency, ClosePrice, PortfolioID, StockType)
-        VALUES (${ticker}, ${stockName}, ${date}, ${currency} ${closePrice}, ${portfolioID}, ${stockType})
+        VALUES (${ticker}, ${stockName}, ${date}, ${currency}, ${closePrice}, ${portfolioID}, ${stockType})
     `;
     }
-    
+
     //gets stockdata for graph for a specific tickerr 
     async getStockData(ticker) {
         const result = await sql.query`

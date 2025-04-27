@@ -20,6 +20,7 @@ app.get('/test-session', (req, res) => {
 
 const { sql } = require('./database');
 const { storeExchangeRate } = require('./services/fetchExchangeRate');
+const { storeStockData } = require('./services/fetchStockData'); // Ret stien så den passer til din mappe!
 
 const config = {
   user: "celina",
@@ -31,8 +32,6 @@ const config = {
       trustServerCertificate: false
     },
 };
-
-const { storeStockData } = require('./services/fetchStockData'); // Ret stien så den passer til din mappe!
 
 (async () => {
     try {
