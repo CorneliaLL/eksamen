@@ -26,7 +26,7 @@ class Trade{
         .input("totalPrice", sql.Decimal(18, 2), totalPrice)
         .input("date", sql.DateTime, date)
         .query(`
-            INSERT INTO Trades (portfolioID, accountID, stockID, tradeType, quantity, price, fee, totalPrice, tradeDate)
+            INSERT INTO Trades (portfolioID, accountID, stockID, tradeType, quantity, price, fee, totalPrice, date)
             OUTPUT INSERTED.tradeID
             VALUES (@portfolioID, @accountID, @stockID, @tradeType, @quantity, @price, @fee, @totalPrice, @date)
         `);
@@ -61,6 +61,32 @@ class Trade{
             return balance >= totalCost; // Check if the balance is sufficient
         } catch (err) {
             console.error("Error checking funds:", err.message);
+            return false; // Return false in case of an error
+        }
+    }
+
+    static async checkHoldings(portfolioID, stockID, quantity) {
+        const pool = await connectToDB();
+    
+        try {
+            const result = await pool.request()
+                .input("portfolioID", sql.Int, portfolioID)
+                .input("stockID", sql.Int, stockID)
+                .query(`
+                    SELECT quantity
+                    FROM Holdings
+                    WHERE portfolioID = @portfolioID AND stockID = @stockID
+                `);
+    
+            if (result.recordset.length === 0) {
+                console.error(`No holdings found for portfolio ID ${portfolioID} and stock ID ${stockID}.`);
+                return false; // Return false if no holdings exist
+            }
+    
+            const currentQuantity = result.recordset[0].quantity;
+            return currentQuantity >= quantity; // Check if holdings are sufficient
+        } catch (err) {
+            console.error("Error checking holdings:", err.message);
             return false; // Return false in case of an error
         }
     }
