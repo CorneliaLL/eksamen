@@ -3,7 +3,7 @@ const axios = require('axios'); //to get data from the internet -> npm install a
 
 async function storeStockData(ticker) {
     const apiKey = '5WEYK0DRXVCFWJPW' //personal alpha vantage api key
-    const url = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${ticker}&apikey=${apiKey}`
+    const url = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${ticker}&apikey=${apiKey}`;
     //base url - request daily stock prices - specific stock data - personal api key to get data
 
     try {

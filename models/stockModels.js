@@ -1,12 +1,13 @@
 const { sql } = require('../database'); //sql connection from database.js 
 
 class Stock{
-    constructor(stockID, portfolioID, stockName, currency, currentPrice, stockType){
+    constructor(stockID, ticker, date, portfolioID, stockName, closePrice, stockType){
         this.stockID = stockID;
+        this.ticker = ticker;
+        this.date = date;
         this.portfolioID = portfolioID;
         this.stockName = stockName;
-        this.currency = currency;
-        this.currentPrice = currentPrice;
+        this.closePrice = closePrice;
         this.stockType = stockType;
     }
     static async storeStockData(ticker, date, closePrice){
