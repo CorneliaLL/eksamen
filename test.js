@@ -34,7 +34,7 @@ const config = {
 
 (async () => {
     try {
-        await sql.connect(config); // 🔑 vigtig linje!
+        await sql.connect(config);
         const rate = await storeExchangeRate('USD', 'DKK');
         console.log('Gemte valutakurs:', rate);
     } catch (err) {
