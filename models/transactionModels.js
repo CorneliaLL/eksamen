@@ -17,10 +17,10 @@ class Transaction{
         .input("accountID", sql.Int, accountID)
         .input("tradeID", sql.Int, tradeID)
         .input("amount", sql.Decimal(10, 2), amount)
-        .input("transactionDate", sql.DateTime, date)
+        .input("date", sql.DateTime, date)
         .query(`
-        INSERT INTO Transactions (accountID, tradeID, amount, transactionDate)
-        VALUES (@accountID, @tradeID, @amount, @transactionDate)
+        INSERT INTO Transactions (accountID, tradeID, amount, date)
+        VALUES (@accountID, @tradeID, @amount, @date)
         `);
 
         // update the account balance in the DB
@@ -46,7 +46,7 @@ class Transaction{
                 Transactions.accountID, 
                 Transaction.tradeID, 
                 Transaction.amount, 
-                Transaction.transactionDate, 
+                Transaction.date, 
                 Trade.stockID, 
                 Trade.tradeType
             FROM Transactions
