@@ -48,13 +48,6 @@ CREATE TABLE Stocks (
 );
 
 
-ALTER TABLE Stocks
-ADD 
-    Ticker NVARCHAR(100) NOT NULL,
-    Date DATETIME NOT NULL,
-    ClosePrice DECIMAL(10,2) NOT NULL;
-
-
 CREATE TABLE Pricehistory (
   historyID INT PRIMARY KEY IDENTITY(1,1),
   stockID INT NOT NULL,
