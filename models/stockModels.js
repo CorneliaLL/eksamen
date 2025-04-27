@@ -1,6 +1,6 @@
 const { sql } = require('../database'); //sql connection from database.js 
 
-class Stock{
+class Stocks{
     constructor(stockID, ticker, date, portfolioID, stockName, currency, closePrice, stockType){
         this.stockID = stockID;
         this.ticker = ticker;
@@ -11,7 +11,7 @@ class Stock{
         this.closePrice = closePrice;
         this.stockType = stockType;
     }
-    static async storeStockData(ticker, date, closePrice){
+    static async storeStockData(ticker, stockName, date, currency, closePrice, portfolioID, stockType){
         await sql.query`
         INSERT INTO Stocks (Ticker, StockName, Date, currency, ClosePrice, PortfolioID, StockType)
         VALUES (${ticker}, ${stockName}, ${date}, ${currency} ${closePrice}, ${portfolioID}, ${stockType})
@@ -53,6 +53,6 @@ class PriceHistory{
 }
 
 module.exports = { 
-    Stock,
+    Stocks,
     PriceHistory
 };

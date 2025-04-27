@@ -19,9 +19,9 @@ async function storeStockData(ticker) {
         const overviewResponse = await axios.get(overviewUrl);
         const overviewData = overviewResponse.data;
 
-        const stockName = overviewData.Name;
-        const currency = overviewData.Currency;
-        const stockType = overviewData.AssetType;
+        const stockName = overviewData.Name || ticker;
+        const currency = overviewData.Currency || 'Unknown';
+        const stockType = overviewData.AssetType || 'Unknown';
 
         console.log(`Saved stock ${ticker} (${stockName}) successfully!`);
 

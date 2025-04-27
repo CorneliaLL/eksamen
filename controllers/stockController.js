@@ -1,33 +1,15 @@
 const { storeStockData } = require("../services/fetchStockData.js"); //imports function that gets stockdata from alpha vantage
 const { Stocks } = require("../models/stockModels.js"); //imports function that gets data from database 
 
-// Map der kobler ticker til firmanavn
-const stockNameMap = {
-    'AAPL': 'Apple Inc.',
-    'MSFT': 'Microsoft Corporation',
-    'GOOG': 'Alphabet Inc.',
-    'AMZN': 'Amazon.com, Inc.',
-    'TSLA': 'Tesla, Inc.'
-};
 
-const stockTypeMap = {
-    'AAPL': 'Stock',
-    'MSFT': 'Stock',
-    'GOOG': 'Stock',
-    'AMZN': 'Stock',
-    'TSLA': 'Stock'
-}
 async function addStockToPortfolioID(req,res) {
     const { ticker, portfolioID } = req.body;
 
     try {
         //Gets data from extern API
-        const { ticker, latestDate, closePrice } = await storeStockData(ticker);
+        const { ticker, stockName, date, currency, closePrice, portfolioID, stockType } = await storeStockData(ticker);
 
-        const stockName = stockNameMap[ticker] || 'Unknown Company';
-        const stockType = stockTypeMap[ticker] || 'Unknown Type';
-
-        await Stocks.storeStockData(ticker, stockName, latestDate, closePrice, portfolioID, stockType);
+        await Stocks.storeStockData(ticker, stockName, date, currency, closePrice, portfolioID, stockType);
         res.status(201).send(`Stock ${stockName} added to portfolio ${portfolioID}`);
     } catch (error) {
         console.error('Error adding stock to portfolio:', error);
