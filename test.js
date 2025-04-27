@@ -32,14 +32,13 @@ const config = {
     },
 };
 
+const { storeStockData } = require('./services/fetchStockData'); // Ret stien så den passer til din mappe!
+
 (async () => {
     try {
-        await sql.connect(config);
-        const rate = await storeExchangeRate('USD', 'DKK');
-        console.log('Gemte valutakurs:', rate);
+        const result = await storeStockData('AAPL'); // Test med f.eks. 'AAPL' for Apple
+        console.log('Result:', result);
     } catch (err) {
-        console.error('Fejl:', err.message);
+        console.error('Test error:', err.message);
     }
 })();
-
-console.log('test');
