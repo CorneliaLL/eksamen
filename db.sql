@@ -47,6 +47,9 @@ CREATE TABLE Stocks (
     FOREIGN KEY (PortfolioID) REFERENCES Portfolios(PortfolioID)
 );
 
+ALTER TABLE Stocks
+ALTER COLUMN currency NVARCHAR(100) NOT NULL;
+
 
 CREATE TABLE Pricehistory (
   historyID INT PRIMARY KEY IDENTITY(1,1),
