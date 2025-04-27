@@ -1,0 +1,39 @@
+<html lang="en">
+<%- include ('./partials/head.ejs') %>
+
+<!--link to dashboard stylesheet-->
+<link rel="stylesheet" href="dashboard.css">
+
+<body>
+  
+    <!--main content-->
+    <!--nav-->
+    <%- include ('./partials/nav.ejs') %>
+ 
+    <!-- dashboard container -->
+    <div style="max-width: 1000px; margin: auto; padding: 20px;">
+
+    <!--title-->
+    <div class="containerTitle">
+        <h1>Welcome to your dashboard</h1> <!--gets username from database-->
+      
+      
+    </div>
+
+     <!--line chart section-->
+     <section style="margin-top: 30px; padding: 20px;">
+            <div style="background-color: #1e1e1e; padding: 20px; border-radius: 15px; max-width: 1000px; margin: auto;">
+                <h2 style="text-align: center;">Total Portfolio Value</h2>
+                <canvas id="totalPortfolioChart" width="900" height="400"></canvas>
+            </div>
+        </section>
+
+    </div>
+
+      
+      <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!--chart biblo-->
+      <script src="/js/dashboardChart.js"></script> <!--creates graph-->
+    
+</body>
+
+</html>
