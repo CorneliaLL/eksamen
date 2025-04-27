@@ -30,15 +30,19 @@ class Stocks{
 
     //gets stockdata for graph for a specific tickerr 
     async getStockData(ticker) {
-        const result = await sql.query`
-            SELECT Date, ClosePrice FROM Stocks
-            WHERE Ticker = ${ticker}
-            ORDER BY Date ASC
-        `; //gets all dates and closing prices for specific stock ordered by date 
-    
+        const pool = await connectToDB();
+        const result = await pool.request()
+            .input('ticker', ticker) // Sikker måde at undgå SQL Injection
+            .query(`
+                SELECT Date, ClosePrice 
+                FROM Stocks
+                WHERE Ticker = @ticker
+                ORDER BY Date ASC
+            `);
+
         return {
-            dates: result.recordset.map(r => r.Date.toISOString().split('T')[0]), //For hver række (r) i dataen: Tag datoen, lav den om til tekst (toISOString()), og tag kun dato-delen før T (fordi en ISO-dato ser ud som "2024-04-20T00:00:00.000Z")
-            prices: result.recordset.map(r => r.ClosePrice)  //For hver række (r): Tag lukkeprisen (close price) ud
+            dates: result.recordset.map(r => r.Date.toISOString().split('T')[0]),
+            prices: result.recordset.map(r => r.ClosePrice)
         };
     }
 
