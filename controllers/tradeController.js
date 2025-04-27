@@ -1,6 +1,7 @@
 const { Trade } = require("../models/tradeModels");
 const { Transaction } = require("../models/transactionModels");
 
+
 async function handleTrade(req, res) {
     try {
         const userID = req.session.userID;
@@ -15,9 +16,11 @@ async function handleTrade(req, res) {
         const qty = parseFloat(quantity);
         const prc = parseFloat(price);
         const transactionFee = parseFloat(fee);
+
         //calculate the total cost of the trade
         // This will later be used to validate funds and update the account balance.
         const totalPrice = qty * prc + transactionFee; 
+
         // check if the user has enough funds in the account;
         if (tradeType === "buy") {
             const hasFunds = await Trade.checkFunds(accountID, totalPrice);
@@ -41,6 +44,14 @@ async function handleTrade(req, res) {
         const transactionAmount = tradeType === "buy" ? -totalPrice : totalPrice; //if its a buy, substract the total cost from the account, if sell add the total cost to the account
         const transaction = new Transaction(null, accountID, tradeID, transactionAmount, new Date());
         await transaction.registerTransaction();
+
+        
+       if (tradeType === "buy") {
+        await Trade.updateHoldingsAfterBuy(portfolioID, stockID, qty);
+       }
+       if (tradeType === "sell") {
+        await Trade.updateHoldingsAfterSell(portfolioID, stockID, qty);
+       }
 
         res.redirect(`/portfolio/${portfolioID}`); //redirect to the portfolio after trade
 

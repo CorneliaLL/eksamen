@@ -27,6 +27,7 @@ const accountRoutes = require('./routes/accountRoute.js');
 const portfolioRoutes = require("./routes/portfolioRoute.js");
 const stockRoutes = require('./routes/stockRoute.js');
 const tradeRoutes = require('./routes/tradeRoute.js');
+const transactionRoutes = require('./routes/transactionRoute');
 
 
 app.get('/test-session', (req, res) => {
@@ -64,6 +65,8 @@ app.use('/', accountRoutes);
 app.use("/", portfolioRoutes);
 app.use('/stocks', stockRoutes);
 app.use('/', tradeRoutes);
+app.use('/', transactionRoutes); 
+
 
 //Standard routes
 //endpoint = URL
