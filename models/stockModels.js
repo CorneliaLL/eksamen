@@ -1,19 +1,20 @@
 const { sql } = require('../database'); //sql connection from database.js 
 
 class Stock{
-    constructor(stockID, ticker, date, portfolioID, stockName, closePrice, stockType){
+    constructor(stockID, ticker, date, portfolioID, stockName, currency, closePrice, stockType){
         this.stockID = stockID;
         this.ticker = ticker;
         this.date = date;
         this.portfolioID = portfolioID;
         this.stockName = stockName;
+        this.currency = currency;
         this.closePrice = closePrice;
         this.stockType = stockType;
     }
     static async storeStockData(ticker, date, closePrice){
         await sql.query`
-        INSERT INTO Stocks (Ticker, StockName, Date, ClosePrice, PortfolioID, StockType)
-        VALUES (${ticker}, ${stockName}, ${date}, ${closePrice}, ${portfolioID}, ${stockType})
+        INSERT INTO Stocks (Ticker, StockName, Date, currency, ClosePrice, PortfolioID, StockType)
+        VALUES (${ticker}, ${stockName}, ${date}, ${currency} ${closePrice}, ${portfolioID}, ${stockType})
     `;
     }
     //gets stockdata for graph for a specific tickerr 
