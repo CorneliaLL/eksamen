@@ -17,8 +17,22 @@ const stockTypeMap = {
     'AMZN': 'Stock',
     'TSLA': 'Stock'
 }
-async function createStock(req,res) {
+async function addStockToPortfolioID(req,res) {
+    const { ticker, portfolioID } = req.body;
 
+    try {
+        //Gets data from extern API
+        const { ticker, latestDate, closePrice } = await storeStockData(ticker);
+
+        const stockName = stockNameMap[ticker] || 'Unknown Company';
+        const stockType = stockTypeMap[ticker] || 'Unknown Type';
+
+        await Stocks.storeStockData(ticker, stockName, latestDate, closePrice, portfolioID, stockType);
+        res.status(201).send(`Stock ${stockName} added to portfolio ${portfolioID}`);
+    } catch (error) {
+        console.error('Error adding stock to portfolio:', error);
+        res.status(500).send('Failed to add stock');
+    }
 }
 
 //handles calling api: get stockdata from alpha vantage and saves in database
@@ -51,6 +65,7 @@ async function listStocks(req, res){
 };
 
 module.exports = {
+    addStockToPortfolioID,
     createStock,
     fetchStock,
     showChart,
