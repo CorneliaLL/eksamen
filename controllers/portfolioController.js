@@ -25,7 +25,7 @@ async function getPortfolios(req, res) {
 }
 
 
-// Show one portfolio by ID
+// Show one portfolio by ID..
 async function getPortfolioByID(req, res) {
   try {
     const userID = req.session.userID;
