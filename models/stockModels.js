@@ -44,11 +44,11 @@ class Stock{
 
 
 class PriceHistory{
-    constructor(historyID, stockID, price, date){
+    constructor(historyID, stockID, price, priceDate){
         this.historyID = historyID;
         this.stockID = stockID;
         this.price = price;
-        this.date = date;
+        this.priceDate = priceDate;
     }
 }
 

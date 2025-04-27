@@ -35,7 +35,7 @@ async function handleTrade(req, res) {
         }
 
         //create the trade
-        const tradeID = await Trade.createTrade({portfolioID, accountID, stockID, tradeType, quantity: qty, price: prc, fee: transactionFee, totalPrice, date: new Date()});
+        const tradeID = await Trade.createTrade({portfolioID, accountID, stockID, tradeType, quantity: qty, price: prc, fee: transactionFee, totalPrice, tradeDate: new Date()});
         
         //Register the transaction
         const transactionAmount = tradeType === "buy" ? -totalPrice : totalPrice; //if its a buy, substract the total cost from the account, if sell add the total cost to the account
@@ -45,7 +45,7 @@ async function handleTrade(req, res) {
         res.redirect(`/portfolio/${portfolioID}`); //redirect to the portfolio after trade
 
     }catch (err) {
-        console.error("Error handling trade:", err.message);
+        console.error("Error handling trade:", err);
         res.status(500).send("Trade could not be processed");
     }
 }

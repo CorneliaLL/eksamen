@@ -71,6 +71,12 @@ CREATE TABLE Trades (
     FOREIGN KEY (stockID) REFERENCES Stocks(stockID)
 );
 
+ALTER TABLE Trades
+ADD accountID INT NOT NULL;
+-- Add a foreign key constraint to link accountID to the Accounts table
+ALTER TABLE Trades
+
+ADD CONSTRAINT FK_Trades_Accounts FOREIGN KEY (accountID) REFERENCES Accounts(accountID);
 CREATE TABLE Transactions (
     transactionID INT PRIMARY KEY,
     tradeID INT NOT NULL,

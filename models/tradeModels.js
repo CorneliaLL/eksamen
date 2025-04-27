@@ -12,7 +12,7 @@ class Trade{
     }
 
     //Async function that creates a trade in the db
-    static async createTrade({portfolioID, accountID, stockID, tradeType, quantity, price, fee, totalPrice, date}) {
+    static async createTrade({portfolioID, accountID, stockID, tradeType, quantity, price, fee, totalPrice, tradeDate}) {
         const pool = await connectToDB();
         
         const result = await pool.request()
@@ -24,11 +24,11 @@ class Trade{
         .input("price", sql.Decimal(18, 2), price)
         .input("fee", sql.Decimal(18, 2), fee)
         .input("totalPrice", sql.Decimal(18, 2), totalPrice)
-        .input("date", sql.DateTime, date)
+        .input("tradeDate", sql.DateTime, tradeDate)
         .query(`
-            INSERT INTO Trades (portfolioID, accountID, stockID, tradeType, quantity, price, fee, totalPrice, date)
+            INSERT INTO Trades (portfolioID, accountID, stockID, tradeType, quantity, price, fee, totalPrice, tradeDate)
             OUTPUT INSERTED.tradeID
-            VALUES (@portfolioID, @accountID, @stockID, @tradeType, @quantity, @price, @fee, @totalPrice, @date)
+            VALUES (@portfolioID, @accountID, @stockID, @tradeType, @quantity, @price, @fee, @totalPrice, @tradeDate)
         `);
 
         return result.recordset[0].tradeID; //return the tradeID of the newly created trade 
