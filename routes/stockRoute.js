@@ -8,7 +8,7 @@ router.get('/chart/:ticker', stockController.showChart);
 router.get('/list', stockController.listStocks);
 router.get('/api/stocks/:ticker', stockController.fetchSpecificStock);
 
-router.post('/addStock', stockController.addStockToPortfolioID);
+router.post('/fetch', stockController.fetchStock);
 
 
 
