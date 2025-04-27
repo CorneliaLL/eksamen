@@ -1,8 +1,8 @@
 const { storeStockData } = require("../services/fetchStockData.js"); //imports function that gets stockdata from alpha vantage
 const { Stocks } = require("../models/stockModels.js"); //imports function that gets data from database 
 
-
-async function addStockToPortfolioID(req,res) {
+//Handles fetching stock data from the API and storing it in our database + assigning its respective portfolioID as well
+async function fetchStock(req,res) {
     const { ticker, portfolioID } = req.body;
 
     try {
@@ -17,11 +17,32 @@ async function addStockToPortfolioID(req,res) {
     }
 }
 
+async function fetchSpecificStock(req, res) {
+    const { ticker } = req.params;
+
+    try {
+        
+        const stock = new Stocks();
+        const result = await stock.getStockData(ticker);
+  
+ 
+        res.render('stockChart', { 
+            ticker: ticker,
+            dates: result.dates, 
+            prices: result.prices 
+        });
+    
+      } catch (error) {
+        console.error('Error getting stock data:', error);
+        res.status(500).send('Server error');
+      }
+}
+
 //handles calling api: get stockdata from alpha vantage and saves in database
-async function fetchStock(req, res) {
+async function updateStock(req, res) {
     const { ticker } = req.params; //gets ticker from URL
     try {
-        await storeStockData(ticker); //gets service function to get and save data 
+        await Stocks.storeStockData(ticker); //gets service function to get and save data 
         res.send(`Stock data for ${ticker} is updated`);
     } catch (error) {
         console.error('Cannot fetch stock data:', error);
@@ -47,8 +68,9 @@ async function listStocks(req, res){
 };
 
 module.exports = {
-    addStockToPortfolioID,
     fetchStock,
+    fetchSpecificStock,
+    updateStock,
     showChart,
     listStocks
 }

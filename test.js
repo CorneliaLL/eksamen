@@ -20,6 +20,7 @@ app.get('/test-session', (req, res) => {
 
 const { sql } = require('./database');
 const { storeExchangeRate } = require('./services/fetchExchangeRate');
+const { storeStockData } = require('./services/fetchStockData'); // Ret stien så den passer til din mappe!
 
 const config = {
   user: "celina",
@@ -32,13 +33,22 @@ const config = {
     },
 };
 
-const { storeStockData } = require('./services/fetchStockData'); // Ret stien så den passer til din mappe!
+const { Stocks } = require('./models/stockModels');
 
 (async () => {
     try {
-        const result = await storeStockData('AAPL'); // Test med f.eks. 'AAPL' for Apple
-        console.log('Result:', result);
+        await Stocks.storeStockData(
+            'AAPL', 
+            'Apple Inc', 
+            new Date(), 
+            'USD', 
+            165.30, 
+            null, 
+            'Common Stock'
+        );
+        console.log("Stock inserted successfully!");
     } catch (err) {
-        console.error('Test error:', err.message);
+        console.error("Error inserting stock:", err.message);
     }
 })();
+

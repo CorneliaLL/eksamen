@@ -1,4 +1,8 @@
-const { sql } = require('../database'); //sql connection from database.js 
+<<<<<<< HEAD
+const {connectToDB, sql } = require('../database'); //sql connection from database.js 
+=======
+const { connectToDB, sql } = require('../database'); //sql connection from database.js 
+>>>>>>> fd345800b286bd463b0df4dbc7b8b7fc98f6ef76
 
 class Stocks{
     constructor(stockID, ticker, date, portfolioID, stockName, currency, closePrice, stockType){
@@ -12,11 +16,22 @@ class Stocks{
         this.stockType = stockType;
     }
     static async storeStockData(ticker, stockName, date, currency, closePrice, portfolioID, stockType){
-        await sql.query`
-        INSERT INTO Stocks (Ticker, StockName, Date, currency, ClosePrice, PortfolioID, StockType)
-        VALUES (${ticker}, ${stockName}, ${date}, ${currency} ${closePrice}, ${portfolioID}, ${stockType})
-    `;
+        const pool = await connectToDB();
+
+        const result = await pool.request()
+            .input("ticker", sql.NVarChar(100), ticker)
+            .input("stockName", sql.NVarChar(100), stockName)
+            .input("date", sql.Date, date)
+            .input("currency", sql.NVarChar(100), currency)
+            .input("closePrice", sql.Decimal(10, 2), closePrice)
+            .input("portfolioID", sql.Int, portfolioID)
+            .input("stockType", sql.NVarChar(100), stockType)
+            .query(`
+                INSERT INTO Stocks (Ticker, stockName, Date, currency, ClosePrice, portfolioID, stockType)
+                VALUES (@ticker, @stockName, @date, @currency, @closePrice, @portfolioID, @stockType)
+                `);
     }
+
     //gets stockdata for graph for a specific tickerr 
     async getStockData(ticker) {
         const result = await sql.query`
