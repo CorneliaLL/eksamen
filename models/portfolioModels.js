@@ -72,11 +72,11 @@ class Portfolio {
   }
 
   // Calculate Expected Value of a stock based on live price
-  static async calculateExpectedValue(portfolioID, stockSymbol) {
+  static async calculateExpectedValue(portfolioID, Ticker) {
     const pool = await connectToDB();
     const result = await pool.request()
       .input("portfolioID", sql.Int, portfolioID)
-      .input("stockSymbol", sql.NVarChar, stockSymbol)
+      .input("Ticker", sql.NVarChar, Ticker)
       .query(`
         SELECT SUM(quantity) AS totalQuantity
         FROM Trades
@@ -97,7 +97,7 @@ class Portfolio {
     const pool = await connectToDB();
     const result = await pool.request()
       .input("portfolioID", sql.Int, portfolioID)
-      .input("stockSymbol", sql.NVarChar, Ticker)
+      .input("Ticker", sql.NVarChar, Ticker)
       .query(`
         SELECT
           SUM(pricePerShare * quantity) AS totalCost,
