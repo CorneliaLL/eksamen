@@ -36,3 +36,7 @@ async function storeStockData(ticker) {
 }
 
 module.exports = { storeStockData };
+
+//kilder: 
+//https://www.alphavantage.co/documentation/ - Time Series Dailey
+//https://medium.com/@uttamcseau/building-an-api-to-retrieve-stock-data-using-alpha-vantage-and-node-js-99f2d28021cd - API KEY

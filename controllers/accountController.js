@@ -106,6 +106,9 @@ async function handleReactivateAccount(req, res) {
       res.status(500).send("Failed to reactivate account");
     }
   }
+
+  //Create functions about inserting amount on accounts
+  //Withdrawal, plus making transfers not possible on deactivated accounts
 module.exports = {
   fetchBanks,
   createAccount,

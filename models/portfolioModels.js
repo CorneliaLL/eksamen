@@ -142,4 +142,8 @@ class Portfolio {
   }
 }
 
-module.exports = { Portfolio };
+
+
+  module.exports = {
+    Portfolio
+  };
