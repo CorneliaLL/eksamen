@@ -1,6 +1,9 @@
 const { Trade } = require("../models/tradeModels");
 const { Transaction } = require("../models/transactionModels");
 
+async function renderTradePage(req, res) {
+    
+}
 
 async function handleTrade(req, res) {
     try {
@@ -75,4 +78,4 @@ async function handleTrade(req, res) {
     }
 }
 
-module.exports = {handleTrade};
+module.exports = { renderTradePage, handleTrade};
