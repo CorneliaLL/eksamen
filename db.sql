@@ -45,6 +45,8 @@ CREATE TABLE Stocks (
     currency NVARCHAR(100) NOT NULL,
     closePrice DECIMAL(10,2) NOT NULL,
     portfolioID INT NOT NULL,
+    stockName NVARCHAR(100) NOT NULL,
+    stockType NVARCHAR(100)NOT NULL;
     FOREIGN KEY (portfolioID) REFERENCES Portfolios(portfolioID)
 );
 
