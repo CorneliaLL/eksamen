@@ -4,7 +4,7 @@ const { storeStockData } = require("../services/stockService"); // Fetches stock
 const { storeExchangeRate } = require("../services/fetchExchangeRate"); // Fetches currency conversion rate live
 const { Account } = require("../models/accountModels"); // Account model to check user balance
 
-// Handles a buy or sell trade
+// HAndles a buy or sell trade
 async function handleTrade(req, res) {
     try {
         const userID = req.session.userID;
@@ -93,4 +93,8 @@ async function handleTrade(req, res) {
     }
 }
 
+<<<<<<< HEAD
 module.exports = { handleTrade };
+=======
+module.exports = { renderTradePage, handleTrade};
+>>>>>>> 8c7184e48dbf5c947cf64b39e8cda8cdfb159bdf
