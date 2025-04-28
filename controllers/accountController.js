@@ -112,7 +112,7 @@ async function handleUpdateAccountBalance(req, res){
   try{
     const { accountID } = req.params;
     //ADD INPUTS IN EJS THAT CORRELATES
-    const { amount, type } = req.body.Account.balance
+    const { amount, type } = req.body;
 
     const updatedBalance = parseFloat(amount);
 

@@ -95,7 +95,7 @@ static async updateAccountBalance(accountID, changedBalance){
     .input("balance", sql.Decimal(18, 2), changedBalance)
     .query(`
       UPDATE Accounts
-      SET balance = balance + ?
+      SET balance = balance + @balance
       WHERE accountID = @accountID`)
   }
 }
