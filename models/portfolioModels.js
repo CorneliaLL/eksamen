@@ -1,5 +1,5 @@
 const { connectToDB, sql } = require("../database");
-const { storeStockData } = require("../services/stockService");
+const { storeStockData } = require("../services/fetchStockData");
 
 class Portfolio {
   constructor(portfolioID, accountID, portfolioName, registrationDate) {
@@ -52,17 +52,17 @@ class Portfolio {
   }
 
   // Calculate GAK (Average Acquisition Price) for a stock
-  static async calculateGAK(portfolioID, stockSymbol) {
+  static async calculateGAK(portfolioID, Ticker) {
     const pool = await connectToDB();
     const result = await pool.request()
       .input("portfolioID", sql.Int, portfolioID)
-      .input("stockSymbol", sql.NVarChar, stockSymbol)
+      .input("Ticker", sql.NVarChar, Ticker)
       .query(`
         SELECT
           SUM(pricePerShare * quantity) AS totalCost,
           SUM(quantity) AS totalQuantity
         FROM Trades
-        WHERE portfolioID = @portfolioID AND stockSymbol = @stockSymbol AND type = 'buy'
+        WHERE portfolioID = @portfolioID AND Ticker = @Ticker AND tradeType = 'buy'
       `);
 
     const { totalCost, totalQuantity } = result.recordset[0];
@@ -80,7 +80,7 @@ class Portfolio {
       .query(`
         SELECT SUM(quantity) AS totalQuantity
         FROM Trades
-        WHERE portfolioID = @portfolioID AND stockSymbol = @stockSymbol
+        WHERE portfolioID = @portfolioID AND Ticker = @Ticker
       `);
 
     const { totalQuantity } = result.recordset[0];
@@ -103,7 +103,7 @@ class Portfolio {
           SUM(pricePerShare * quantity) AS totalCost,
           SUM(quantity) AS totalQuantity
         FROM Trades
-        WHERE portfolioID = @portfolioID AND stockSymbol = @stockSymbol
+        WHERE portfolioID = @portfolioID AND Ticker = @Ticker
       `);
 
     const { totalCost, totalQuantity } = result.recordset[0];
@@ -124,19 +124,19 @@ class Portfolio {
     const result = await pool.request()
       .input("portfolioID", sql.Int, portfolioID)
       .query(`
-        SELECT DISTINCT stockSymbol
+        SELECT DISTINCT Ticker
         FROM Trades
         WHERE portfolioID = @portfolioID
       `);
 
     const holdings = [];
     for (let stock of result.recordset) {
-      const stockSymbol = stock.stockSymbol;
-      const gak = await Portfolio.calculateGAK(portfolioID, stockSymbol);
-      const expectedValue = await Portfolio.calculateExpectedValue(portfolioID, stockSymbol);
-      const unrealizedGain = await Portfolio.calculateUnrealizedGain(portfolioID, stockSymbol);
+      const Ticker = stock.Ticker;
+      const gak = await Portfolio.calculateGAK(portfolioID, Ticker);
+      const expectedValue = await Portfolio.calculateExpectedValue(portfolioID, Ticker);
+      const unrealizedGain = await Portfolio.calculateUnrealizedGain(portfolioID, Ticker);
 
-      holdings.push({ stockSymbol, gak, expectedValue, unrealizedGain });
+      holdings.push({ Ticker, gak, expectedValue, unrealizedGain });
     }
     return holdings;
   }

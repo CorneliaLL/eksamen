@@ -1,5 +1,5 @@
-const { Portfolio } = require("../models/portfolioModel");
-const { Account } = require("../models/accountModel");
+const { Portfolio } = require("../models/portfolioModels");
+const { Account } = require("../models/accountModels");
 
 
 // Show list of portfolios
@@ -72,10 +72,10 @@ async function showPortfolioAnalysis(req, res) {
     if (portfolio.userID !== userID) return res.status(403).send("Unauthorized");
 
     const gak = await Portfolio.calculateGAK(portfolioID, stockSymbol);
-    const expectedValue = await Portfolio.calculateExpectedValue(portfolioID, stockSymbol);
-    const unrealizedGain = await Portfolio.calculateUnrealizedGain(portfolioID, stockSymbol);
+    const expectedValue = await Portfolio.calculateExpectedValue(portfolioID, Ticker);
+    const unrealizedGain = await Portfolio.calculateUnrealizedGain(portfolioID, Ticker);
 
-    res.render("portfolioAnalysis", { portfolio, stockSymbol, gak, expectedValue, unrealizedGain });
+    res.render("portfolioAnalysis", { portfolio, Ticker, gak, expectedValue, unrealizedGain });
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Failed to show analysis");
