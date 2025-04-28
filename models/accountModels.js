@@ -86,6 +86,18 @@ static async getAllAccounts(userID) {
     return result.recordset;
     
 }
+
+static async updateAccountBalance(accountID, balance){
+  const pool = await connectToDB();
+  
+  const result = await pool.request()
+    .input("accountID", sql.Int, accountID)
+    .input("balance", sql.Decimal(18, 2), balance)
+    .query(`
+      UPDATE balance
+      FROM Accounts 
+      WHERE accountID = @accountID`)
+  }
 }
 
 module.exports = {
