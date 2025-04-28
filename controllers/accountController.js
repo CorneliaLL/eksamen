@@ -107,6 +107,17 @@ async function handleReactivateAccount(req, res) {
     }
   }
 
+  //NOT DONE YET
+async function handleUpdateAccountBalance(req, res){
+  try{
+    const { accountID } = req.params;
+
+  } catch (err) {
+    console.error("Error updating account balance:", err.message);
+    res.status(500).send("Failed to update account balance");
+  }
+}
+
   //Create functions about inserting amount on accounts
   //Withdrawal, plus making transfers not possible on deactivated accounts
 module.exports = {
