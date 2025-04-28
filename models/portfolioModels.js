@@ -86,18 +86,18 @@ class Portfolio {
     const { totalQuantity } = result.recordset[0];
     if (!totalQuantity || totalQuantity === 0) return 0;
 
-    const stockData = await storeStockData(stockSymbol);
+    const stockData = await storeStockData(Ticker);
     const currentPrice = parseFloat(stockData.closePrice);
 
     return parseFloat((totalQuantity * currentPrice).toFixed(2));
   }
 
   // Calculate Unrealized Gain or Loss
-  static async calculateUnrealizedGain(portfolioID, stockSymbol) {
+  static async calculateUnrealizedGain(portfolioID, Ticker) {
     const pool = await connectToDB();
     const result = await pool.request()
       .input("portfolioID", sql.Int, portfolioID)
-      .input("stockSymbol", sql.NVarChar, stockSymbol)
+      .input("stockSymbol", sql.NVarChar, Ticker)
       .query(`
         SELECT
           SUM(pricePerShare * quantity) AS totalCost,
@@ -109,7 +109,7 @@ class Portfolio {
     const { totalCost, totalQuantity } = result.recordset[0];
     if (!totalCost || !totalQuantity || totalQuantity === 0) return 0;
 
-    const stockData = await storeStockData(stockSymbol);
+    const stockData = await storeStockData(Ticker);
     const currentPrice = parseFloat(stockData.closePrice);
 
     const expectedValue = totalQuantity * currentPrice;
