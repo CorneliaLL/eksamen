@@ -25,7 +25,14 @@ async function storeStockData(ticker) {
 
         console.log(`Saved stock ${ticker} (${stockName}) successfully!`);
 
-            return { ticker, latestDate, closePrice, stockName, currency, stockType };
+            return { 
+                ticker, 
+                date: latestDate, 
+                closePrice, 
+                stockName: overviewData.Name || ticker,
+                currency: overviewData.Currency || 'DKK', 
+                stockType: overviewData.AssetType || 'stock' 
+            };
 
         } else {
             console.error(`No data was found for`, ticker);

@@ -1,8 +1,9 @@
-fetch('/api/portfolio/total-value') //gets data from sever (API endpoint)
 
+//hente data om samlet porteføljens værdi fra database/API og tegne en graf på Dashboard
+
+/*fetch('/api/portfolio/total-value') //gets data from sever (API endpoint)
 //server answers and we translate it to JSON 
   .then(response => response.json())
-
   .then(data => { //JSON anwser as data
 
     //list of months (labels on x-axis)
@@ -45,4 +46,4 @@ fetch('/api/portfolio/total-value') //gets data from sever (API endpoint)
 
   //error 
   .catch(error => console.error('Error collecting data:', error));
-  //error shows in browsers console 
+  //error shows in browsers console */

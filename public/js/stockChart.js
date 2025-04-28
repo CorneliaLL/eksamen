@@ -1,38 +1,39 @@
-//gets ticker from ejs (server side)
+//gets ticker from attribute canvas 
 const ticker = document.getElementById('myChart').dataset.ticker;
 
-fetch(`js/stocks/api/stocks/${ticker}`)
-  .then(response => response.json())
-  .then(data => {
-    const labels = data.map(entry => entry.date); //dates
-    const prices = data.map(entry => entry.closePrice); //prices
+//sends http get rq to server to get stock data for ticker 
+fetch(`/stocks/api/${ticker}`)
+  .then(response => response.json()) //translate server answer from json to js object
+  .then(data => { //list with objects date and closeprice
+    const labels = data.map(entry => entry.date); //dates - x-axis label
+    const prices = data.map(entry => entry.closePrice); //closePrice -y-axis values 
 
+    //access to canvas for create graph 
     const ctx = document.getElementById('myChart').getContext('2d');
 
+    //creates graph lines - chart.js
     new Chart(ctx, {
-      type: 'line',
+      type: 'line', //graph type - a line 
       data: {
-        labels: labels,
+        labels: labels, //dates x-axis
         datasets: [{
-          label: `${ticker} Stock Price`,
-          data: prices,
-          borderColor: 'lightblue',
-          backgroundColor: 'rgba(173, 216, 230, 0.5)',
-          borderWidth: 2,
-          tension: 0.4
+          label: `${ticker} Stock Price`, //name 
+          data: prices, //prices y-axis 
+          borderColor: 'lightblue', //line color 
+          backgroundColor: 'rgba(173, 216, 230, 0.5)', //bagground under the line 
+          borderWidth: 2, //line width
+          tension: 0.4 //smooth curve. from 0 = sharp and 1 = completly smooth
         }]
       },
       options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: { labels: { color: 'white' } }
-        },
+        responsive: true, //makes graph responsive 
+        maintainAspectRatio: false, //allows graph to fit height and width
+
         scales: {
-          x: { ticks: { color: 'white' } },
-          y: { ticks: { color: 'white' } }
+          x: { ticks: { color: 'white' } }, //x-axis color text
+          y: { ticks: { color: 'white' } } //y-axis color text
         }
       }
     });
-  })
-  .catch(error => console.error('Fejl ved hentning af aktiedata:', error));
+  }) //error 
+  .catch(error => console.error('Error getting stock data', error));
