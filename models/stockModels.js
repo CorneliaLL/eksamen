@@ -29,22 +29,19 @@ class Stocks{
     }
 
     //gets stockdata for graph for a specific tickerr 
-    async getStockData(ticker) {
+    static async findStockByID(stockID) {
         const pool = await connectToDB();
         const result = await pool.request()
-            .input('ticker', ticker) // Sikker måde at undgå SQL Injection
+            .input('stockID', sql.Int, stockID) // korrekt type + parameter
             .query(`
-                SELECT latestDate, ClosePrice 
+                SELECT StockID, Ticker, Date, ClosePrice, Currency
                 FROM Stocks
-                WHERE Ticker = @ticker
-                ORDER BY latestDate ASC
+                WHERE StockID = @stockID
             `);
-
-        return {
-            dates: result.recordset.map(r => r.Date.toISOString().split('T')[0]),
-            prices: result.recordset.map(r => r.ClosePrice)
-        };
+    
+        return result.recordset[0]; // vi returnerer hele objektet, ikke map
     }
+
 
     //gets all stock for list
     static async getAllStocks() {
