@@ -1,5 +1,5 @@
-const { Portfolio } = require("../models/portfolioModel");
-const { Account } = require("../models/accountModel");
+const { Portfolio } = require("../models/portfolioModels");
+const { Account } = require("../models/accountModels");
 
 
 // Show list of portfolios
