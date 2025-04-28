@@ -41,10 +41,11 @@ CREATE TABLE Portfolios (
 CREATE TABLE Stocks (
     StockID INT IDENTITY(1,1) PRIMARY KEY,
     Ticker NVARCHAR(20) NOT NULL,
-    Date DATE NOT NULL,
+    latestDate DATE NOT NULL,
     ClosePrice DECIMAL(10,2) NOT NULL,
     PortfolioID INT NOT NULL,
-    FOREIGN KEY (PortfolioID) REFERENCES Portfolios(PortfolioID)
+    FOREIGN KEY (PortfolioID) REFERENCES Portfolios(PortfolioID),
+    stockCurrency NVARCHAR(100) NOT NULL
 );
 
 ALTER TABLE Stocks

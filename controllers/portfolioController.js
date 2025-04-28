@@ -1,31 +1,23 @@
-const { Portfolio } = require("../models/portfolioModels");
-const { Account } = require("../models/accountModels");
+const { Portfolio } = require("../models/portfolioModel");
+const { Account } = require("../models/accountModel");
 
 
-
-// Show list of all portfolios for the logged-in user
+// Show list of portfolios
 async function getPortfolios(req, res) {
   try {
-    console.log("Session data:", req.session); // Debugging: Check session data
-    const userID = req.session.userID; // Access userID from session
-    // Check if the user is logged in
-    if (!userID) {
-      console.log("User not logged in"); 
-      return res.status(401).send("Unauthorized");
-    }
+    const userID = req.session.userID;
+    if (!userID) return res.status(401).send("Unauthorized");
 
-    const portfolios = await Portfolio.getAllPortfolios(userID); 
-    
-    console.log("Fetched portfolios:", portfolios);
-    return res.render("accountDashboard", { portfolios });
-
+    const portfolios = await Portfolio.getAllPortfolios(userID);
+    res.render("accountDashboard", { portfolios });
   } catch (err) {
+    console.error(err.message);
     res.status(500).send("Failed to fetch portfolios");
   }
 }
 
 
-// Show one portfolio by ID..
+// Show portfolio by ID
 async function getPortfolioByID(req, res) {
   try {
     const userID = req.session.userID;
@@ -33,21 +25,19 @@ async function getPortfolioByID(req, res) {
 
     const { portfolioID } = req.params;
     const portfolio = await Portfolio.findPortfolioByID(portfolioID);
+    if (!portfolio) return res.status(404).send("Portfolio not found");
 
-    if (!portfolio) {
-      return res.status(404).send("Portfolio not found");
-    }
-
-    const holdings = await Portfolio.getHoldings(portfolioID);  //Fetch holdings for the portfolio
-
+    const holdings = await Portfolio.getHoldings(portfolioID);
     res.render("portfolio", { portfolio, holdings });
-
   } catch (err) {
-    console.error("Error fetching portfolio:", err.message);
+    console.error(err.message);
     res.status(500).send("Failed to fetch portfolio");
   }
 }
 
+
+
+// Create a new portfolio
 async function handleCreatePortfolio(req, res) {
   try {
     const userID = req.session.userID;
@@ -55,59 +45,47 @@ async function handleCreatePortfolio(req, res) {
 
     const { accountID, portfolioName } = req.body;
     const account = await Account.findAccountByID(accountID);
-
-    if (!account) {
-      console.error("Account not found for ID:", accountID);
-      return res.status(400).send("Invalid account ID");
-    }
+    if (!account) return res.status(400).send("Invalid account ID");
 
     const registrationDate = new Date();
-
     const portfolio = new Portfolio(null, accountID, portfolioName, registrationDate);
-    await portfolio.createNewPortfolio({ accountID, portfolioName, registrationDate });
+    const portfolioID = await portfolio.createNewPortfolio({ accountID, portfolioName, registrationDate });
 
-    res.redirect("/portfolio/:portfolioID");
-
-
+    res.redirect(`/portfolio/${portfolioID}`);
   } catch (err) {
-    console.error("Error creating portfolio:", err.message);
+    console.error(err.message);
     res.status(500).send("Failed to create portfolio");
   }
 }
 
 
-// Portfolio analysis for one stock
+
+// Show portfolio analysis for a specific stock
 async function showPortfolioAnalysis(req, res) {
   try {
-    console.log("Session data:", req.session); // Debugging: Check session data
     const userID = req.session.userID;
     if (!userID) return res.status(401).send("Unauthorized");
 
-    const { portfolioID, stockID } = req.params;
+    const { portfolioID, stockSymbol } = req.params;
     const portfolio = await Portfolio.findPortfolioByID(portfolioID);
-
     if (!portfolio) return res.status(404).send("Portfolio not found");
+    if (portfolio.userID !== userID) return res.status(403).send("Unauthorized");
 
-    if (portfolio.userID !== userID) {
-      return res.status(403).send("Unauthorized");
-    }
+    const gak = await Portfolio.calculateGAK(portfolioID, stockSymbol);
+    const expectedValue = await Portfolio.calculateExpectedValue(portfolioID, stockSymbol);
+    const unrealizedGain = await Portfolio.calculateUnrealizedGain(portfolioID, stockSymbol);
 
-    const gak = await Portfolio.calculateGAK(portfolioID, stockID);
-    const expectedValue = await Portfolio.calculateExpectedValue(portfolioID, stockID);
-    const unrealizedGain = await Portfolio.calculateUnrealizedGain(portfolioID, stockID);
-
-    res.render("portfolioAnalysis", {
-      portfolio, stockID, gak, expectedValue, unrealizedGain });
-
+    res.render("portfolioAnalysis", { portfolio, stockSymbol, gak, expectedValue, unrealizedGain });
   } catch (err) {
-    console.error("Error showing portfolio analysis:", err.message);
+    console.error(err.message);
     res.status(500).send("Failed to show analysis");
   }
 }
+
 
 module.exports = {
   getPortfolios,
   getPortfolioByID,
   handleCreatePortfolio,
-  showPortfolioAnalysis
-}
+  showPortfolioAnalysis,
+};

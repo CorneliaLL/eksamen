@@ -1,219 +1,145 @@
 const { connectToDB, sql } = require("../database");
+const { storeStockData } = require("../services/stockService");
 
-class Portfolio{
-  constructor(portfolioID, accountID, portfolioName, registrationDate){
-      this.portfolioID = portfolioID;
-      this.accountID = accountID;
-      this.portfolioName = portfolioName;
-      this.registrationDate = registrationDate;
+class Portfolio {
+  constructor(portfolioID, accountID, portfolioName, registrationDate) {
+    this.portfolioID = portfolioID;
+    this.accountID = accountID;
+    this.portfolioName = portfolioName;
+    this.registrationDate = registrationDate;
   }
-  // Async function to fetch all portfolios from one user from the DB
-static async getAllPortfolios(userID) {
-  const pool = await connectToDB();
 
-  const result = await pool.request()
-    .input("userID", sql.Int, userID)
-    .query(`
-      SELECT * FROM Portfolios
-      JOIN Accounts ON Portfolios.accountID = Accounts.accountID
-      WHERE userID = @userID
-    `);
+  // Get all portfolios for a specific user
+  static async getAllPortfolios(userID) {
+    const pool = await connectToDB();
+    const result = await pool.request()
+      .input("userID", sql.Int, userID)
+      .query(`
+        SELECT * FROM Portfolios
+        JOIN Accounts ON Portfolios.accountID = Accounts.accountID
+        WHERE userID = @userID
+      `);
+    return result.recordset;
+  }
 
-  // Returns the whole list of portfolios for this user
-  return result.recordset;
-}
-
-// Fetch a specific portfolio by ID
-static async findPortfolioByID(portfolioID) {
-  try {
+  // Find one specific portfolio
+  static async findPortfolioByID(portfolioID) {
     const pool = await connectToDB();
     const result = await pool.request()
       .input("portfolioID", sql.Int, portfolioID)
       .query(`
-        SELECT Portfolios. *, Accounts.userID 
+        SELECT Portfolios.*, Accounts.userID
         FROM Portfolios
         JOIN Accounts ON Portfolios.accountID = Accounts.accountID
         WHERE Portfolios.portfolioID = @portfolioID
       `);
-  /*// We use a JOIN with the Accounts table to retrieve the userID,
-because the Portfolios table does not store userID directly. Instead, each portfolio is linked to an account (via accountID),
-and the account is linked to the user. This allows us to verify ownership of the portfolio by checking the userID.
-We use Portfolios.* to select all columns from the Portfolios table specifically, 
-to avoid confusion when joining with the Accounts table (which may contain similar column names).*/
-
-    const portfolio = result.recordset[0];
-    return portfolio || null;
-  } catch (err) {
-    console.error("Error finding portfolio by ID:", err.message);
-    return null;
+    return result.recordset[0] || null;
   }
-}
 
-// Create a new portfolio 
-async createNewPortfolio({ accountID, portfolioName, registrationDate }) {
-  const pool = await connectToDB();
-  await pool.request()
-    .input("accountID", sql.Int, accountID)
-    .input("portfolioName", sql.NVarChar, portfolioName)
-    .input("registrationDate", sql.DateTime, registrationDate)
-    .query(`
-      INSERT INTO Portfolios (accountID, portfolioName, registrationDate)
-      VALUES (@accountID, @portfolioName, @registrationDate)
-    `);
-}
-
-  // Calculate GAK for a specific stock in a portfolio
-  static async calculateGAK(portfolioID, stockID) {
-    try {
-      const pool = await connectToDB();
-      const result = await pool.request()
-        .input("portfolioID", sql.Int, portfolioID)
-        .input("stockID", sql.Int, stockID)
-        .query(`
-          SELECT
-            SUM(price * quantity) AS totalCost,
-            SUM(quantity) AS totalQuantity
-          FROM Trades
-          WHERE portfolioID = @portfolioID AND stockID = @stockID AND tradeType = 'buy'
-        `);
-  
-      const { totalCost, totalQuantity } = result.recordset[0];
-  
-      if (!totalCost || !totalQuantity || totalQuantity === 0) {
-        return null;
-      }
-  
-      return totalCost / totalQuantity;
-    } catch (err) {
-      console.error("Error calculating GAK:", err.message);
-      return null;
-    }
-  }
- // https://www.w3schools.com/sql/sql_sum.asp
-  
-// Calculate expected value of a stock in a portfolio
-static async calculateExpectedValue(portfolioID, stockID) {
-  try {
+  // Create a new portfolio
+  async createNewPortfolio({ accountID, portfolioName, registrationDate }) {
     const pool = await connectToDB();
+    const result = await pool.request()
+      .input("accountID", sql.Int, accountID)
+      .input("portfolioName", sql.NVarChar, portfolioName)
+      .input("registrationDate", sql.DateTime, registrationDate)
+      .query(`
+        INSERT INTO Portfolios (accountID, portfolioName, registrationDate)
+        OUTPUT INSERTED.portfolioID
+        VALUES (@accountID, @portfolioName, @registrationDate)
+      `);
+    return result.recordset[0].portfolioID;
+  }
 
-    const tradeResult = await pool.request()
+  // Calculate GAK (Average Acquisition Price) for a stock
+  static async calculateGAK(portfolioID, stockSymbol) {
+    const pool = await connectToDB();
+    const result = await pool.request()
       .input("portfolioID", sql.Int, portfolioID)
-      .input("stockID", sql.Int, stockID)
+      .input("stockSymbol", sql.NVarChar, stockSymbol)
+      .query(`
+        SELECT
+          SUM(pricePerShare * quantity) AS totalCost,
+          SUM(quantity) AS totalQuantity
+        FROM Trades
+        WHERE portfolioID = @portfolioID AND stockSymbol = @stockSymbol AND type = 'buy'
+      `);
+
+    const { totalCost, totalQuantity } = result.recordset[0];
+    if (!totalCost || !totalQuantity || totalQuantity === 0) return null;
+
+    return totalCost / totalQuantity;
+  }
+
+  // Calculate Expected Value of a stock based on live price
+  static async calculateExpectedValue(portfolioID, stockSymbol) {
+    const pool = await connectToDB();
+    const result = await pool.request()
+      .input("portfolioID", sql.Int, portfolioID)
+      .input("stockSymbol", sql.NVarChar, stockSymbol)
       .query(`
         SELECT SUM(quantity) AS totalQuantity
         FROM Trades
-        WHERE portfolioID = @portfolioID AND stockID = @stockID AND tradeType = 'buy'
+        WHERE portfolioID = @portfolioID AND stockSymbol = @stockSymbol
       `);
 
-    const { totalQuantity } = tradeResult.recordset[0];
+    const { totalQuantity } = result.recordset[0];
+    if (!totalQuantity || totalQuantity === 0) return 0;
 
-    if (!totalQuantity || totalQuantity === 0) {
-      return 0;
-    }
-
-    const priceResult = await pool.request()
-      .input("stockID", sql.Int, stockID)
-      .query(`
-        SELECT currentPrice 
-        FROM Stocks
-        WHERE stockID = @stockID
-      `);
-
-    const { currentPrice } = priceResult.recordset[0];
-
-    if (!currentPrice) {
-      console.warn("Price not found for stock:", stockID);
-      return null;
-    }
+    const stockData = await storeStockData(stockSymbol);
+    const currentPrice = parseFloat(stockData.closePrice);
 
     return parseFloat((totalQuantity * currentPrice).toFixed(2));
-  } catch (err) {
-    console.error("Error calculating expected value:", err.message);
-    return null;
   }
-}
 
-// Calculate unrealized gain/loss for a stock in a portfolio
-static async calculateUnrealizedGain(portfolioID, stockID) {
-  try {
+  // Calculate Unrealized Gain or Loss
+  static async calculateUnrealizedGain(portfolioID, stockSymbol) {
     const pool = await connectToDB();
-
-    const tradeResult = await pool.request()
+    const result = await pool.request()
       .input("portfolioID", sql.Int, portfolioID)
-      .input("stockID", sql.Int, stockID)
+      .input("stockSymbol", sql.NVarChar, stockSymbol)
       .query(`
-        SELECT 
-          SUM(quantity * price) AS totalCost,
+        SELECT
+          SUM(pricePerShare * quantity) AS totalCost,
           SUM(quantity) AS totalQuantity
         FROM Trades
-        WHERE portfolioID = @portfolioID AND stockID = @stockID AND tradeType = 'buy'
+        WHERE portfolioID = @portfolioID AND stockSymbol = @stockSymbol
       `);
 
-    const { totalCost, totalQuantity } = tradeResult.recordset[0];
+    const { totalCost, totalQuantity } = result.recordset[0];
+    if (!totalCost || !totalQuantity || totalQuantity === 0) return 0;
 
-    if (!totalCost || !totalQuantity || totalQuantity === 0) {
-      return 0;
-    }
-
-    const priceResult = await pool.request()
-      .input("stockID", sql.Int, stockID)
-      .query(`
-        SELECT currentPrice
-        FROM Stocks
-        WHERE stockID = @stockID
-      `);
-
-    const { currentPrice } = priceResult.recordset[0];
-
-    if (!currentPrice) {
-      console.error("Current price not found for stock:", stockID);
-      return null;
-    }
+    const stockData = await storeStockData(stockSymbol);
+    const currentPrice = parseFloat(stockData.closePrice);
 
     const expectedValue = totalQuantity * currentPrice;
     const unrealizedGain = expectedValue - totalCost;
 
     return parseFloat(unrealizedGain.toFixed(2));
-  } catch (err) {
-    console.error("Error calculating unrealized gain:", err.message);
-    return null;
   }
-}
 
-// Get holdings for a specific portfolio
-static async getHoldings(portfolioID) {
-  const pool = await connectToDB();
+  // Get all holdings (stocks) in a portfolio
+  static async getHoldings(portfolioID) {
+    const pool = await connectToDB();
+    const result = await pool.request()
+      .input("portfolioID", sql.Int, portfolioID)
+      .query(`
+        SELECT DISTINCT stockSymbol
+        FROM Trades
+        WHERE portfolioID = @portfolioID
+      `);
 
-  // Fetch all stocks in the portfolio
-  const result = await pool.request()
-  .input("portfolioID", sql.Int, portfolioID)
-  .query(`
-    SELECT DISTINCT stockID
-    FROM Trades
-    WHERE portfolioID = @portfolioID
-  `);
+    const holdings = [];
+    for (let stock of result.recordset) {
+      const stockSymbol = stock.stockSymbol;
+      const gak = await Portfolio.calculateGAK(portfolioID, stockSymbol);
+      const expectedValue = await Portfolio.calculateExpectedValue(portfolioID, stockSymbol);
+      const unrealizedGain = await Portfolio.calculateUnrealizedGain(portfolioID, stockSymbol);
 
-  const stocks = result.recordset || []; // Ensure result.recordset is an array
-
-// calculate for each stock in the portfolio
-  const holdings = [];
-    for (let stock of stocks) {
-    const stockID = stock.stockID;
-      try {
-        const gak = await Portfolio.calculateGAK(portfolioID, stockID);
-        const expectedValue = await Portfolio.calculateExpectedValue(portfolioID, stockID);
-        const unrealizedGain = await Portfolio.calculateUnrealizedGain(portfolioID, stockID);
-
-      holdings.push({stockID, gak, expectedValue, unrealizedGain}); 
-    } catch (err) {
-      console.error("Error calculating holdings:", err.message);
+      holdings.push({ stockSymbol, gak, expectedValue, unrealizedGain });
     }
+    return holdings;
   }
-  return holdings;
-}
 }
 
-  module.exports = {
-    Portfolio
-  };
-  
+module.exports = { Portfolio };
