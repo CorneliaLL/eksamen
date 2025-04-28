@@ -17,9 +17,23 @@ async function handleTrade(req, res) {
         const prc = parseFloat(price);
         const transactionFee = parseFloat(fee);
 
+        const stock = await Stocks.findStockByID(stockID); 
+        const stockCurrency = stock.currency;
+
+        const account = await Account.findAccountByID(accountID);
+        const accountCurrency = account.currency;
+
+        let adjustedPrice = prc;
+
+        if (stockCurrency !== accountCurrency) {
+            const rate = await storeExchangeRate(stockCurrency, accountCurrency);
+            adjustedPrice = prc * rate;
+            console.log(`Exchange rate applied: 1 ${stockCurrency} = ${rate} ${accountCurrency}`);
+        }
+
         //calculate the total cost of the trade
         // This will later be used to validate funds and update the account balance.
-        const totalPrice = qty * prc + transactionFee; 
+        const totalPrice = qty * adjustedPrice + transactionFee;
 
         // check if the user has enough funds in the account;
         if (tradeType === "buy") {
@@ -38,7 +52,7 @@ async function handleTrade(req, res) {
         }
 
         //create the trade
-        const tradeID = await Trade.createTrade({portfolioID, accountID, stockID, tradeType, quantity: qty, price: prc, fee: transactionFee, totalPrice, tradeDate: new Date()});
+        const tradeID = await Trade.createTrade({portfolioID, accountID, stockID, tradeType, quantity: qty, price: adjustedPrice, fee: transactionFee, totalPrice, tradeDate: new Date()});
         
         //Register the transaction
         const transactionAmount = tradeType === "buy" ? -totalPrice : totalPrice; //if its a buy, substract the total cost from the account, if sell add the total cost to the account
