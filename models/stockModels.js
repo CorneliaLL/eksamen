@@ -34,7 +34,7 @@ class Stocks{
         const result = await pool.request()
             .input('ticker', ticker) // Sikker måde at undgå SQL Injection
             .query(`
-                SELECT Date, ClosePrice 
+                SELECT latestDate, ClosePrice 
                 FROM Stocks
                 WHERE Ticker = @ticker
                 ORDER BY latestDate ASC
