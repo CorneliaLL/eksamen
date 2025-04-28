@@ -87,15 +87,15 @@ static async getAllAccounts(userID) {
     
 }
 
-static async updateAccountBalance(accountID, balance){
+static async updateAccountBalance(accountID, changedBalance){
   const pool = await connectToDB();
   
   const result = await pool.request()
     .input("accountID", sql.Int, accountID)
-    .input("balance", sql.Decimal(18, 2), balance)
+    .input("balance", sql.Decimal(18, 2), changedBalance)
     .query(`
-      UPDATE balance
-      FROM Accounts 
+      UPDATE Accounts
+      SET balance = balance + @balance
       WHERE accountID = @accountID`)
   }
 }

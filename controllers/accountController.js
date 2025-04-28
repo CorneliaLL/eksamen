@@ -111,8 +111,25 @@ async function handleReactivateAccount(req, res) {
 async function handleUpdateAccountBalance(req, res){
   try{
     const { accountID } = req.params;
+    //ADD INPUTS IN EJS THAT CORRELATES
+    const { amount, type } = req.body;
 
-  } catch (err) {
+    const updatedBalance = parseFloat(amount);
+
+    //Checks and validates that the amount is a number and is greater than 0
+    if (isNaN(updatedBalance) || updatedBalance <= 0) {
+      return res.status(400).send("Invalid amount provided.");
+    }
+
+    if (type === "deposit"){
+      await Account.updateAccountBalance(accountID, updatedBalance)
+    } else if (type === "withdrawal"){
+      await Account.updateAccountBalance(accountID, -updatedBalance)
+    } else {
+      return res.status(400).send("Invalid transaction type. Must be 'deposit' or 'withdraw'.");
+    } 
+    res.status(200).send("Account balance updated successfully.");
+    }catch (err) {
     console.error("Error updating account balance:", err.message);
     res.status(500).send("Failed to update account balance");
   }
@@ -126,5 +143,6 @@ module.exports = {
   getAccountByID,
   handleDeactivateAccount,
   handleReactivateAccount,
-  getAccounts
+  getAccounts,
+  handleUpdateAccountBalance
 }
