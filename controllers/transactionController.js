@@ -8,6 +8,7 @@ async function showTransactions(req, res) {
 
     const transactions = await Transaction.getTransactions(accountID);
 
+    // Render the 'transactions' view and pass all fetched transactions
     res.render("transactions", { transactions });
 
   } catch (err) {
