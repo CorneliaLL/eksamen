@@ -1,35 +1,60 @@
 <!DOCTYPE html>
-<html>
-<head>
-    <title>Transactions</title>
-</head>
+<html lang="en">
+<%- include('./partials/head.ejs') %>
+
+<!-- Link til dashboard CSS -->
+<link rel="stylesheet" href="/dashboard.css">
+
 <body>
-    <h1>Transactions</h1>
-    <table>
-        <thead>
-            <tr>
-                <th>Transaction ID</th>
-                <th>Account ID</th>
-                <th>Trade ID</th>
-                <th>Amount</th>
-                <th>Transaction Date</th>
-                <th>Stock ID</th>
-                <th>Trade Type</th>
-            </tr>
-        </thead>
-        <tbody>
-            <% transactions.forEach(transaction => { %>
+
+  <!-- main content -->
+  <%- include('./partials/nav.ejs') %>
+
+  <div class="container">
+    <div class="containerTitle">
+      <h1>Transactions Overview</h1>
+    </div>
+
+    <div class="boxContainer">
+      <div class="box1">
+        <h2>Transaction History</h2>
+
+        <% if (transactions && transactions.length > 0) { %>
+          <div class="tableContainer">
+            <table>
+              <thead>
                 <tr>
-                    <td><%= transaction.transactionID %></td>
-                    <td><%= transaction.accountID %></td>
-                    <td><%= transaction.tradeID %></td>
-                    <td><%= transaction.amount %></td>
-                    <td><%= transaction.transactionDate %></td>
-                    <td><%= transaction.stockID %></td>
-                    <td><%= transaction.tradeType %></td>
+                  <th>Transaction ID</th>
+                  <th>Trade ID</th>
+                  <th>Amount (DKK)</th>
+                  <th>Date</th>
+                  <th>Ticker</th>
+                  <th>Trade Type</th>
                 </tr>
-            <% }); %>
-        </tbody>
-    </table>
+              </thead>
+              <tbody>
+                <% transactions.forEach(transaction => { %>
+                  <tr>
+                    <td><%= transaction.transactionID %></td>
+                    <td><%= transaction.tradeID %></td>
+                    <td><%= transaction.amount ? transaction.amount.toFixed(2) : "N/A" %></td>
+                    <td><%= new Date(transaction.transactionDate).toLocaleString() %></td>
+                    <td><%= transaction.Ticker %></td>
+                    <td><%= transaction.tradeType %></td>
+                  </tr>
+                <% }) %>
+              </tbody>
+            </table>
+          </div>
+        <% } else { %>
+          <p>No transactions found for this account.</p>
+        <% } %>
+
+      </div>
+    </div>
+
+    <a href="/account" class="btn">← Back to Accounts</a>
+  </div>
+
 </body>
 </html>
