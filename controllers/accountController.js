@@ -116,6 +116,11 @@ async function handleUpdateAccountBalance(req, res){
 
     const updatedBalance = parseFloat(amount);
 
+    //Checks and validates that the amount is a number and is greater than 0
+    if (isNaN(updatedBalance) || updatedBalance <= 0) {
+      return res.status(400).send("Invalid amount provided.");
+    }
+
     if (type === "deposit"){
       await Account.updateAccountBalance(accountID, updatedBalance)
     } else if (type === "withdrawal"){
