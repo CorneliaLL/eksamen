@@ -216,4 +216,3 @@ static async getHoldings(portfolioID) {
   module.exports = {
     Portfolio
   };
-  
