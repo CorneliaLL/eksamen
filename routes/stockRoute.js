@@ -6,8 +6,7 @@ const stockController = require("../controllers/stockController");
 router.get('/fetchStock/:ticker', stockController.fetchStock);
 router.get('/chart/:ticker', stockController.showChart);
 router.get('/list', stockController.listStocks);
-router.get('/api/stocks/:ticker', stockController.fetchSpecificStock);
-
+router.get('/api/stocks/:ticker', stockController.fetchSpecificStock); //Define the route to get stock data app.get('/stock/:symbol', getStockData);
 router.post('/fetchStock', stockController.fetchStock);
 
 

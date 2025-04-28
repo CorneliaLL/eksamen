@@ -1,30 +1,30 @@
 const {connectToDB, sql } = require('../database'); //sql connection from database.js 
 
 class Stocks{
-    constructor(stockID, ticker, date, portfolioID, stockName, currency, closePrice, stockType){
+    constructor(stockID, ticker, date, portfolioID, stockName, stockCurrency, closePrice, stockType){
         this.stockID = stockID;
         this.ticker = ticker;
         this.date = date;
         this.portfolioID = portfolioID;
         this.stockName = stockName;
-        this.currency = currency;
+        this.stockCurrency = stockCurrency;
         this.closePrice = closePrice;
         this.stockType = stockType;
     }
-    static async storeStockData(ticker, stockName, date, currency, closePrice, portfolioID, stockType){
+    static async storeStockData(ticker, stockName, latestDate, stockCurrency, closePrice, portfolioID, stockType){
         const pool = await connectToDB();
 
         const result = await pool.request()
             .input("ticker", sql.NVarChar(100), ticker)
             .input("stockName", sql.NVarChar(100), stockName)
-            .input("date", sql.Date, date)
-            .input("currency", sql.NVarChar(100), currency)
+            .input("latestDate", sql.Date, latestDate)
+            .input("stockCurrency", sql.NVarChar(100), stockCurrency)
             .input("closePrice", sql.Decimal(10, 2), closePrice)
             .input("portfolioID", sql.Int, portfolioID)
             .input("stockType", sql.NVarChar(100), stockType)
             .query(`
-                INSERT INTO Stocks (Ticker, stockName, Date, currency, ClosePrice, portfolioID, stockType)
-                VALUES (@ticker, @stockName, @date, @currency, @closePrice, @portfolioID, @stockType)
+                INSERT INTO Stocks (Ticker, stockName, latestDate, stockCurrency, ClosePrice, portfolioID, stockType)
+                VALUES (@ticker, @stockName, @latestDate, @stockCurrency, @closePrice, @portfolioID, @stockType)
                 `);
     }
 
@@ -37,7 +37,7 @@ class Stocks{
                 SELECT Date, ClosePrice 
                 FROM Stocks
                 WHERE Ticker = @ticker
-                ORDER BY Date ASC
+                ORDER BY latestDate ASC
             `);
 
         return {
@@ -51,9 +51,9 @@ class Stocks{
         const pool = await connectToDB();
         const result = await pool.request()
             .query(`
-                SELECT Ticker, Date, ClosePrice 
+                SELECT Ticker, latestDate, ClosePrice 
                 FROM Stocks
-                ORDER BY Ticker, Date DESC
+                ORDER BY Ticker, latestDate DESC
             `);
     
         return result.recordset;
