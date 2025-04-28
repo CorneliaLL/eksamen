@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const portfolioController = require("../controllers/portfolioController");
-const { Account } = require("../models/accountModel");
+const { Account } = require("../models/accountModels");
 
 // Form to create new portfolio
 router.get('/createPortfolio', async (req, res) => {
