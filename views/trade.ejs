@@ -1,20 +1,54 @@
-<!--Trade frontend-->
+<!-- EJS file to allow user to create a new trade (buy/sell stocks) -->
 <html lang="en">
-<%- include ('./partials/head.ejs') %>
+<%- include('./partials/head.ejs') %>
 
-<!--link to dashboard stylesheet-->
+<!-- link to dashboard stylesheet -->
 <link rel="stylesheet" href="dashboard.css">
 
 <body>
-  
-    <!--main content-->
-    <%- include ('./partials/nav.ejs') %>
-    <div class="container">
-    <div class="containerTitle">
-        <h1>Trade</h1> <!--gets username from database-->
-    </div>
-    
-    </div>
-</body>
 
+  <!-- main content -->
+  <%- include('./partials/nav.ejs') %>
+  
+  <div class="container">
+    <div class="containerTitle">
+      <h1>Trade Stocks</h1>
+    </div>
+
+    <div class="boxContainer">
+      <div class="box1">
+        <h2>Create a New Trade</h2>
+
+        <form action="/trade" method="POST" class="tradeForm">
+
+          <label for="portfolioID">Portfolio ID:</label><br>
+          <input type="number" id="portfolioID" name="portfolioID" required><br><br>
+
+          <label for="accountID">Account ID:</label><br>
+          <input type="number" id="accountID" name="accountID" required><br><br>
+
+          <label for="Ticker">Ticker Symbol (e.g. AAPL, TSLA):</label><br>
+          <input type="text" id="Ticker" name="Ticker" required><br><br>
+
+          <label for="tradeType">Trade Type:</label><br>
+          <select id="tradeType" name="tradeType" required>
+            <option value="buy">Buy</option>
+            <option value="sell">Sell</option>
+          </select><br><br>
+
+          <label for="quantity">Quantity:</label><br>
+          <input type="number" id="quantity" name="quantity" required><br><br>
+
+          <label for="fee">Fee (optional):</label><br>
+          <input type="number" id="fee" name="fee" step="0.01" value="0"><br><br>
+
+          <button type="submit" class="createNewAccountBtn">Submit Trade</button>
+        </form>
+
+      </div>
+    </div>
+
+  </div>
+
+</body>
 </html>
