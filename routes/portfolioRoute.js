@@ -17,6 +17,8 @@ router.get('/createPortfolio', async (req, res) => {
     res.status(500).send("Failed to fetch accounts");
   }
 });
+
+router.get("/portfolio", portfolioController.getPortfolios);
 router.get("/portfolio/:portfolioID", portfolioController.getPortfolioByID);
 router.post("/createPortfolio", portfolioController.handleCreatePortfolio);
 router.get("/portfolioAnalysis/:portfolioID/:stockID", portfolioController.showPortfolioAnalysis)

@@ -44,11 +44,11 @@ class Transaction{
             SELECT 
                 Transactions.transactionID, 
                 Transactions.accountID, 
-                Transaction.tradeID, 
-                Transaction.amount, 
-                Transaction.transactionDate, 
-                Trade.stockID, 
-                Trade.tradeType
+                Transactions.tradeID, 
+                Transactions.amount, 
+                Transactions.transactionDate, 
+                Trades.stockID, 
+                Trades.tradeType
             FROM Transactions
             JOIN Trades ON Transactions.tradeID = Trades.tradeID
             WHERE Transactions.accountID = @accountID
