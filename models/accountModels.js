@@ -1,7 +1,7 @@
 const { connectToDB, sql } = require("../database");
 
 class Account {
-  constructor(accountID, userID, accountName, currency, balance, registrationDate, accountStatus, bankID, deactivationDare) {
+  constructor(accountID, userID, accountName, currency, balance, registrationDate, accountStatus, bankID, deactivationDate) {
     this.accountID = accountID;
     this.userID = userID;
     this.accountName = accountName; 

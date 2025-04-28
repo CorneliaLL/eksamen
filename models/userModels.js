@@ -19,12 +19,13 @@ async createUser(){
 
     //creates the connection to the DB
     // Creates our request, SQL queries.
+    // uses .this to access the class properties
     await pool.request()
-    .input("name", sql.NVarChar, name)
-    .input("username", sql.NVarChar, username)
-    .input("email", sql.NVarChar, email)
-    .input("password", sql.NVarChar, password)
-    .input("age", sql.Int, age)
+    .input("name", sql.NVarChar, this.name)
+    .input("username", sql.NVarChar, this.username)
+    .input("email", sql.NVarChar, this.email)
+    .input("password", sql.NVarChar, this.password)
+    .input("age", sql.Int, this.age)
 
     //Query = what is actually being sent to the DB
     // @x matches our input from above. Inserts the data into a new row in the user table with the given values
@@ -55,8 +56,8 @@ static async updateUserPassword(username, newPassword) {
     //Update the password of the user with the given username
 
     await pool.request()
-    .input("username", sql.VarChar, username)
-    .input("password", sql.VarChar, newPassword)
+    .input("username", sql.NVarChar, username)
+    .input("password", sql.NVarChar, newPassword)
     .query("UPDATE Users SET password = @password WHERE username = @username");
 }
 
