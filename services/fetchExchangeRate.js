@@ -1,6 +1,6 @@
 //service folder: handles functionality - calls api (stock data) and saves data
 
-const fetch = require('node-fetch'); // Hvis vi bruger axios får vi automatisk fejl 4xx/5xx på. Axios giver også direkte data hvorimod fetch bruger json respons manulelt
+const axios = require('axios'); // Hvis vi bruger axios får vi automatisk fejl 4xx/5xx på. Axios giver også direkte data hvorimod fetch bruger json respons manulelt
 const { sql } = require('../database'); //saves in the SQL database
 
 async function storeExchangeRate(fromCurrency, toCurrency) {
@@ -8,18 +8,12 @@ async function storeExchangeRate(fromCurrency, toCurrency) {
     const url = `https://v6.exchangerate-api.com/v6/${apiKey}/latest/${fromCurrency}`;
 
     try {
-        const response = await fetch(url);
-
-        if (!response.ok) {
-            throw new Error(`Error! Status: ${response.status}`);
-        }
-
-        const data = await response.json();
+        const response = await axios.get(url);
+        const data = response.data;
+        
         const rate = data.conversion_rates[toCurrency];
-
         const ticker = `${fromCurrency}${toCurrency}`;
         const today = new Date().toISOString().split('T')[0]; 
-
 
         if (!rate) throw new Error(`Rate not found for ${fromCurrency} to ${toCurrency}`);
             

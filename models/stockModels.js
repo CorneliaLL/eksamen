@@ -1,24 +1,24 @@
 const {connectToDB, sql } = require('../database'); //sql connection from database.js 
 
 class Stocks{
-    constructor(stockID, ticker, date, portfolioID, stockName, currency, closePrice, stockType){
+    constructor(stockID, ticker, date, portfolioID, stockName, stockCurrency, closePrice, stockType){
         this.stockID = stockID;
         this.ticker = ticker;
         this.date = date;
         this.portfolioID = portfolioID;
         this.stockName = stockName;
-        this.currency = currency;
+        this.stockCurrency = stockCurrency;
         this.closePrice = closePrice;
         this.stockType = stockType;
     }
-    static async storeStockData(ticker, stockName, date, currency, closePrice, portfolioID, stockType){
+    static async storeStockData(ticker, stockName, date, stockCurrency, closePrice, portfolioID, stockType){
         const pool = await connectToDB();
 
         const result = await pool.request()
             .input("ticker", sql.NVarChar(100), ticker)
             .input("stockName", sql.NVarChar(100), stockName)
             .input("date", sql.Date, date)
-            .input("currency", sql.NVarChar(100), currency)
+            .input("stockCurrency", sql.NVarChar(100), stockCurrency)
             .input("closePrice", sql.Decimal(10, 2), closePrice)
             .input("portfolioID", sql.Int, portfolioID)
             .input("stockType", sql.NVarChar(100), stockType)

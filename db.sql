@@ -39,16 +39,15 @@ CREATE TABLE Portfolios (
 );
 
 CREATE TABLE Stocks (
-    StockID INT IDENTITY(1,1) PRIMARY KEY,
-    Ticker NVARCHAR(20) NOT NULL,
-    Date DATE NOT NULL,
-    ClosePrice DECIMAL(10,2) NOT NULL,
-    PortfolioID INT NOT NULL,
-    FOREIGN KEY (PortfolioID) REFERENCES Portfolios(PortfolioID)
+    stockID INT IDENTITY(1,1) PRIMARY KEY,
+    ticker NVARCHAR(20) NOT NULL,
+    latestDate DATE NOT NULL,
+    currency NVARCHAR(100) NOT NULL,
+    closePrice DECIMAL(10,2) NOT NULL,
+    portfolioID INT NOT NULL,
+    FOREIGN KEY (portfolioID) REFERENCES Portfolios(portfolioID)
 );
 
-ALTER TABLE Stocks
-ALTER COLUMN currency NVARCHAR(100) NOT NULL;
 
 
 CREATE TABLE Pricehistory (
