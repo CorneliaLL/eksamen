@@ -6,7 +6,7 @@ async function showTransactions(req, res) {
   try {
     const { accountID } = req.params;
 
-    const transactions = await Transaction.getTransactionsByAccount(accountID);
+    const transactions = await transactions.getTransactions(accountID);
 
     res.render("transactions", { transactions });
 
