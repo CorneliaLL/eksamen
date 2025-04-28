@@ -12,7 +12,7 @@ class Trade {
         this.price = price;
     }
 
-    // Create a new trade
+    // Create a new trade record in the database
     static async createTrade({ portfolioID, accountID, Ticker, stockName, tradeType, quantity, price, fee, totalPrice, tradeDate }) {
         const pool = await connectToDB();
 
@@ -36,7 +36,7 @@ class Trade {
         return result.recordset[0].tradeID;
     }
 
-    // Check if enough funds available for a buy
+    // Check if there are enough funds to buy
     static async checkFunds(accountID, totalCost) {
         const pool = await connectToDB();
         const result = await pool.request()
@@ -49,7 +49,7 @@ class Trade {
         return balance >= totalCost;
     }
 
-    // Check if enough holdings available for a sell
+    // Check if there are enough holdings to sell
     static async checkHoldings(portfolioID, Ticker, quantity) {
         const pool = await connectToDB();
         const result = await pool.request()
@@ -66,53 +66,58 @@ class Trade {
         return currentQuantity >= quantity;
     }
 
-    // Update holdings after a buy
-    static async updateHoldingsAfterBuy(portfolioID, Ticker, quantity) {
+    // Update holdings after a trade. Either add or remove the quantity based on the trade type
+    //quantity change is positive for buy and negative for sell
+    static async adjustHoldings(portfolioID, Ticker, quantityChange) {
         const pool = await connectToDB();
+
+        //check if the holding exist    
         const result = await pool.request()
             .input("portfolioID", sql.Int, portfolioID)
             .input("Ticker", sql.NVarChar, Ticker)
-            .query(`SELECT quantity FROM Holdings WHERE portfolioID = @portfolioID AND Ticker = @Ticker`);
+            .query(`
+                SELECT quantity FROM Holdings
+                WHERE portfolioID = @portfolioID AND Ticker = @Ticker
+            `);
 
-        if (result.recordset.length > 0) {
-            const newQuantity = result.recordset[0].quantity + quantity;
-            await pool.request()
-                .input("portfolioID", sql.Int, portfolioID)
-                .input("Ticker", sql.NVarChar, Ticker)
-                .input("quantity", sql.Int, newQuantity)
-                .query(`UPDATE Holdings SET quantity = @quantity WHERE portfolioID = @portfolioID AND Ticker = @Ticker`);
-        } else {
-            await pool.request()
-                .input("portfolioID", sql.Int, portfolioID)
-                .input("Ticker", sql.NVarChar, Ticker)
-                .input("quantity", sql.Int, quantity)
-                .query(`INSERT INTO Holdings (portfolioID, Ticker, quantity) VALUES (@portfolioID, @Ticker, @quantity)`);
-        }
-    }
-
-    // Update holdings after a sell
-    static async updateHoldingsAfterSell(portfolioID, Ticker, quantity) {
-        const pool = await connectToDB();
-        const result = await pool.request()
-            .input("portfolioID", sql.Int, portfolioID)
-            .input("Ticker", sql.NVarChar, Ticker)
-            .query(`SELECT quantity FROM Holdings WHERE portfolioID = @portfolioID AND Ticker = @Ticker`);
-
+        // if the holding exist, update the quantity    
         if (result.recordset.length > 0) {
             const currentQuantity = result.recordset[0].quantity;
-            const newQuantity = currentQuantity - quantity;
-
+            const newQuantity = currentQuantity + quantityChange; // add or subtract trade quantity
+            
+            // update the quantity if its still positive 
             if (newQuantity > 0) {
                 await pool.request()
                     .input("portfolioID", sql.Int, portfolioID)
                     .input("Ticker", sql.NVarChar, Ticker)
                     .input("quantity", sql.Int, newQuantity)
-                    .query(`UPDATE Holdings SET quantity = @quantity WHERE portfolioID = @portfolioID AND Ticker = @Ticker`);
+                    .query(`
+                        UPDATE Holdings
+                        SET quantity = @quantity
+                        WHERE portfolioID = @portfolioID AND Ticker = @Ticker
+                    `);
+            // if the quantity is 0 or less, delete the holding 
             } else {
                 await pool.request()
                     .input("portfolioID", sql.Int, portfolioID)
                     .input("Ticker", sql.NVarChar, Ticker)
-                    .query(`DELETE FROM Holdings WHERE portfolioID = @portfolioID AND Ticker = @Ticker`);
+                    .query(`
+                        DELETE FROM Holdings
+                        WHERE portfolioID = @portfolioID AND Ticker = @Ticker
+                    `);
+            }
+        } else {
+            // Insert a new holding if buying and the holding doesnt exist
+            // if the quantity is positive, insert a new holding
+            if (quantityChange > 0) {
+                await pool.request()
+                    .input("portfolioID", sql.Int, portfolioID)
+                    .input("Ticker", sql.NVarChar, Ticker)
+                    .input("quantity", sql.Int, quantityChange)
+                    .query(`
+                        INSERT INTO Holdings (portfolioID, Ticker, quantity)
+                        VALUES (@portfolioID, @Ticker, @quantity)
+                    `);
             }
         }
     }
