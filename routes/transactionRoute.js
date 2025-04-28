@@ -5,4 +5,3 @@ const transactionController = require("../controllers/transactionController");
 router.get("/transactions/:accountID", transactionController.showTransactions);
 
 module.exports = router;
-

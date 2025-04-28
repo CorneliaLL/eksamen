@@ -159,7 +159,7 @@ static async calculateUnrealizedGain(portfolioID, stockID) {
       .input("stockID", sql.Int, stockID)
       .query(`
         SELECT currentPrice
-        FROM Stock
+        FROM Stocks
         WHERE stockID = @stockID
       `);
 
