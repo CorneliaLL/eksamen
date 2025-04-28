@@ -1,3 +1,5 @@
+//stockRoute defines endpoints for frontend, which controller is used (url), routes are organised and seperated from logic 
+
 const express = require("express");
 const router = express.Router();
 const stockController = require("../controllers/stockController");

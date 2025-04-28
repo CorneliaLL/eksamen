@@ -1,3 +1,5 @@
+//stockChart.js gets stock data and creates chart in the browser 
+
 //gets ticker from attribute canvas 
 const ticker = document.getElementById('myChart').dataset.ticker;
 
@@ -8,12 +10,12 @@ fetch(`/stocks/api/${ticker}`)
     const labels = data.map(entry => entry.date); //dates - x-axis label
     const prices = data.map(entry => entry.closePrice); //closePrice -y-axis values 
 
-    //access to canvas for create graph 
+    //access to canvas for create chart
     const ctx = document.getElementById('myChart').getContext('2d');
 
     //creates graph lines - chart.js
     new Chart(ctx, {
-      type: 'line', //graph type - a line 
+      type: 'line', //chart type - a line 
       data: {
         labels: labels, //dates x-axis
         datasets: [{
@@ -26,7 +28,7 @@ fetch(`/stocks/api/${ticker}`)
         }]
       },
       options: {
-        responsive: true, //makes graph responsive 
+        responsive: true, //makes chart responsive 
         maintainAspectRatio: false, //allows graph to fit height and width
 
         scales: {

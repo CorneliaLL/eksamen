@@ -1,4 +1,6 @@
 //service folder: handles functionality - calls api (stock data) and saves data
+//gets stockdata from AV api so it can be saved locally 
+
 const axios = require('axios'); //to get data from the internet -> npm install axios
 
 async function storeStockData(ticker) {

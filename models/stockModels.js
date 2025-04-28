@@ -1,3 +1,5 @@
+//Stockmodel combines stock objects with db. It saves and gets data. 
+
 const {connectToDB, sql } = require('../database'); //sql connection from database.js 
 
 //represents stocks and handling of database 
