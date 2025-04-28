@@ -1,8 +1,13 @@
 const express = require("express");
 const router = express.Router();
-const tradeController = require("../controllers/tradeController");
+const { handleTrade } = require("../controllers/tradeController");
 
-router.get("/trade", tradeController.handleTrade)
-router.post("/trade", tradeController.handleTrade);
+// show the trade form to the user
+router.get("/trade", (req, res) => {
+    res.render("trade");
+});
+
+// handle the trade form submission
+router.post("/trade", handleTrade);
 
 module.exports = router;
