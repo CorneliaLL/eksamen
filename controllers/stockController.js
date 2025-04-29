@@ -1,7 +1,7 @@
 //stockController controls the flow between users req, service and model. Takes in post and get req from browser. 
 //uses services to get data from api, uses models to save and get data from database, sends res to user.
 
-const { storeStockData } = require("../services/fetchStockData.js"); //imports service that gets stockdata from alpha vantage
+const { fetchStockData } = require("../services/fetchStockData.js"); //imports service that gets stockdata from alpha vantage
 const { Stocks } = require("../models/stockModels.js"); //imports stock model (database access)
 
 //Handles fetching stock data from the API and storing it in our database + assigning its respective portfolioID as well
