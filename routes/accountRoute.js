@@ -6,7 +6,7 @@ const portfolioController = require("../controllers/portfolioController");
 //router.post("/", accountController.);
 //router.get("/accountOverview", )
 //Route which fetches the accountID from the database 
-router.get("/account/:accountID", portfolioController.getPortfolioByID);
+router.get("/account/:accountID", portfolioController.getPortfolios);
 router.get("/account", accountController.getAccounts);
 router.get('/createAccount', (req, res) => {
     res.render('createAccount'); 
