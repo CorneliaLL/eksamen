@@ -9,7 +9,6 @@ async function getPortfolios(req, res) {
     if (!userID) return res.status(401).send("Unauthorized");
 
     const portfolios = await Portfolio.getAllPortfolios(userID);
-
     res.render("accountDashboard", { portfolios });
   } catch (err) {
     console.error(err.message);
@@ -98,4 +97,3 @@ module.exports = {
   handleCreatePortfolio,
   showPortfolioAnalysis,
 };
-
