@@ -33,7 +33,7 @@ class Stocks{ //stockID?  fordi SQL laver ID'et selv. Simplere og mere standard 
             VALUES (@ticker, @date, @stockName, @stockcurrency, @closePrice, @stockType, @portfolioID)
             `);
         }
-    }/*forklaring: gemme funktion - hele objektet gemmes i databasen i stedet for mange enkeltdele
+    /*forklaring: gemme funktion - hele objektet gemmes i databasen i stedet for mange enkeltdele
     i stedet for enkeltdata kan vi arbejde med samlede objekter - forelæsning 15 om struktur
     skal ikke huske rækkefælgen 
     kan genbruge objekt i andre funktioner nemmere*/
@@ -68,6 +68,8 @@ class Stocks{ //stockID?  fordi SQL laver ID'et selv. Simplere og mere standard 
         return result.recordset; //returns tickers as array   
 }
 
+}
+
 class PriceHistory{ //bruges ikke endnu
     constructor(historyID, stockID, price, priceDate){
         this.historyID = historyID;
@@ -76,6 +78,7 @@ class PriceHistory{ //bruges ikke endnu
         this.priceDate = priceDate;
     }
 }
+
 
 //exports stocks class 
 module.exports = { 
