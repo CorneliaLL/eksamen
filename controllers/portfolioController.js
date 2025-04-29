@@ -3,13 +3,14 @@ const { Account } = require("../models/accountModels");
 
 
 // Show list of portfolios
-async function getPortfolios(req, res) {
+async function getPortfolios(req, res, next) {
   try {
     const userID = req.session.userID;
     if (!userID) return res.status(401).send("Unauthorized");
 
     const portfolios = await Portfolio.getAllPortfolios(userID);
-    res.render("accountDashboard", { portfolios });
+    req.portfolios = portfolios; // saves the portfolios to the req object
+    next(); // express function to call the next middleware in accountRoute
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Failed to fetch portfolios");

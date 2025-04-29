@@ -73,7 +73,7 @@ async function getAccountByID(req, res){
       } else {
 
           //change to res.render
-          res.render("accountDashboard", { account });
+          res.render("accountDashboard", { account, portfolios: req.portfolios });
       } 
 
     } catch (err) {

@@ -10,11 +10,11 @@
     <%- include ('./partials/nav.ejs') %>
     <div class="container">
     <div class="containerTitle">
-        <h1>Account: insert account name </h1> <!--gets username from database-->
+        <h1>Account: <%= account.accountName %> </h1> <!--gets username from database-->
     </div>
     <div class="boxContainer">
     <div class="topbox">
-      <h3> Balance: fix balance </h3>
+      <h3> Balance: <%= account.balance.toFixed(2) %> <%= account.currency %> </h3>
       <form action="/updateBalance" method="POST">
         <div class="updateBalance">
           <label for="amount">Select amount:</label>
