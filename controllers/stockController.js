@@ -29,7 +29,7 @@ async function fetchStock(req,res) {//adds new stock to db
     }; //forklaring: følger objekt orienteret (pensum), struktureret, data api til stock model til database, controller styrer flow, service henter data og model gemmer data (mvc struktur)
 
 async function fetchSpecificStock(req, res) {
-    const { ticker } = req.params.ticker; //gets ticker from url
+    const { ticker } = req.params; //gets ticker from url
 
     try {
         const stock = new Stocks();
@@ -61,7 +61,7 @@ async function updateStock(req, res) {
 
 // handles visualizing of graph for one stock 
 async function showChart(req, res){
-    const { ticker } = req.params.ticker; // gets ticker from URL
+    const { ticker } = req.params; // gets ticker from URL
     res.render('stockChart', { ticker }); //sends ticker to ejs 
 };
 
