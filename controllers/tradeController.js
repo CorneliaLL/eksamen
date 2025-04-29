@@ -30,6 +30,10 @@ async function handleTrade(req, res) {
         const account = await Account.findAccountByID(accountID);
         const accountCurrency = account.currency;
 
+        if (account.accountStatus === 0) {
+            return res.status(401).send("Trade not possible, account is deactivated");
+        }
+
         // Adjust the price if stock and account are in different currencies
         let adjustedPrice = closePrice;
         if (stockCurrency !== accountCurrency) {
