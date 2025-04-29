@@ -41,7 +41,9 @@ class Stocks{ //stockID?  fordi SQL laver ID'et selv. Simplere og mere standard 
     //måske ikke nødvendig fordi vi arbejder med ticker. man finder en aktie baseret på ticker i brugergrænsefladen og ikke stockID
     //database skal have en primætnøgle stockID men ikke brugeren derfor intern db info 
     //gets stockdata for graph for a specific tickerr 
-    /*static async findStockByID(stockID) {
+
+    //Ændrer denne så den henter stock fra vores DB
+        static async findStockByID(stockID) {
         const pool = await connectToDB();
         const result = await pool.request()
             .input('stockID', sql.Int, stockID) // korrekt type + parameter
@@ -52,12 +54,10 @@ class Stocks{ //stockID?  fordi SQL laver ID'et selv. Simplere og mere standard 
             `);
     
         return result.recordset[0]; // vi returnerer hele objektet, ikke map
-    }*/
-
-//Gets a specific stock 
-    static async getStockByID(stockID/ticker){
-
     }
+
+
+    
 //get lists of all ticker in the database 
     static async getAllStocks() {
         const pool = await connectToDB(); //connects to database 
