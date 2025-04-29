@@ -4,10 +4,10 @@ const {connectToDB, sql } = require('../database'); //sql connection from databa
 
 //represents stocks and handling of database 
 class Stocks{ //stockID?  fordi SQL laver ID'et selv. Simplere og mere standard ifølge DB teori​ forelæsning 17?
-    constructor(stockID, ticker, date, portfolioID, stockName, stockCurrency, closePrice, stockType){
+    constructor(stockID, ticker, latestDate, portfolioID, stockName, stockCurrency, closePrice, stockType){
         this.stockID = stockID;
         this.ticker = ticker;
-        this.date = date;
+        this.latestDate = latestDate;
         this.portfolioID = portfolioID;
         this.stockName = stockName;
         this.stockCurrency = stockCurrency;
