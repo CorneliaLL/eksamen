@@ -21,13 +21,21 @@ async function getPortfolios(req, res) {
 async function getPortfolioByID(req, res) {
   try {
     const userID = req.session.userID;
-    if (!userID) return res.status(401).send("Unauthorized");
+    if (!userID) 
+    return res.status(401).send("Unauthorized");
 
     const { portfolioID } = req.params;
-    const portfolio = await Portfolio.findPortfolioByID(portfolioID);
-    if (!portfolio) return res.status(404).send("Portfolio not found");
+    const portfolio = await Portfolio.findPortfolioByID(portfolioID); 
+    if (!portfolio) 
+    return res.status(404).send("Portfolio not found");
 
     const holdings = await Portfolio.getHoldings(portfolioID);
+
+    //calculate the GAK for the portfolio 
+    //MANGLER
+
+
+
     res.render("portfolio", { portfolio, holdings });
   } catch (err) {
     console.error(err.message);

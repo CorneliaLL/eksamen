@@ -52,10 +52,12 @@ class Portfolio {
   }
 
   // Calculate GAK (Average Acquisition Price) for a stock
-  static async calculateGAK(portfolioID, Ticker) {
+  // GAK = (total cost of share / total quantity of shares)
+  // calculates the average acquisition prie for a stoick in a portfolio
+  static async calculateGAK(portfolioID, Ticker) { 
     const pool = await connectToDB();
     const result = await pool.request()
-      .input("portfolioID", sql.Int, portfolioID)
+      .input("portfolioID", sql.Int, portfolioID) 
       .input("Ticker", sql.NVarChar, Ticker)
       .query(`
         SELECT
@@ -71,7 +73,8 @@ class Portfolio {
     return totalCost / totalQuantity;
   }
 
-  // Calculate Expected Value of a stock based on live price
+  // Calculate Expected Value of a stock in a portfolio based on live price from API
+  // Expected value = current price * total quantity of shares
   static async calculateExpectedValue(portfolioID, Ticker) {
     const pool = await connectToDB();
     const result = await pool.request()
@@ -93,6 +96,7 @@ class Portfolio {
   }
 
   // Calculate Unrealized Gain or Loss
+  //unrealized gain = expected value - total cost of shares
   static async calculateUnrealizedGain(portfolioID, Ticker) {
     const pool = await connectToDB();
     const result = await pool.request()
@@ -100,21 +104,25 @@ class Portfolio {
       .input("Ticker", sql.NVarChar, Ticker)
       .query(`
         SELECT
-          SUM(pricePerShare * quantity) AS totalCost,
+          SUM(pricePerShare * quantity) AS totalCost, 
           SUM(quantity) AS totalQuantity
         FROM Trades
         WHERE portfolioID = @portfolioID AND Ticker = @Ticker
       `);
 
+    
     const { totalCost, totalQuantity } = result.recordset[0];
     if (!totalCost || !totalQuantity || totalQuantity === 0) return 0;
 
+    // get the current price from the API 
     const stockData = await storeStockData(Ticker);
     const currentPrice = parseFloat(stockData.closePrice);
 
+    // calculate the expected value of the stock in the portfolio
     const expectedValue = totalQuantity * currentPrice;
     const unrealizedGain = expectedValue - totalCost;
 
+    //round the unrealized gain to 2 decimal 
     return parseFloat(unrealizedGain.toFixed(2));
   }
 
@@ -124,16 +132,19 @@ class Portfolio {
     const result = await pool.request()
       .input("portfolioID", sql.Int, portfolioID)
       .query(`
-        SELECT DISTINCT Ticker
+        SELECT DISTINCT Ticker -- use DISTINCT to avoid duplicates
         FROM Trades
         WHERE portfolioID = @portfolioID
       `);
 
-    const holdings = [];
-    for (let stock of result.recordset) {
-      const Ticker = stock.Ticker;
+
+    const holdings = []; // initialize an empty array to store the holdings
+    for (let stock of result.recordset) { // iterate over the stocks
+      const Ticker = stock.Ticker; // get the stock ticker
+      
+      // //calculate the GAK, expected value and unleazized gain for each stock 
       const gak = await Portfolio.calculateGAK(portfolioID, Ticker);
-      const expectedValue = await Portfolio.calculateExpectedValue(portfolioID, Ticker);
+      const expectedValue = await Portfolio.calculateExpectedValue(portfolioID, Ticker); 
       const unrealizedGain = await Portfolio.calculateUnrealizedGain(portfolioID, Ticker);
 
       holdings.push({ Ticker, gak, expectedValue, unrealizedGain });
