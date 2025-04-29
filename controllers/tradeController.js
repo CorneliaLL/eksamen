@@ -31,7 +31,7 @@ async function handleTrade(req, res) {
         const accountCurrency = account.currency;
 
         if (account.accountStatus === 0) {
-            return res.status(401).send("Trade not possible, account is deactivated");
+            return res.status(403).send("Trade not possible, account is deactivated");
         }
 
         // Adjust the price if stock and account are in different currencies
