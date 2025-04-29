@@ -22,18 +22,18 @@ async function storeStockData(ticker) {
         const overviewData = overviewResponse.data;
 
         const stockName = overviewData.Name || ticker;
-        const currency = overviewData.Currency || 'Unknown';
+        const stockCurrency = overviewData.Currency || 'Unknown';
         const stockType = overviewData.AssetType || 'Unknown';
 
         console.log(`Saved stock ${ticker} (${stockName}) successfully!`);
 
             return { 
                 ticker, 
-                date: latestDate, 
+                latestDate, 
                 closePrice, 
-                stockName: overviewData.Name || ticker,
-                currency: overviewData.Currency || 'DKK', 
-                stockType: overviewData.AssetType || 'stock' 
+                stockName,
+                stockCurrency, 
+                stockType 
             };
 
         } else {

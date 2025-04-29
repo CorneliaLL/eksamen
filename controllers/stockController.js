@@ -44,7 +44,7 @@ forklaring: følger objekt orienteret (pensum), struktureret, data api til stock
 */
 
 async function fetchSpecificStock(req, res) {
-    const { ticker } = req.params.ticker; //gets ticker from url
+    const { ticker } = req.params; //gets ticker from url
 
     try {
         
@@ -78,7 +78,7 @@ async function updateStock(req, res) {
 
 // handles visualizing of graph for one stock 
 async function showChart(req, res){
-    const { ticker } = req.params.ticker; // gets ticker from URL
+    const { ticker } = req.params; // gets ticker from URL
     res.render('stockChart', { ticker }); //sends ticker to ejs 
 };
 
