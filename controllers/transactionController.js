@@ -17,4 +17,8 @@ async function showTransactions(req, res) {
   }
 }
 
+//Evt få det sendt til account ejs fil frem for portfolio
+//Få det indsat direkte i account ejs filen frem for at have seperate ejs fil
+//På den måde cutter vi ned på antallet af ejs filer og gør det mere overskueligt
+
 module.exports = { showTransactions };

@@ -43,6 +43,8 @@ async function createAccount(req, res) {
   }
 }
 
+//Ændre så man ikke kan trykke ind på hver account og få oversigt over porteføljerne i en account
+//Tilføj knapper til at kunne lave indsættelser osv og lav et link til at kunne se transaktioner for den givne konto
 // Show list of all accounts
 async function getAccounts(req, res) {
     try {

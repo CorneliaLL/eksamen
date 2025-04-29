@@ -6,7 +6,7 @@ class Transaction {
         this.accountID = accountID;
         this.tradeID = tradeID;
         this.amount = amount;
-        this.date = transactionDate;
+        this.transactionDate = transactionDate;
     }
 
     // Registers a new transaction in the db and updates the account balance
@@ -17,17 +17,17 @@ class Transaction {
         await pool.request()
             .input("accountID", sql.Int, this.accountID)
             .input("tradeID", sql.Int, this.tradeID)
-            .input("amount", sql.Decimal(18, 4), this.amount) // using 18,4 for better precision
+            .input("amount", sql.Decimal(18, 2), this.amount) // using 18,4 for better precision
             .input("transactionDate", sql.DateTime, this.date)
             .query(`
                 INSERT INTO Transactions (accountID, tradeID, amount, transactionDate)
                 VALUES (@accountID, @tradeID, @amount, @transactionDate)
             `);
-
+//EVT. ændre amount til balance for at holde det ensartet
         // Update accounts balance
         await pool.request()
             .input("accountID", sql.Int, this.accountID)
-            .input("amount", sql.Decimal(18, 4), this.amount)
+            .input("amount", sql.Decimal(18, 2), this.amount)
             .query(`
                 UPDATE Accounts
                 SET balance = balance + @amount
@@ -35,6 +35,7 @@ class Transaction {
             `);
     }
 
+//EVt ku samle account transaktioner i denne metode sammen med ens stock transaktioner
     // Fetches all transactions and trade details related to a specific account
     static async getTransactions(accountID) {
         const pool = await connectToDB();
@@ -48,7 +49,7 @@ class Transaction {
                     Transactions.tradeID,
                     Transactions.amount,
                     Transactions.transactionDate,
-                    Trades.Ticker,      -- changed from stockID to Ticker
+                    Trades.Ticker, 
                     Trades.tradeType
                 FROM Transactions
                 JOIN Trades ON Transactions.tradeID = Trades.tradeID

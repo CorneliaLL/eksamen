@@ -9,6 +9,22 @@ class Portfolio {
     this.registrationDate = registrationDate;
   }
 
+  // Create a new portfolio
+  async createNewPortfolio({ accountID, portfolioName, registrationDate }) {
+    const pool = await connectToDB();
+    const result = await pool.request()
+      .input("accountID", sql.Int, accountID)
+      .input("portfolioName", sql.NVarChar, portfolioName)
+      .input("registrationDate", sql.DateTime, registrationDate)
+      .query(`
+        INSERT INTO Portfolios (accountID, portfolioName, registrationDate)
+        OUTPUT INSERTED.portfolioID
+        VALUES (@accountID, @portfolioName, @registrationDate)
+      `);
+    return result.recordset[0].portfolioID;
+  }
+
+//Evt ændre SQL koden 
   // Get all portfolios for a specific user
   static async getAllPortfolios(userID) {
     const pool = await connectToDB();
@@ -36,24 +52,11 @@ class Portfolio {
     return result.recordset[0] || null;
   }
 
-  // Create a new portfolio
-  async createNewPortfolio({ accountID, portfolioName, registrationDate }) {
-    const pool = await connectToDB();
-    const result = await pool.request()
-      .input("accountID", sql.Int, accountID)
-      .input("portfolioName", sql.NVarChar, portfolioName)
-      .input("registrationDate", sql.DateTime, registrationDate)
-      .query(`
-        INSERT INTO Portfolios (accountID, portfolioName, registrationDate)
-        OUTPUT INSERTED.portfolioID
-        VALUES (@accountID, @portfolioName, @registrationDate)
-      `);
-    return result.recordset[0].portfolioID;
-  }
-
   // Calculate GAK (Average Acquisition Price) for a stock
   // GAK = (total cost of share / total quantity of shares)
   // calculates the average acquisition prie for a stoick in a portfolio
+
+  //Fetches relevant data from DB and calculates the GAK directly.
   static async calculateGAK(portfolioID, Ticker) { 
     const pool = await connectToDB();
     const result = await pool.request()
@@ -70,6 +73,7 @@ class Portfolio {
     const { totalCost, totalQuantity } = result.recordset[0];
     if (!totalCost || !totalQuantity || totalQuantity === 0) return null;
 
+//calculates GAK directly so it can be fetched directly
     return totalCost / totalQuantity;
   }
 

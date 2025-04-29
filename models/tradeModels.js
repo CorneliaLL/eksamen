@@ -10,6 +10,9 @@ class Trade {
         this.tradeType = tradeType;
         this.quantity = quantity;
         this.price = price;
+        this.fee = fee;
+        this.totalPrice = totalPrice;
+        this.tradeDate = tradeDate;
     }
 
     // Create a new trade record in the database

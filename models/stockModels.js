@@ -90,6 +90,7 @@ class Stocks{ //stockID?  fordi SQL laver ID'et selv. Simplere og mere standard 
 
 }
 
+//Skal hente daglig priser fra vores API
 class PriceHistory{ //bruges ikke endnu
     constructor(historyID, stockID, price, priceDate){
         this.historyID = historyID;
