@@ -54,7 +54,11 @@ class Stocks{ //stockID?  fordi SQL laver ID'et selv. Simplere og mere standard 
         return result.recordset[0]; // vi returnerer hele objektet, ikke map
     }*/
 
-    //get lists of all ticker in the database 
+//Gets a specific stock 
+    static async getStockByID(stockID/ticker){
+
+    }
+//get lists of all ticker in the database 
     static async getAllStocks() {
         const pool = await connectToDB(); //connects to database 
         //gets tickers from stocks table 

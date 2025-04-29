@@ -5,7 +5,7 @@ const { fetchStockData } = require("../services/fetchStockData.js"); //imports s
 const { Stocks } = require("../models/stockModels.js"); //imports stock model (database access)
 
 //Handles fetching stock data from the API and storing it in our database + assigning its respective portfolioID as well
-async function fetchStock(req,res) {//adds new stock to db
+async function handleFetchStock(req,res) {//adds new stock to db
     try { 
         const { ticker, portfolioID } = req.body; //gets ticker and portfolioID from req body (post)
         const stockData = await fetchStockData(ticker); //gets stockData from api 
@@ -28,7 +28,9 @@ async function fetchStock(req,res) {//adds new stock to db
         }
     }; //forklaring: følger objekt orienteret (pensum), struktureret, data api til stock model til database, controller styrer flow, service henter data og model gemmer data (mvc struktur)
 
-async function fetchSpecificStock(req, res) {
+//Used for our search function in frontend
+//Gets stock data from our DB 
+async function getStockByID(req, res) {
     const { ticker } = req.params; //gets ticker from url
 
     try {
@@ -47,17 +49,6 @@ async function fetchSpecificStock(req, res) {
       }
 }
 
-/*//handles calling api: get stockdata from alpha vantage and saves in database
-async function updateStock(req, res) {
-    const { ticker } = req.params; //gets ticker from URL
-    try {
-        await Stocks.storeStockData(ticker); //gets service function to get and save data 
-        res.send(`Stock data for ${ticker} is updated`);
-    } catch (error) {
-        console.error('Cannot fetch stock data:', error);
-        res.status(500).send('Cannot fetch stock data'); //error message 
-    }
-};*/
 
 // handles visualizing of graph for one stock 
 async function showChart(req, res){
@@ -76,8 +67,23 @@ async function listStocks(req, res){
     }
 };
 
+
+//Måske noget der kan bruges til price history
+/*//handles calling api: get stockdata from alpha vantage and saves in database
+async function updateStock(req, res) {
+    const { ticker } = req.params; //gets ticker from URL
+    try {
+        await Stocks.storeStockData(ticker); //gets service function to get and save data 
+        res.send(`Stock data for ${ticker} is updated`);
+    } catch (error) {
+        console.error('Cannot fetch stock data:', error);
+        res.status(500).send('Cannot fetch stock data'); //error message 
+    }
+};*/
+
+
 module.exports = {
-    fetchStock, //post: add new stock
+    handleFetchStock, //post: add new stock
     fetchSpecificStock, //get specific stock 
     showChart, //shows side for stock graph 
     listStocks //shows list for stocks 

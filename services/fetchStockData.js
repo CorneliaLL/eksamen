@@ -3,7 +3,7 @@
 
 const axios = require('axios'); //to get data from the internet -> npm install axios
 
-async function storeStockData(ticker) {
+async function fetchStockData(ticker) {
     const apiKey = '5WEYK0DRXVCFWJPW' //personal alpha vantage api key
     const priceUrl = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${ticker}&apikey=${apiKey}`;
     const overviewUrl = `https://www.alphavantage.co/query?function=OVERVIEW&symbol=${ticker}&apikey=${apiKey}`;
@@ -44,7 +44,7 @@ async function storeStockData(ticker) {
     }
 }
 
-module.exports = { storeStockData };
+module.exports = { fetchStockData };
 
 //kilder: 
 //https://www.alphavantage.co/documentation/ - Time Series Dailey
