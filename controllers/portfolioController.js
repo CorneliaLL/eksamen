@@ -29,8 +29,11 @@ async function getPortfolios(req, res) {
     const userID = req.session.userID;
     if (!userID) return res.status(401).send("Unauthorized");
 
+    const { accountID } = req.params;
+
     const portfolios = await Portfolio.getAllPortfolios(userID);
-    res.render("accountDashboard", { portfolios });
+    const account = await Account.findAccountByID(accountID)
+    res.render("accountDashboard", { portfolios, account });
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Failed to fetch portfolios");
