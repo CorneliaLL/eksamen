@@ -5,52 +5,35 @@ const { storeStockData } = require("../services/fetchStockData.js"); //imports s
 const { Stocks } = require("../models/stockModels.js"); //imports stock model (database access)
 
 //Handles fetching stock data from the API and storing it in our database + assigning its respective portfolioID as well
-async function fetchStock(req,res) { //adds new stock to db
-    const { ticker, portfolioID } = req.body; //gets ticker and portfolioID from req body (post)
-
-    try {
-        //Gets data from extern API
-        const { stockName, latestDate, stockCurrency, closePrice, stockType } = await storeStockData(ticker);
-
-        await Stocks.storeStockData(ticker, stockName, latestDate, stockCurrency, closePrice, portfolioID, stockType);
-        res.status(201).send(`Stock ${stockName} added to portfolio ${portfolioID}`);
-    } catch (error) {
-        console.error('Error adding stock to portfolio:', error);
-        res.status(500).send('Failed to add stock');
-    }
-}
-
-/*try{ i stedet for fetchStock try? 
-const { ticker, portfolioID } = req.body; //gets ticker and portfolioID from req body (post)
-const stockData = await fetchStockData(ticker); //gets stockData from api 
-const stock = new Stocks (
-stockData.ticker, //stock ticker
-stockData.stockName, //stock name
-stockData.closePrice, //latest closeprice
-stockData.date, //date for latest stock - latest dat kan nemt misforståes og date er datoen for datapunktet
-stockData.stockcurrency, //eks. DKK
-stockData. stockType, //type
-portfolioID //ID for the portfolio stock 
-);
-
-await Stocks.storeStock(stock); //saves stock in database 
-
-res.status(201).send('Stock saved'); /sends message 
-} catch (err) { 
- console.error(err); //send erro message
- res.status(500).send('error saving stock');
-
-forklaring: følger objekt orienteret (pensum), struktureret, data api til stock model til database, controller styrer flow, service henter data og model gemmer data (mvc struktur)
-*/
+async function fetchStock(req,res) {//adds new stock to db
+    try { 
+        const { ticker, portfolioID } = req.body; //gets ticker and portfolioID from req body (post)
+        const stockData = await fetchStockData(ticker); //gets stockData from api 
+        const stock = new Stocks (
+        stockData.ticker, //stock ticker
+        stockData.stockName, //stock name
+        stockData.closePrice, //latest closeprice
+        stockData.date, //date for latest stock - latest dat kan nemt misforståes og date er datoen for datapunktet
+        stockData.stockcurrency, //eks. DKK
+        stockData. stockType, //type
+        portfolioID //ID for the portfolio stock 
+        );
+        
+        await Stocks.storeStock(stock); //saves stock in database 
+        
+        res.status(201).send('Stock saved'); //sends message 
+        } catch (err) { 
+         console.error(err); //send erro message
+         res.status(500).send('error saving stock');
+        }
+    }; //forklaring: følger objekt orienteret (pensum), struktureret, data api til stock model til database, controller styrer flow, service henter data og model gemmer data (mvc struktur)
 
 async function fetchSpecificStock(req, res) {
     const { ticker } = req.params.ticker; //gets ticker from url
 
     try {
-        
         const stock = new Stocks();
         const result = await stock.getStockData(ticker); //get stocks data from db
-  
  
         res.render('stockChart', { 
             ticker: ticker,
@@ -64,7 +47,7 @@ async function fetchSpecificStock(req, res) {
       }
 }
 
-//handles calling api: get stockdata from alpha vantage and saves in database
+/*//handles calling api: get stockdata from alpha vantage and saves in database
 async function updateStock(req, res) {
     const { ticker } = req.params; //gets ticker from URL
     try {
@@ -74,7 +57,7 @@ async function updateStock(req, res) {
         console.error('Cannot fetch stock data:', error);
         res.status(500).send('Cannot fetch stock data'); //error message 
     }
-};
+};*/
 
 // handles visualizing of graph for one stock 
 async function showChart(req, res){
@@ -96,7 +79,6 @@ async function listStocks(req, res){
 module.exports = {
     fetchStock, //post: add new stock
     fetchSpecificStock, //get specific stock 
-    updateStock, //nødvendig??
     showChart, //shows side for stock graph 
     listStocks //shows list for stocks 
 }
