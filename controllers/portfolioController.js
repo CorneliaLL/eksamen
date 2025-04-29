@@ -69,13 +69,16 @@ async function handleCreatePortfolio(req, res) {
 
 
 // Show portfolio analysis for a specific stock
+// calculates GAK, expected value and unrealized gain for a specific stock in a portfolio
 async function showPortfolioAnalysis(req, res) {
   try {
     const userID = req.session.userID;
     if (!userID) return res.status(401).send("Unauthorized");
 
     const { portfolioID, stockSymbol } = req.params;
+
     const portfolio = await Portfolio.findPortfolioByID(portfolioID);
+
     if (!portfolio) return res.status(404).send("Portfolio not found");
     if (portfolio.userID !== userID) return res.status(403).send("Unauthorized");
 
