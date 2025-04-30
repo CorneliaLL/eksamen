@@ -8,9 +8,10 @@ async function showTransactions(req, res) {
     const { accountID } = req.params;
 
     const transactions = await Transaction.getTransactions(accountID);
+    const account = await Account.findAccountByID(accountID);
 
     // Render the 'transactions' view and pass all fetched transactions
-    res.render("transactions", { transactions });
+    res.render("transactions", { transactions, account });
 
   } catch (err) {
     console.error("Error showing transactions:", err.message);

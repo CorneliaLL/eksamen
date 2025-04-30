@@ -27,6 +27,7 @@
                   <th>Transaction ID</th>
                   <th>Trade ID</th>
                   <th>Amount (DKK)</th>
+                  <th>currency</th>
                   <th>Date</th>
                   <th>Ticker</th>
                   <th>Trade Type</th>
@@ -38,6 +39,7 @@
                     <td><%= transaction.transactionID %></td>
                     <td><%= transaction.tradeID %></td>
                     <td><%= transaction.amount ? transaction.amount.toFixed(2) : "N/A" %></td>
+                    <td><%= account.currency %></td>
                     <td><%= new Date(transaction.transactionDate).toLocaleString() %></td>
                     <td><%= transaction.Ticker %></td>
                     <td><%= transaction.tradeType %></td>
