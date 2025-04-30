@@ -102,12 +102,13 @@ ADD accountID INT NOT NULL;
 ALTER TABLE Trades
 
 ADD CONSTRAINT FK_Trades_Accounts FOREIGN KEY (accountID) REFERENCES Accounts(accountID);
+
 CREATE TABLE Transactions (
     transactionID INT PRIMARY KEY,
     tradeID INT NOT NULL,
     accountID INT NOT NULL,
     amount DECIMAL(18,4) NOT NULL,
-    date DATETIME NOT NULL,
+    transactionDate DATETIME NOT NULL,
 
     FOREIGN KEY (tradeID) REFERENCES Trades(tradeID),
     FOREIGN KEY (accountID) REFERENCES Accounts(accountID)

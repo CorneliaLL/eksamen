@@ -6,7 +6,7 @@ class Transaction {
         this.accountID = accountID;
         this.tradeID = tradeID;
         this.amount = amount;
-        this.transactionDate = transactionDate;
+        this.transactionDate = transactionDate || new Date(); // Default to current date if not provided
     }
 
     // Registers a new transaction in the db and updates the account balance
@@ -18,7 +18,7 @@ class Transaction {
             .input("accountID", sql.Int, this.accountID)
             .input("tradeID", sql.Int, this.tradeID)
             .input("amount", sql.Decimal(18, 2), this.amount) // using 18,4 for better precision
-            .input("transactionDate", sql.DateTime, this.date)
+            .input("transactionDate", sql.DateTime, this.transactionDate)
             .query(`
                 INSERT INTO Transactions (accountID, tradeID, amount, transactionDate)
                 VALUES (@accountID, @tradeID, @amount, @transactionDate)
@@ -37,6 +37,7 @@ class Transaction {
 
 //EVt ku samle account transaktioner i denne metode sammen med ens stock transaktioner
     // Fetches all transactions and trade details related to a specific account
+//LEFT JOIN - gets all transactions for the account - both trade and account transactions
     static async getTransactions(accountID) {
         const pool = await connectToDB();
 
@@ -52,12 +53,17 @@ class Transaction {
                     Trades.Ticker, 
                     Trades.tradeType
                 FROM Transactions
-                JOIN Trades ON Transactions.tradeID = Trades.tradeID
+                LEFT JOIN Trades ON Transactions.tradeID = Trades.tradeID
                 WHERE Transactions.accountID = @accountID
             `);
 
         return result.recordset; // returns all transactions for the given account
     }
+    
+    static async getAccountTransaction(accountID) {
+
+    }
 }
+
 
 module.exports = { Transaction };

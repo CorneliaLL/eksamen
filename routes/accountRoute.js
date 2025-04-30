@@ -16,7 +16,7 @@ router.post('/createAccount', accountController.createAccount);
 router.post("/account/deactivateAccount/:accountID", accountController.handleDeactivateAccount);
 router.post("/account/reactivateAccount/:accountID", accountController.handleReactivateAccount);
 router.post("/account/:accountID", accountController.getAccountByID);
-router.post("/updateBalance/:accountID", accountController.handleUpdateAccountBalance);
+//router.post("/updateBalance/:accountID", accountController.handleUpdateAccountBalance);
 
 
 
