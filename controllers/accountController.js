@@ -114,6 +114,10 @@ async function handleUpdateAccountBalance(req, res){
     //ADD INPUTS IN EJS THAT CORRELATES
     const { amount, type } = req.body;
 
+    const account = await Account.findAccountByID(accountID);
+    if (account.accountStatus === false) {
+      return res.status(403).send("Cannot update balance for a deactivated account");
+    }
     const updatedBalance = parseFloat(amount);
 
     //Checks and validates that the amount is a number and is greater than 0
@@ -128,7 +132,7 @@ async function handleUpdateAccountBalance(req, res){
     } else {
       return res.status(400).send("Invalid transaction type. Must be 'deposit' or 'withdraw'.");
     } 
-    res.status(200).send("Account balance updated successfully.");
+    res.redirect(`/account/${accountID}`);
     }catch (err) {
     console.error("Error updating account balance:", err.message);
     res.status(500).send("Failed to update account balance");

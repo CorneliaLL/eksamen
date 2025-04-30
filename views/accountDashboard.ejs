@@ -15,7 +15,7 @@
     <div class="boxContainer">
     <div class="topbox">
       <h3> Balance: <%= account.balance.toFixed(2) %> <%= account.currency %> </h3>
-      <form action="/updateBalance" method="POST">
+      <form action="/updateBalance/<%= account.accountID %>" method="POST">
         <div class="updateBalance">
           <label for="amount">Select amount:</label>
           <input type="number" name="amount" id="amount" step="0.01" required />
