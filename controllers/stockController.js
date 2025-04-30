@@ -30,7 +30,7 @@ async function handleFetchStock(req,res) {//adds new stock to db
 
 //Used for our search function in frontend
 //Gets stock data from our DB 
-async function handleGetStockByID(req, res) {
+async function handleGetStockByTicker(req, res) {
     const { ticker } = req.params; //gets ticker from url
 
     try {
@@ -84,7 +84,7 @@ async function updateStock(req, res) {
 
 module.exports = {
     handleFetchStock, //post: add new stock
-    handleGetStockByID, //get specific stock 
+    handleGetStockByTicker, //get specific stock 
     showChart, //shows side for stock graph 
     listStocks //shows list for stocks 
 }
