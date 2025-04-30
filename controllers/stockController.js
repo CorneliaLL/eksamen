@@ -84,7 +84,7 @@ async function updateStock(req, res) {
 
 module.exports = {
     handleFetchStock, //post: add new stock
-    fetchSpecificStock, //get specific stock 
+    handleGetStockByID, //get specific stock 
     showChart, //shows side for stock graph 
     listStocks //shows list for stocks 
 }
