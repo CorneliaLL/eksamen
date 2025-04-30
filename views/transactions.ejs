@@ -31,6 +31,7 @@
                   <th>Date</th>
                   <th>Ticker</th>
                   <th>Trade Type</th>
+                  <th>Balance</th>
                 </tr>
               </thead>
               <tbody>
@@ -43,6 +44,7 @@
                     <td><%= new Date(transaction.transactionDate).toLocaleString() %></td>
                     <td><%= transaction.Ticker %></td>
                     <td><%= transaction.tradeType %></td>
+                    <td><%= account.balance %></td>
                   </tr>
                 <% }) %>
               </tbody>
