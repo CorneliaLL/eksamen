@@ -43,8 +43,6 @@ async function createAccount(req, res) {
   }
 }
 
-//Ændre så man ikke kan trykke ind på hver account og få oversigt over porteføljerne i en account
-//Tilføj knapper til at kunne lave indsættelser osv og lav et link til at kunne se transaktioner for den givne konto
 // Show list of all accounts
 async function getAccounts(req, res) {
     try {
@@ -75,7 +73,7 @@ async function getAccountByID(req, res){
       } else {
 
           //change to res.render
-          res.render("accountDashboard", { account });
+          res.render("accountDashboard", { account, portfolios: req.portfolios });
       } 
 
     } catch (err) {
@@ -109,7 +107,7 @@ async function handleReactivateAccount(req, res) {
     }
   }
 
-  //NOT DONE YET
+  //NOT DONE YET mangler ordentlig redirect
 async function handleUpdateAccountBalance(req, res){
   try{
     const { accountID } = req.params;

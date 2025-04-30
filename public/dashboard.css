@@ -62,6 +62,7 @@ body {
     cursor: pointer;
   }
 
+  .topbox,
   .box1,
   .box2,
   .box3,
@@ -94,12 +95,21 @@ body {
     align-items: flex-start;
   }
 
+  .updateBalance button {
+    align-items: center;
+  }
+  
   .deactivateForm button {
     background-color: maroon;
   }
 
   .reactivateForm button {
     background-color: seagreen;
+  }
+
+  h3 {
+    text-align: center;
+    color: white;
   }
 
   h2 {

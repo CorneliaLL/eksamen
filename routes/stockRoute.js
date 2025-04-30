@@ -8,7 +8,7 @@ const stockController = require("../controllers/stockController");
 /*router.get('/fetchStock/:ticker', stockController.fetchStock);*/ //post? gets stockdata from AV api and saves in db based on ticker from url 
 router.get('/chart/:ticker', stockController.showChart); //to show graph 
 router.get('/list', stockController.listStocks); //shows all stocks in db
-router.get('/api/stocks/:ticker', stockController.handleGetStockByID); //gets stockdata as json (api)
+router.get('/api/stocks/:ticker', stockController.fetchSpecificStock); //gets stockdata as json (api)
 router.post('/fetchStock', stockController.fetchStock); //gets stockdata from AV api and saves in db based on ticker and portfolioID in req.body
 
 
