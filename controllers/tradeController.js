@@ -1,6 +1,6 @@
 const { Trade } = require("../models/tradeModels");
 const { Transaction } = require("../models/transactionModels");
-const { storeStockData } = require("../services/fetchStockData"); // Fetches stock data live from AlphaVantage
+const { fetchStockData } = require("../services/fetchStockData"); // Fetches stock data live from AlphaVantage
 const { storeExchangeRate } = require("../services/fetchExchangeRate"); // Fetches currency conversion rate live
 const { Account } = require("../models/accountModels"); // Account model to check user balance
 
