@@ -59,6 +59,25 @@ async function signup (req, res){
     }
   };
 
+  async function renderDashboard(req, res) {
+    try {
+      const userID = req.session.userID;
+      if (!userID) {
+        return res.status(401).send("Unauthorized");
+      }
+      const user = await User.findUserID(userID);
+      if (!user) {
+        return res.status(404).send("User not found");
+      }
+      res.render("/dashboard", {
+        username: user.username
+      });
+    } catch (err) {
+      console.error("Error in renderDashboard;", err.message);
+      res.status(500).send("Failed to render dashboard");
+    }
+  }
+
   async function login(req, res) {
     try {
       const { username, password } = req.body;
@@ -119,4 +138,4 @@ async function changePassword(req, res) {
 }
 
 
-module.exports = { signup, login, changePassword, logout }
+module.exports = { signup, login, changePassword, logout, renderDashboard }

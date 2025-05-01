@@ -38,6 +38,18 @@ async createUser(){
     return { username, email };
 }
 
+static async findUserID(userID) {
+    const pool = await connectToDB();
+
+    const result = await pool.request()
+        .input("userID", sql.Int, userID)
+        .query("SELECT * FROM  Users WHERE userID = @userID");
+
+//Returns the first instance in the DB that matches our query, or undefined
+//recordset - property from .query which is a method.
+    return result.recordset[0];
+}
+
 static async findUserByUsername(username) {
     const pool = await connectToDB();
 
