@@ -33,24 +33,27 @@
 
         <!--stock info section. Only shown if stockData is available from server-->
         <% if (stockData) { %> <!--checks if stockData exists in the local variables-->
-          <div class="stock-card"> <!--card like container-->
+          <!--værdier fra stockdata sende fra res.render i controlleren-->
+          <div class="stock-card"> <!--card like container for stock info - visuelt-->
             <div class="stock-header"> <!--shows stock name and ticker-->
-              <h3><%= stockData.stockName %> (<%= stockData.ticker %>)</h3>
+              <h3><%= stockData.stockName %> (<%= stockData.Ticker %>)</h3>
             </div>
+            <!--shows the stock newest current price and currency-->
             <div class="stock-details"> <!--current price with currency, 24-hour price change, (uses dynamic css classes if price change is positive or negative?)-->
               <div class="detail-item"> 
                 <span class="label">Current Price</span>
-                <span class="value"><%= stockData.closePrice %> <%= stockData.stockCurrency %></span>
+                <span class="value"><%= stockData.ClosePrice %> <%= stockData.stockCurrency %></span>
               </div>
 
-              <% if (stockData.priceChange) { %>
+              <!--24 hour price change -->
+              <% if (stockData.priceChange) { %> <!--if price change exist-->
                 <div class="detail-item">
                   <span class="label">24h Change</span>
-                  <span class="value <%= parseFloat(stockData.priceChange) >= 0 ? 'positive' : 'negative' %>">
+                  <span class="value <%= parseFloat(stockData.priceChange) >= 0 ? 'positive' : 'negative' %>"> <!--make pos and neg, green and red with css?-->
                     <%= stockData.priceChange %>%
                   </span>
                 </div>
-              <% } %>
+              <% } %> 
             </div>
           </div>
           <% } %>

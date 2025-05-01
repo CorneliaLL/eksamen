@@ -32,6 +32,7 @@ async function handleFetchStock(req,res) {//adds new stock to db
         }
     }; //forklaring: følger objekt orienteret (pensum), struktureret, data api til stock model til database, controller styrer flow, service henter data og model gemmer data (mvc struktur)
 
+    
 //Used for our search function in frontend
 //Gets stock data from our DB 
 async function handleGetStockByTicker(req, res) {
@@ -74,6 +75,7 @@ async function handleStockSearch(req, res) {
     }
 }*/
 
+//bruges ikke rigtig endnu
 async function loadSearchView(req, res) {
     res.render("trade" , {
         stockData: null,
@@ -82,11 +84,10 @@ async function loadSearchView(req, res) {
       });
 }
 
-
-
+//håndterer aktiesøgning fra en ticker - bindeled mellem trade.ejs og db
 async function handleStockSearch(req, res) {
   try {
-    const { ticker } = req.body;
+    const { ticker } = req.body; //henter ticker
 
     if (!ticker) {
       return res.render("trade", {
@@ -96,7 +97,7 @@ async function handleStockSearch(req, res) {
       });
     }
 
-    const stockData = await Stocks.findStockByTicker(ticker); // henter fra DB
+    const stockData = await Stocks.findStockByTicker(ticker); //søger i DB
 
     console.log(stockData)
 
@@ -108,7 +109,7 @@ async function handleStockSearch(req, res) {
       });
     }
 
-    // Sender stockData fra DB til EJS
+    //sender stockData fra DB til EJS
     res.render("trade", {
       stockData,
       error: null,
@@ -162,7 +163,7 @@ async function updateStock(req, res) {
 module.exports = {
     handleFetchStock, //post: add new stock
     handleGetStockByTicker, //get specific stock 
-    handleStockSearch,
+    handleStockSearch, //search ticker 
     showChart, //shows side for stock graph 
     listStocks, //shows list for stocks 
     loadSearchView // load the search view before making the post request, can maybe remove later
