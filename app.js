@@ -22,7 +22,7 @@ app.use(
 
 //Routes
 const userRoutes = require('./routes/userRoute.js');
-const dashboardRoutes = require('./routes/dashboardRoute.js');
+//const dashboardRoutes = require('./routes/dashboardRoute.js');
 const accountRoutes = require('./routes/accountRoute.js');
 const portfolioRoutes = require("./routes/portfolioRoute.js");
 const stockRoutes = require('./routes/stockRoute.js');
@@ -69,6 +69,7 @@ app.use("/", portfolioRoutes);
 app.use('/stocks', stockRoutes);
 app.use('/', tradeRoutes);
 app.use('/', transactionRoutes); 
+
 
 
 //Standard routes

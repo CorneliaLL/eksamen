@@ -74,6 +74,16 @@ async function handleStockSearch(req, res) {
     }
 }*/
 
+async function loadSearchView(req, res) {
+    res.render("trade" , {
+        stockData: null,
+        error: "Stock not found in database",
+        success: null
+      });
+}
+
+
+
 async function handleStockSearch(req, res) {
   try {
     const { ticker } = req.body;
@@ -86,7 +96,9 @@ async function handleStockSearch(req, res) {
       });
     }
 
-    const stockData = await Stocks.findStockByTicker(ticker); // 🔥 henter fra DB
+    const stockData = await Stocks.findStockByTicker(ticker); // henter fra DB
+
+    console.log(stockData)
 
     if (!stockData) {
       return res.render("trade", {
@@ -96,7 +108,7 @@ async function handleStockSearch(req, res) {
       });
     }
 
-    // ✅ Sender stockData fra DB til EJS
+    // Sender stockData fra DB til EJS
     res.render("trade", {
       stockData,
       error: null,
@@ -152,5 +164,7 @@ module.exports = {
     handleGetStockByTicker, //get specific stock 
     handleStockSearch,
     showChart, //shows side for stock graph 
-    listStocks //shows list for stocks 
+    listStocks, //shows list for stocks 
+    loadSearchView // load the search view before making the post request, can maybe remove later
+
 }
