@@ -21,14 +21,14 @@ class Stocks{ //stockID?  fordi SQL laver ID'et selv. Simplere og mere standard 
             // Indsætter aktiedata i Stocks tabellen
             await pool.request()
             .input('ticker', sql.NVarChar(100), stock.ticker)
-            .input('date', sql.Date, stock.latestDate)
+            .input('date', sql.Date, stock.date)
             .input('stockName', sql.NVarChar(100), stock.stockName)
-            .input('StockCurrency', sql.NVarChar(100), stock.Currency)
+            .input('Stockcurrency', sql.NVarChar(100), stock.currency)
             .input('closePrice', sql.Decimal(10,2), stock.closePrice)
             .input('stockType', sql.NVarChar(100), stock.stockType)
             .input('portfolioID', sql.Int, stock.portfolioID)
             .query(`
-            INSERT INTO Stocks (Ticker, Date, StockName, stockCurrency, ClosePrice, StockType, PortfolioID)
+            INSERT INTO Stocks (Ticker, Date, StockName, StockCurrency, ClosePrice, StockType, PortfolioID)
             VALUES (@ticker, @date, @stockName, @stockcurrency, @closePrice, @stockType, @portfolioID)
             `);
         }
@@ -55,6 +55,18 @@ class Stocks{ //stockID?  fordi SQL laver ID'et selv. Simplere og mere standard 
     //database skal have en primætnøgle stockID men ikke brugeren derfor intern db info 
     //gets stockdata for graph for a specific tickerr 
 
+    static async getStockByTicker(ticker) {
+        const pool = await connectToDB();
+        const result = await pool.request()
+            .input('ticker', sql.NVarChar(100), ticker)
+            .query(`
+                SELECT TOP 1 * FROM Stocks
+                WHERE Ticker = @ticker
+                ORDER BY latestDate DESC
+            `);
+        return result.recordset[0];
+    }
+    
     //Ændrer denne så den henter stock fra vores DB
         static async findStockByID(stockID) {
         const pool = await connectToDB();
@@ -68,8 +80,10 @@ class Stocks{ //stockID?  fordi SQL laver ID'et selv. Simplere og mere standard 
     
         return result.recordset[0]; // vi returnerer hele objektet, ikke map
     }
+
+
     
-//gets a list of all stock not based one ticker 
+//get lists of all ticker in the database 
     static async getAllStocks() {
         const pool = await connectToDB(); //connects to database 
         //gets tickers from stocks table 

@@ -10,11 +10,15 @@ async function handleFetchStock(req,res) {//adds new stock to db
         const { ticker, portfolioID } = req.body; //gets ticker and portfolioID from req body (post)
         const stockData = await fetchStockData(ticker); //gets stockData from api 
         const stock = new Stocks (
+        null,
         stockData.ticker, //stock ticker
+        stockData.latestDate, //date for latest stock - latest dat kan nemt misforståes og date er datoen for datapunktet
+        portfolioID, //ID for the portfolio stock 
         stockData.stockName, //stock name
+        stockData.stockCurrency, //eks. DKK
         stockData.closePrice, //latest closeprice
         stockData.date, //date for latest stock - latest dat kan nemt misforståes og date er datoen for datapunktet
-        stockData.stockCurrency, //eks. DKK
+        stockData.stockcurrency, //eks. DKK
         stockData. stockType, //type
         portfolioID //ID for the portfolio stock 
         );
@@ -35,7 +39,7 @@ async function handleGetStockByTicker(req, res) {
 
     try {
         const stock = new Stocks();
-        const result = await stock.getStockData(ticker); //get stocks data from db
+        const result = await Stocks.getStockByTicker(ticker); //get stocks data from db
  
         res.render('stockChart', { 
             ticker: ticker,
