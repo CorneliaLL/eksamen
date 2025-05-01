@@ -35,7 +35,14 @@
                 </tr>
               </thead>
               <tbody>
+              <!-- Create a variable directly that shows the change in balance for each transaction -->
+                <% 
+                    let updatedBalance = account.balance; // start med nuværende saldo
+                %>
                 <% transactions.forEach(transaction => { %>
+                  <% 
+                    updatedBalance -= transaction.amount; // træk beløbet fra for at vise saldo før transaktionen
+                  %>
                   <tr>
                     <td><%= transaction.transactionID %></td>
                     <td><%= transaction.tradeID %></td>
@@ -44,7 +51,7 @@
                     <td><%= new Date(transaction.transactionDate).toLocaleString() %></td>
                     <td><%= transaction.Ticker %></td>
                     <td><%= transaction.tradeType %></td>
-                    <td><%= account.balance %></td>
+                    <td><%= updatedBalance.toFixed(2) %></td>
                   </tr>
                 <% }) %>
               </tbody>

@@ -60,7 +60,6 @@ req.session.destroy((err) => {
 
 
 app.use('/user', userRoutes);
-app.use('/dashboard', dashboardRoutes)
 app.use('/', accountRoutes);
 app.use("/", portfolioRoutes);
 app.use('/stocks', stockRoutes);

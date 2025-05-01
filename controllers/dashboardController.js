@@ -1,4 +1,4 @@
-const { findUserByUsername } = require("../models/userModels");
+/*const { findUserByUsername } = require("../models/userModels");
 
 function renderDashboard(req, res) {
     //dummy data
@@ -18,4 +18,4 @@ module.exports = { renderDashboard }
 
 
 //bruges ikke??
-//evt ryk til user routes?
+//evt ryk til user routes?*/

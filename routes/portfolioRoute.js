@@ -1,7 +1,6 @@
 const express = require("express");
 const router = express.Router();
 const portfolioController = require("../controllers/portfolioController");
-const accountController = require("../controllers/accountController");
 const { Account } = require("../models/accountModels");
 
 // Form to create new portfolio
