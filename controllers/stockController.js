@@ -18,9 +18,6 @@ async function handleFetchStock(req,res) {//adds new stock to db
         stockData.stockCurrency, //eks. DKK
         stockData.closePrice, //latest closeprice
         stockData.date, //date for latest stock - latest dat kan nemt misforståes og date er datoen for datapunktet
-        stockData.stockcurrency, //eks. DKK
-        stockData. stockType, //type
-        portfolioID //ID for the portfolio stock 
         stockData.stockType, //type
         );
         stock.dailyChange = stockData.dailyChange;
