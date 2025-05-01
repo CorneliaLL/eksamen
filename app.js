@@ -71,6 +71,7 @@ app.use('/', tradeRoutes);
 app.use('/', transactionRoutes); 
 
 
+
 //Standard routes
 //endpoint = URL
 //This is a API endpoint bc it returns data and not a html-page 

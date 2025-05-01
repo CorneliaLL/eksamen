@@ -3,7 +3,7 @@
 const {connectToDB, sql } = require('../database'); //sql connection from database.js 
 
 //represents stocks and handling of database 
-class Stocks{ //stockID?  fordi SQL laver ID'et selv. Simplere og mere standard ifølge DB teori​ forelæsning 17?
+class Stocks{ //stockID slettet - fordi SQL laver ID'et selv. Simplere og mere standard ifølge DB teori​ forelæsning 17?
     constructor(ticker, latestDate, portfolioID, stockName, stockCurrency, closePrice, stockType){
         this.ticker = ticker;
         this.latestDate = latestDate;
@@ -33,9 +33,7 @@ class Stocks{ //stockID?  fordi SQL laver ID'et selv. Simplere og mere standard 
             `);
         }
     /*forklaring: gemme funktion - hele objektet gemmes i databasen i stedet for mange enkeltdele
-    i stedet for enkeltdata kan vi arbejde med samlede objekter - forelæsning 15 om struktur
-    skal ikke huske rækkefælgen 
-    kan genbruge objekt i andre funktioner nemmere*/
+    i stedet for enkeltdata kan vi arbejde med samlede objekter - forelæsning 15 om struktur. skal ikke huske rækkefælgen. kan genbruge objekt i andre funktioner nemmere*/
 
     //finds newest version of stock by ticker 
     static async findStockByTicker(ticker) {
@@ -46,16 +44,13 @@ class Stocks{ //stockID?  fordi SQL laver ID'et selv. Simplere og mere standard 
                 SELECT TOP 1 *
                 FROM Stocks
                 WHERE Ticker = @ticker
-                ORDER BY Date DESC
+                ORDER BY latestDate DESC
             `);
         return result.recordset[0]; // en aktie
     }
 
-    //måske ikke nødvendig fordi vi arbejder med ticker. man finder en aktie baseret på ticker i brugergrænsefladen og ikke stockID
-    //database skal have en primætnøgle stockID men ikke brugeren derfor intern db info 
-    //gets stockdata for graph for a specific tickerr 
-
-    static async getStockByTicker(ticker) {
+    //samme som findStockByTicker?
+    /*static async getStockByTicker(ticker) { samme som findStockByTicker?
         const pool = await connectToDB();
         const result = await pool.request()
             .input('ticker', sql.NVarChar(100), ticker)
@@ -65,8 +60,10 @@ class Stocks{ //stockID?  fordi SQL laver ID'et selv. Simplere og mere standard 
                 ORDER BY latestDate DESC
             `);
         return result.recordset[0];
-    }
+    }*/
     
+
+        //????
     //Ændrer denne så den henter stock fra vores DB
         static async findStockByID(stockID) {
         const pool = await connectToDB();
@@ -81,8 +78,6 @@ class Stocks{ //stockID?  fordi SQL laver ID'et selv. Simplere og mere standard 
         return result.recordset[0]; // vi returnerer hele objektet, ikke map
     }
 
-
-    
 //get lists of all ticker in the database 
     static async getAllStocks() {
         const pool = await connectToDB(); //connects to database 
@@ -95,9 +90,8 @@ class Stocks{ //stockID?  fordi SQL laver ID'et selv. Simplere og mere standard 
             `);
     
         return result.recordset; //returns tickers as array   
-}
-
-}
+        }
+    }
 
 //Skal hente daglig priser fra vores API
 class PriceHistory{ //bruges ikke endnu
