@@ -21,6 +21,7 @@ async function handleFetchStock(req,res) {//adds new stock to db
         stockData.stockcurrency, //eks. DKK
         stockData. stockType, //type
         portfolioID //ID for the portfolio stock 
+        stockData.stockType, //type
         );
         stock.dailyChange = stockData.dailyChange;
 
