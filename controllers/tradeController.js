@@ -17,7 +17,7 @@ async function handleTrade(req, res) {
         const transactionFee = parseFloat(fee);
 
         // Fetch live stock data using external API
-        const stockData = await storeStockData(Ticker);
+        const stockData = await fetchStockData(ticker);
         if (!stockData) {
             return res.status(400).send("Invalid ticker symbol or failed to fetch stock data.");
         }
