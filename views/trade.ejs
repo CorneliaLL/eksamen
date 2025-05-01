@@ -1,4 +1,4 @@
-<!-- EJS file to allow user to create a new trade (buy/sell stocks) -->
+<!-- EJS file to allows user to create a new trade (buy/sell stocks) -->
 <html lang="en">
 <%- include('./partials/head.ejs') %>
 
@@ -6,46 +6,111 @@
 <link rel="stylesheet" href="dashboard.css">
 
 <body>
-
-  <!-- main content -->
   <%- include('./partials/nav.ejs') %>
-  
+
   <div class="container">
     <div class="containerTitle">
       <h1>Trade Stocks</h1>
     </div>
 
+
     <div class="boxContainer">
       <div class="box1">
-        <h2>Create a New Trade</h2>
+        <!--search section that allows users to search for a stock by ticker-->
+        <div class="search-section">
+        <h2>Search Stock</h2> 
 
+        <!--connection to search functionality-->
+        <!--search form. sends post req to /search endpoint-->
+        <form action="/search" method="POST" id="searchForm">
+          <div class="searchContainer">
+            <!--input field for stock ticker-->
+            <input type="text" name="ticker" id="tickerSearch" placeholder="Enter stock ticker (e.g. AAPL for Apple Inc)" required>
+            <button type="submit" class="search-button">Search</button>
+          </div>
+        </form>
+      </div>
+
+        <!--stock info section. Only shown if stockData is available from server-->
+        <% if (stockData) { %> <!--checks if stockData exists in the local variables-->
+          <div class="stock-card"> <!--card like container-->
+            <div class="stock-header"> <!--shows stock name and ticker-->
+              <h3><%= stockData.stockName %> (<%= stockData.ticker %>)</h3>
+            </div>
+            <div class="stock-details"> <!--current price with currency, 24-hour price change, (uses dynamic css classes if price change is positive or negative?)-->
+              <div class="detail-item"> 
+                <span class="label">Current Price</span>
+                <span class="value"><%= stockData.closePrice %> <%= stockData.stockCurrency %></span>
+              </div>
+
+              <% if (stockData.priceChange) { %>
+                <div class="detail-item">
+                  <span class="label">24h Change</span>
+                  <span class="value <%= parseFloat(stockData.priceChange) >= 0 ? 'positive' : 'negative' %>">
+                    <%= stockData.priceChange %>%
+                  </span>
+                </div>
+              <% } %>
+            </div>
+          </div>
+          <% } %>
+
+        <!--connection to trade form-->
+        <div class="trade-section">
+        <!--trade form section that allows user to execute a trade-->
+        <h2>Create Trade</h2>
+        <!--form that sends post req to /trade endpoint with trade info-->
         <form action="/trade" method="POST" class="tradeForm">
-
+          <!--hidden input to store the selected stock ticker--> <!--stockData from server controller-->
+          <input type="hidden" name="Ticker" value="<%= stockData ? stockData.ticker : '' %>"> <!--ensures the trade is made for the correct stock-->
+          
+          <!--portfolio selection that user must select which portfolio to trade in-->
+          <div class="form-group">
           <label for="portfolioID">Portfolio ID:</label><br>
-          <input type="number" id="portfolioID" name="portfolioID" required><br><br>
+          <input type="number" id="portfolioID" name="portfolioID" required class="form-input">
+          </div>
 
+          <!--account selection that user must select which account to use for the trade-->
+          <div class="form-group">
           <label for="accountID">Account ID:</label><br>
-          <input type="number" id="accountID" name="accountID" required><br><br>
+          <input type="number" id="accountID" name="accountID" required class="form-input">
+        </div>
 
-          <label for="Ticker">Ticker Symbol:</label><br>
-          <input type="text" id="Ticker" name="Ticker" required><br><br>
-
+          <!--trade type selection that user chooses between buy and sell-->
+          <div class="form-group">
           <label for="tradeType">Trade Type:</label><br>
-          <select id="tradeType" name="tradeType" required>
+          <select id="tradeType" name="tradeType" required class="form-select">
             <option value="buy">Buy</option>
             <option value="sell">Sell</option>
-          </select><br><br>
+          </select>
+        </div>
 
+          <!--quantity input. Numbers of shares to buy or sell-->
+          <div class="form-group">
           <label for="quantity">Quantity:</label><br>
-          <input type="number" id="quantity" name="quantity" required><br><br>
+          <input type="number" id="quantity" name="quantity" required class="form-input" min="1">
+        </div>
 
-          <button type="submit" class="createNewAccountBtn">Submit Trade</button>
-        </form>
-
+          <!--submit button. only enabled when a stock has been selected-->
+          <div class="form-actions">
+        <button type="submit" class="submit-button" <%= !stockData ? 'disabled' : ''  %>>Submit Trade</button>
       </div>
-    </div>
+        </form>
+      </div>
 
+      <!--messages-->
+      <% if (typeof error !== 'undefined') { %>
+        <div class="message error"> <%= error %> </div>
+        <% } %>
+
+        <% if (typeof success !== 'undefined') { %>
+          <div class="message success"> <%= success %> </div>
+          <% } %>
+
+    </div>
   </div>
 
 </body>
 </html>
+
+<!--class="createNewAccountBtn"?? button-->

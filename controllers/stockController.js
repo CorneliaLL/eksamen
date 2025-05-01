@@ -14,7 +14,7 @@ async function handleFetchStock(req,res) {//adds new stock to db
         stockData.stockName, //stock name
         stockData.closePrice, //latest closeprice
         stockData.date, //date for latest stock - latest dat kan nemt misforståes og date er datoen for datapunktet
-        stockData.stockcurrency, //eks. DKK
+        stockData.stockCurrency, //eks. DKK
         stockData. stockType, //type
         portfolioID //ID for the portfolio stock 
         );
@@ -48,6 +48,67 @@ async function handleGetStockByTicker(req, res) {
         res.status(500).send('Server error');
       }
 }
+
+/*// handles stock search 
+async function handleStockSearch(req, res) {
+    try {
+        const { ticker } = req.body;
+        if (!ticker) {
+            return res.status(400).json({ error: "Ticker is required"});
+        }
+
+        //fetch stock data from API 
+        const stockData = await fetchStockData(ticker);
+        if (!stockData) {
+            return res.status(404).json({ error: "Stock not found" });
+        }
+
+        res.render("trade", { stockData }); //ejs view with data 
+    } catch (error) {
+        console.error("Error searching for stock:", error);
+        res.status(500).json({ error: "Failed to search stock"});
+    }
+}*/
+
+async function handleStockSearch(req, res) {
+  try {
+    const { ticker } = req.body;
+
+    if (!ticker) {
+      return res.render("trade", {
+        stockData: null,
+        error: "Ticker is required",
+        success: null
+      });
+    }
+
+    const stockData = await Stocks.findStockByTicker(ticker); // 🔥 henter fra DB
+
+    if (!stockData) {
+      return res.render("trade", {
+        stockData: null,
+        error: "Stock not found in database",
+        success: null
+      });
+    }
+
+    // ✅ Sender stockData fra DB til EJS
+    res.render("trade", {
+      stockData,
+      error: null,
+      success: null
+    });
+
+  } catch (err) {
+    console.error("DB fetch failed:", err);
+    res.render("trade", {
+      stockData: null,
+      error: "Internal server error",
+      success: null
+    });
+  }
+}
+
 
 
 // handles visualizing of graph for one stock 
@@ -85,6 +146,7 @@ async function updateStock(req, res) {
 module.exports = {
     handleFetchStock, //post: add new stock
     handleGetStockByTicker, //get specific stock 
+    handleStockSearch,
     showChart, //shows side for stock graph 
     listStocks //shows list for stocks 
 }
