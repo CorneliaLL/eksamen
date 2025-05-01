@@ -14,9 +14,15 @@ async function fetchStockData(ticker) {
         const priceData = priceResponse.data; //saves response answer
 
         if (priceData['Time Series (Daily)']) { //reads newest share price 
-            const latestDate = Object.keys(priceData['Time Series (Daily)'])[0]; //finds newest day 
-            const latestInfo = priceData['Time Series (Daily)'][latestDate]; //finds date for specific day
-            const closePrice = latestInfo['4. close']; //close prise for specific day 
+
+            const dates = Object.keys(priceData['Time Series (Daily)']);
+            const latestDate = dates[0]; //finds newest day 
+            const previousDate = dates[1];
+
+            const closePrice = parseFloat(priceData[latestDate]['4. close']); //close prise for specific day 
+            const previousClosePrice = parseFloat(priceData[previousDate]['4. close']);
+
+            const dailyChange = closePrice - previousClosePrice;
 
         const overviewResponse = await axios.get(overviewUrl);
         const overviewData = overviewResponse.data;
@@ -33,7 +39,8 @@ async function fetchStockData(ticker) {
                 closePrice, 
                 stockName,
                 stockCurrency, 
-                stockType 
+                stockType,
+                dailyChange
             };
 
         } else {

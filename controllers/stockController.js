@@ -22,7 +22,8 @@ async function handleFetchStock(req,res) {//adds new stock to db
         stockData. stockType, //type
         portfolioID //ID for the portfolio stock 
         );
-        
+        stock.dailyChange = stockData.dailyChange;
+
         await Stocks.storeStock(stock); //saves stock in database 
         
         res.status(201).send('Stock saved'); //sends message 
@@ -147,17 +148,30 @@ async function listStocks(req, res){
 
 
 //Måske noget der kan bruges til price history
-/*//handles calling api: get stockdata from alpha vantage and saves in database
-async function updateStock(req, res) {
+//handles calling api: get stockdata from alpha vantage and saves in database
+/*async function updateStock(req, res) {
     const { ticker } = req.params; //gets ticker from URL
     try {
-        await Stocks.storeStockData(ticker); //gets service function to get and save data 
-        res.send(`Stock data for ${ticker} is updated`);
+        const stockData = await fetchStockData(ticker);
+
+        const priceResponse = await axios.get(`https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${ticker}&apikey=5WEYK0DRXVCFWJPW`);
+        const priceData = priceResponse.data['Time Series (Daily)'];
+
+        const dates = Object.keys(priceData);
+        const today = dates[0];
+        const yesterday = dates[1];
+
+        const todayClose = parseFloat(priceData[today]['4. close']);
+        const yesterdayClose = parseFloat(priceData[yesterday]['4. close']);
+        const dailyChange = todayClose - yesterdayClose;
+
+        res.send(`Stock data for ${ticker} is updated with ${dailyChange.toFixed(2)}`);
     } catch (error) {
         console.error('Cannot fetch stock data:', error);
         res.status(500).send('Cannot fetch stock data'); //error message 
     }
-};*/
+};
+*/
 
 
 module.exports = {
