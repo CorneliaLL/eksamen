@@ -64,8 +64,8 @@
         <h2>Create Trade</h2>
         <!--form that sends post req to /trade endpoint with trade info-->
         <form action="/trade" method="POST" class="tradeForm">
-          <!--hidden input to store the selected stock ticker--> <!--stockData from server controller-->
-          <input type="hidden" name="Ticker" value="<%= stockData ? stockData.ticker : '' %>"> <!--ensures the trade is made for the correct stock-->
+          <!--hidden input to store the selected stock ticker--> 
+          <input type="hidden" name="Ticker" value="<%= stockData ? stockData.Ticker : '' %>"> 
           
           <!--portfolio selection that user must select which portfolio to trade in-->
           <div class="form-group">
@@ -92,6 +92,12 @@
           <div class="form-group">
           <label for="quantity">Quantity:</label><br>
           <input type="number" id="quantity" name="quantity" required class="form-input" min="1">
+
+        </div>
+        <!--transaction fee input field with a default value of 0, required by trade controller-->
+        <div class=""form-group>
+          <label for="fee">Transaction Fee:</label> <br>
+          <input type="number" id="fee" name="fee" required class="form-input" min="0" step="0.01" value="0">
         </div>
 
           <!--submit button. only enabled when a stock has been selected-->
@@ -114,6 +120,6 @@
   </div>
 
 </body>
-</html>
+</html> 
 
 <!--class="createNewAccountBtn"?? button-->

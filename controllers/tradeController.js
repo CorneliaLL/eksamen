@@ -12,14 +12,27 @@ async function handleTrade(req, res) {
 
         const { portfolioID, accountID, Ticker, tradeType, quantity, fee } = req.body;
 
+          // Validate required fields
+          if (!portfolioID || !accountID || !Ticker || !tradeType || !quantity) {
+            return res.render("trade", {
+                stockData: null,
+                error: "All fields are required",
+                success: null
+            });
+        }
+
         // convert quantity and fee to float for calculations
         const qty = parseFloat(quantity);
-        const transactionFee = parseFloat(fee);
+        const transactionFee = parseFloat(fee) || 0;
 
         // Fetch live stock data using external API
-        const stockData = await fetchStockData(ticker);
+        const stockData = await fetchStockData(Ticker);
         if (!stockData) {
-            return res.status(400).send("Invalid ticker symbol or failed to fetch stock data.");
+            return res.render("trade", {
+                stockData: null,
+                error: "Invalid ticker symbol or failed to fetch stock data",
+                success: null
+            });
         }
 
         const stockName = stockData.stockName || Ticker; // fallback if no name
@@ -28,17 +41,28 @@ async function handleTrade(req, res) {
 
         // Find the accounts currency
         const account = await Account.findAccountByID(accountID);
+        if (!account) {
+            return res.render("trade", {
+                stockData: null,
+                error: "Account not found",
+                success: null
+            });
+        }
         const accountCurrency = account.currency;
         
         // Validates the account status
         if (account.accountStatus === 0) {
-            return res.status(403).send("Trade not possible, account is deactivated");
+            return res.render("trade", {
+                stockData: null,
+                error: "Trade not possible, account is deactivated",
+                success: null
+            });
         }
 
         // Adjust the price if stock and account are in different currencies
         let adjustedPrice = closePrice;
         if (stockCurrency !== accountCurrency) {
-            const rate = await storeExchangeRate(stockCurrency, accountCurrency); // fetch exchange rate live
+            const rate = await storeExchangeRate(stockCurrency, accountCurrency);
             adjustedPrice = closePrice * rate;
             console.log(`Exchange rate applied: 1 ${stockCurrency} = ${rate} ${accountCurrency}`);
         }
@@ -50,7 +74,11 @@ async function handleTrade(req, res) {
         if (tradeType === "buy") {
             const hasFunds = await Trade.checkFunds(accountID, totalPrice);
             if (!hasFunds) {
-                return res.status(400).send("Insufficient funds in account.");
+                return res.render("trade", {
+                    stockData: null,
+                    error: "Insufficient holdings to sell",
+                    success: null
+                });
             }
         }
 
@@ -94,7 +122,11 @@ async function handleTrade(req, res) {
 
     } catch (err) {
         console.error("Error handling trade:", err);
-        res.status(500).send("Trade could not be processed.");
+        res.render("trade", {
+            stockData: null,
+            error: "Trade could not be processed. Please try again.",
+            success: null
+        });
     }
 }
 
