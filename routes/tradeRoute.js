@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { handleTrade } = require("../controllers/tradeController");
-const { handleStockSearch, loadSearchView } = require("../controllers/stockController");
+const { handleStockSearch } = require("../controllers/stockController");
 
 
 // show the trade form to the user
@@ -18,8 +18,6 @@ router.get('/trade', (req, res) => {
 //trade registrerer ikke stocks køb  
 //search for stock data 
 router.post("/search", handleStockSearch);
-
-router.get("/search", loadSearchView);
 
 // handle the trade form submission
 router.post("/trade", handleTrade);
