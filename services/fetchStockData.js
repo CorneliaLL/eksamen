@@ -15,14 +15,23 @@ async function fetchStockData(ticker) {
 
         if (priceData['Time Series (Daily)']) { //reads newest share price 
 
-            const dates = Object.keys(priceData['Time Series (Daily)']);
+            const timeSeries = priceData['Time Series (Daily)']
+            const dates = Object.keys(timeSeries);
             const latestDate = dates[0]; //finds newest day 
             const previousDate = dates[1];
 
-            const closePrice = parseFloat(priceData[latestDate]['4. close']); //close prise for specific day 
-            const previousClosePrice = parseFloat(priceData[previousDate]['4. close']);
+            const closePrice = parseFloat(timeSeries[latestDate]['4. close']); //close prise for specific day 
+            const previousClosePrice = parseFloat(timeSeries[previousDate]['4. close']);
 
-            const dailyChange = closePrice - previousClosePrice;
+            const dailyChange = ((closePrice - previousClosePrice) / previousClosePrice) * 100;
+
+            // tester lige om data kommer ud
+            console.log(`Ticker: ${ticker}`);
+            console.log(`Date: ${latestDate}`);
+            console.log(`Close Price: ${closePrice}`);
+            console.log(`Previous Date: ${previousDate}`);
+            console.log(`Previous Close: ${previousClosePrice}`);
+            console.log(`Daily Change: ${dailyChange}`);
 
         const overviewResponse = await axios.get(overviewUrl);
         const overviewData = overviewResponse.data;
@@ -40,7 +49,7 @@ async function fetchStockData(ticker) {
                 stockName,
                 stockCurrency, 
                 stockType,
-                dailyChange
+                dailyChange: dailyChange.toFixed(2)
             };
 
         } else {
@@ -48,10 +57,13 @@ async function fetchStockData(ticker) {
         }
     } catch (error) { //catches error and sends error message 
         console.error(`Error while collecting data`, error)
+
     }
 }
 
 module.exports = { fetchStockData };
+
+
 
 //kilder: 
 //https://www.alphavantage.co/documentation/ - Time Series Dailey

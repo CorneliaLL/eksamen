@@ -20,7 +20,7 @@ async function handleFetchStock(req,res) {//adds new stock to db
         stockData.date, //date for latest stock - latest dat kan nemt misforståes og date er datoen for datapunktet
         stockData.stockType, //type
         );
-        stock.dailyChange = stockData.dailyChange;
+        stock.dailyChange = stockData.dailyChange; // dailyChange er i objektet, men bruges kun midlertidigt, så nedenstående 'await' gemmer ikke daily change i databasen
 
         await Stocks.storeStock(stock); //saves stock in database 
         
@@ -125,8 +125,6 @@ async function handleStockSearch(req, res) {
   }
 }
 
-
-
 // handles visualizing of graph for one stock 
 async function showChart(req, res){
     const { ticker } = req.params; // gets ticker from URL
@@ -137,12 +135,25 @@ async function showChart(req, res){
 async function listStocks(req, res){
     try {
         const stocks = await Stocks.getAllStocks(); //gets all stocks from database
+
+        for (let stock of stocks) {
+            const updatedPrice = await fetchStockData(stock.ticker);
+
+            if (updatedPrice && updatedPrice.dailyChange) {
+                stock.dailyChange = updatedPrice.dailyChange;
+            } else {
+                stock.dailyChange = 'Ikke tilgængelig';
+            }
+        }
+        console.log('Stock sample:', stocks[0]);
         res.render('stockList', { stocks }); //gets stocks for lists
     } catch (error) {
         console.error('Cannot get stock list:', error);
         res.status(500).send('Cannot get stocks'); //error message
     }
 };
+
+
 
 
 //Måske noget der kan bruges til price history

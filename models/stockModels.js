@@ -84,7 +84,7 @@ class Stocks{ //stockID slettet - fordi SQL laver ID'et selv. Simplere og mere s
         //gets tickers from stocks table 
         const result = await pool.request()
             .query(`
-                SELECT Ticker, latestDate, ClosePrice 
+                SELECT Ticker, latestDate, ClosePrice, stockCurrency 
                 FROM Stocks
                 ORDER BY Ticker, latestDate DESC
             `);
