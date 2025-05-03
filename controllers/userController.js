@@ -109,7 +109,19 @@ async function signup (req, res){
     });
   }
 
-  
+async function renderChangePassword(req, res) {
+  try {
+    const userID = req.session.userID;
+    if (!userID) {
+      return res.status(401).send("Unauthorized");
+    }
+
+    res.render("change-password");
+  } catch (err) {
+    console.error("Error rendering change password page:", err);
+    res.status(500).send("Failed to load page");
+  }
+}
 
 async function changePassword(req, res) {
   try {
@@ -138,4 +150,4 @@ async function changePassword(req, res) {
 }
 
 
-module.exports = { signup, login, changePassword, logout, renderDashboard }
+module.exports = { signup, login, renderChangePassword, changePassword, logout, renderDashboard }

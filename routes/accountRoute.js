@@ -8,11 +8,9 @@ const portfolioController = require("../controllers/portfolioController");
 //Route which fetches the accountID from the database 
 router.get("/account/:accountID", portfolioController.getPortfolios, accountController.getAccountByID);
 router.get("/account", accountController.getAccounts);
-router.get('/createAccount', (req, res) => {
-    res.render('createAccount'); 
-  });
+router.get('/createAccount', accountController.renderCreateAccount);
 router.post('/createAccount', accountController.createAccount);
-//router.post("/account", accountController.getAccounts);
+
 router.post("/account/deactivateAccount/:accountID", accountController.handleDeactivateAccount);
 router.post("/account/reactivateAccount/:accountID", accountController.handleReactivateAccount);
 router.post("/account/:accountID", accountController.getAccountByID);

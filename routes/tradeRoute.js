@@ -17,10 +17,10 @@ router.get('/trade', (req, res) => {
 //ny endpoint: post: search stock - gennem services 
 //note: ticker data gennem server ikke frontend
 //trade registrerer ikke stocks køb  
-
 //search for stock data 
-router.get("/search", loadSearchView)
 router.post("/search", handleStockSearch);
+
+router.get("/search", loadSearchView);
 
 // handle the trade form submission
 router.post("/trade", handleTrade);

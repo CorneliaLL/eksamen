@@ -11,6 +11,18 @@ async function fetchBanks(req, res) {
   }
 }
 
+async function renderCreateAccount(req, res) {
+  try {
+    const userID = req.session.userID;
+    if (!userID) return res.status(401).send("Unauthorized");
+
+    res.render('createAccount');
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Failed to fetch accounts");
+  }
+}
+
 // Create a new account
 async function createAccount(req, res) {
   try {
@@ -143,6 +155,7 @@ async function handleUpdateAccountBalance(req, res){
   //Withdrawal, plus making transfers not possible on deactivated accounts
 module.exports = {
   fetchBanks,
+  renderCreateAccount,
   createAccount,
   getAccountByID,
   handleDeactivateAccount,
