@@ -18,7 +18,7 @@ async function handleTrade(req, res) {
                 stockData: null,
                 error: "All fields are required",
                 success: null
-            });
+            }); //vise fejlmeddelelser i view'et i stedet for at sende HTTP statuskoder
         }
 
         // convert quantity and fee to float for calculations
