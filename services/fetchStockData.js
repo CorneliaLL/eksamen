@@ -17,6 +17,7 @@ async function fetchStockData(ticker) {
 
             const timeSeries = priceData['Time Series (Daily)']
             const dates = Object.keys(timeSeries);
+
             const latestDate = dates[0]; //finds newest day 
             const previousDate = dates[1];
 
@@ -62,7 +63,6 @@ async function fetchStockData(ticker) {
 }
 
 module.exports = { fetchStockData };
-
 
 
 //kilder: 
