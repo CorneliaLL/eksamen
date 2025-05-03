@@ -4,13 +4,13 @@
 const { fetchStockData } = require("../services/fetchStockData.js"); //imports service that gets stockdata from alpha vantage
 const { Stocks } = require("../models/stockModels.js"); //imports stock model (database access)
 
-//Handles fetching stock data from the API and storing it in our database + assigning its respective portfolioID as well
+//Handles fetching stock data from the API and storing it in our database. Adds new stock to db from aplha vantage api
 async function handleFetchStock(req,res) {//adds new stock to db
     try { 
         const { ticker, portfolioID } = req.body; //gets ticker and portfolioID from req body (post)
         const stockData = await fetchStockData(ticker); //gets stockData from api 
+        
         const stock = new Stocks (
-        null,
         stockData.ticker, //stock ticker
         stockData.latestDate, //date for latest stock - latest dat kan nemt misforståes og date er datoen for datapunktet
         portfolioID, //ID for the portfolio stock 
@@ -20,6 +20,7 @@ async function handleFetchStock(req,res) {//adds new stock to db
         stockData.date, //date for latest stock - latest dat kan nemt misforståes og date er datoen for datapunktet
         stockData.stockType, //type
         );
+
         stock.dailyChange = stockData.dailyChange; // dailyChange er i objektet, men bruges kun midlertidigt, så nedenstående 'await' gemmer ikke daily change i databasen
 
         await Stocks.storeStock(stock); //saves stock in database 
@@ -33,7 +34,7 @@ async function handleFetchStock(req,res) {//adds new stock to db
 
     
 //Used for our search function in frontend
-//Gets stock data from our DB 
+//Gets specific stock data from our DB for chart view 
 async function handleGetStockByTicker(req, res) {
     const { ticker } = req.params; //gets ticker from url
 
@@ -53,36 +54,7 @@ async function handleGetStockByTicker(req, res) {
       }
 }
 
-/*// handles stock search 
-async function handleStockSearch(req, res) {
-    try {
-        const { ticker } = req.body;
-        if (!ticker) {
-            return res.status(400).json({ error: "Ticker is required"});
-        }
-
-        //fetch stock data from API 
-        const stockData = await fetchStockData(ticker);
-        if (!stockData) {
-            return res.status(404).json({ error: "Stock not found" });
-        }
-
-        res.render("trade", { stockData }); //ejs view with data 
-    } catch (error) {
-        console.error("Error searching for stock:", error);
-        res.status(500).json({ error: "Failed to search stock"});
-    }
-}*/
-
-//bruges ikke rigtig endnu
-async function loadSearchView(req, res) {
-    res.render("trade" , {
-        stockData: null,
-        error: "Stock not found in database",
-        success: null
-      });
-}
-
+//handles stock search by ticker from frontend form 
 //håndterer aktiesøgning fra en ticker - bindeled mellem trade.ejs og db
 async function handleStockSearch(req, res) {
   try {
@@ -96,17 +68,27 @@ async function handleStockSearch(req, res) {
       });
     }
 
-    const stockData = await Stocks.findStockByTicker(ticker); //søger i DB
+    const dbStock = await Stocks.findStockByTicker(ticker); //søger i DB
 
-    console.log(stockData)
-
-    if (!stockData) {
+    if (!dbStock) {
       return res.render("trade", {
         stockData: null,
         error: "Stock not found in database",
         success: null
       });
     }
+
+    // Oversætter feltnavne fra PascalCase (DB) til camelCase (frontend)
+    const stockData = {
+      ticker: dbStock.Ticker,
+      stockName: dbStock.StockName,
+      closePrice: dbStock.ClosePrice,
+      stockCurrency: dbStock.StockCurrency,
+      stockType: dbStock.StockType,
+      latestDate: dbStock.LatestDate,
+      portfolioID: dbStock.PortfolioID,
+      priceChange: dbStock.priceChange || null  
+    };
 
     //sender stockData fra DB til EJS
     res.render("trade", {
@@ -125,11 +107,13 @@ async function handleStockSearch(req, res) {
   }
 }
 
-// handles visualizing of graph for one stock 
+//renders chart page for a specific stock 
+//handles visualizing of graph for one stock 
 async function showChart(req, res){
     const { ticker } = req.params; // gets ticker from URL
     res.render('stockChart', { ticker }); //sends ticker to ejs 
 };
+
 
 //handles visualizing of lists of stocks 
 async function listStocks(req, res){
@@ -152,9 +136,6 @@ async function listStocks(req, res){
         res.status(500).send('Cannot get stocks'); //error message
     }
 };
-
-
-
 
 //Måske noget der kan bruges til price history
 //handles calling api: get stockdata from alpha vantage and saves in database
@@ -182,13 +163,10 @@ async function listStocks(req, res){
 };
 */
 
-
 module.exports = {
     handleFetchStock, //post: add new stock
     handleGetStockByTicker, //get specific stock 
     handleStockSearch, //search ticker 
     showChart, //shows side for stock graph 
     listStocks, //shows list for stocks 
-    loadSearchView // load the search view before making the post request, can maybe remove later
-
 }

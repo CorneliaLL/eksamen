@@ -13,13 +13,10 @@ router.get('/trade', (req, res) => {
     });
   });
 
-  
 //ny endpoint: post: search stock - gennem services 
-//note: ticker data gennem server ikke frontend
-//trade registrerer ikke stocks køb  
-
+//note: ticker sendes fra server via stockData, ikke fra brugerinput direkte
+//bemærk: Trade-POST handler om selve handlen, ikke om at hente ny stockdata
 //search for stock data 
-router.get("/search", loadSearchView)
 router.post("/search", handleStockSearch);
 
 // handle the trade form submission
