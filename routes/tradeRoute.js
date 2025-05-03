@@ -13,7 +13,6 @@ router.get('/trade', (req, res) => {
     });
   });
 
-  
 //ny endpoint: post: search stock - gennem services 
 //note: ticker data gennem server ikke frontend
 //trade registrerer ikke stocks køb  
