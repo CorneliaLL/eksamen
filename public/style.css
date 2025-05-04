@@ -120,6 +120,8 @@ label {
   max-width: 1000px; 
   margin: auto; 
   padding: 20px;
+  flex: 1; /* Fylder resten af pladsen */
+  padding: 20px;
 }
 
 /* Dette er til stockList */
