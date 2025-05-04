@@ -17,7 +17,6 @@ async function handleFetchStock(req,res) {//adds new stock to db
         stockData.stockName, //stock name
         stockData.stockCurrency, //eks. DKK
         stockData.closePrice, //latest closeprice
-        stockData.date, //date for latest stock - latest dat kan nemt misforståes og date er datoen for datapunktet
         stockData.stockType, //type
         );
 

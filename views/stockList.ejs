@@ -8,7 +8,7 @@
 <body>
   <%- include('./partials/nav.ejs') %>
 
-  <div style="max-width: 1000px; margin: auto; padding: 20px;">
+  <div class="stock-list">
     <h1>Stock Overview</h1>
     <table>
       <thead>
@@ -23,7 +23,13 @@
         <% stocks.forEach(stock => { %>
           <tr>
             <td><%= stock.Ticker %></td>
-            <td><%= new Date(stock.latestDate).toISOString().slice(0, 10) %></td>
+            <td>
+              <% if (stock.latestDate) { %>
+                <%= new Date(stock.latestDate).toISOString().slice(0, 10) %>
+              <% } else { %>
+                Ikke tilgængelig
+              <% } %>
+            </td>            
             <td><%= stock.ClosePrice %> <%= stock.stockCurrency %></td>
             <td><%= stock.dailyChange %>%</td>
           </tr>
