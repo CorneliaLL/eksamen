@@ -12,6 +12,10 @@
     <p><strong>Account ID:</strong> <%= parseInt(portfolio.accountID) %></p>
     <p><strong>Created:</strong> <%= new Date(portfolio.registrationDate).toLocaleDateString() %></p>
 
+    <p><strong>Acquisition price:</strong> <%= acquisitionPrice %> kr</p>
+    <p><strong>Expected value:</strong> <%= totalExpectedValue %> kr</p>
+    <p><strong>Unrealized gain:</strong> <%= totalUnrealizedGain %> kr</p>
+    
     <h2>Holdings</h2>
     <% if (typeof holdings !== 'undefined' && holdings.length > 0) { %>
     <div class="tableContainer"> 

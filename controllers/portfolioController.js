@@ -51,8 +51,8 @@ async function getPortfolioByID(req, res) {
       h.unrealizedGain = gain !== null ? gain : 0;
       h.gak = gak !== null ? gak : 0;;
 
-      totalExpectedValue += h.expected;
-      totalUnrealizedGain += h.gain;
+      totalExpectedValue += h.expectedValue;
+      totalUnrealizedGain += h.unrealizedGain;
 
     }
 
@@ -60,9 +60,9 @@ async function getPortfolioByID(req, res) {
       portfolio, 
       holdings, 
       account,
-      acquisitionPrice: acquisitionPrice.toFixed(2),
-      totalExpectedValue: totalExpectedValue.toFixed(2),
-      totalUnrealizedGain: totalUnrealizedGain.toFixed(2)
+      acquisitionPrice,
+      totalExpectedValue,
+      totalUnrealizedGain
     });
   } catch (err) {
     console.error(err.message);
