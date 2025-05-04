@@ -111,11 +111,14 @@ async function handleTrade(req, res) {
         await transaction.registerTransaction();
 
         // Update users holdings based on the trade
-        if (tradeType === "buy") {
+        const quantityChange = tradeType === "buy" ? qty : -qty;
+        await Trade.adjustHoldings(portfolioID, Ticker, quantityChange);
+
+        /*if (tradeType === "buy") { - blev brugt før til at opdatere holding men ser ikke ud til at virke 
             await Trade.updateHoldingsAfterBuy(portfolioID, Ticker, qty);
         } else if (tradeType === "sell") {
             await Trade.updateHoldingsAfterSell(portfolioID, Ticker, qty);
-        }
+        }*/
 
         // Redirect the user back to their portfolio overview
         res.redirect(`/portfolio/${portfolioID}`);
