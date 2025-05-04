@@ -1,6 +1,6 @@
 //stockController controls the flow between users req, service and model. Takes in post and get req from browser. 
 //uses services to get data from api, uses models to save and get data from database, sends res to user.
-
+const cron = require('node-cron');
 const { fetchStockData } = require("../services/fetchStockData.js"); //imports service that gets stockdata from alpha vantage
 const { Stocks } = require("../models/stockModels.js"); //imports stock model (database access)
 
@@ -17,7 +17,6 @@ async function handleFetchStock(req,res) {//adds new stock to db
         stockData.stockName, //stock name
         stockData.stockCurrency, //eks. DKK
         stockData.closePrice, //latest closeprice
-        stockData.date, //date for latest stock - latest dat kan nemt misforståes og date er datoen for datapunktet
         stockData.stockType, //type
         );
 
@@ -114,7 +113,6 @@ async function showChart(req, res){
     res.render('stockChart', { ticker }); //sends ticker to ejs 
 };
 
-
 // In-memory objekt der bruges til at gemme daglige ændringer uden at gemme det i en database
 const stockChanges = {};
 
@@ -178,6 +176,7 @@ module.exports = {
     handleGetStockByTicker, //get specific stock 
     handleStockSearch, //search ticker 
     showChart, //shows side for stock graph 
-    listStocks, //shows list for stocks  
+    listStocks, //shows list for stocks 
     updateDailyChange
 }
+

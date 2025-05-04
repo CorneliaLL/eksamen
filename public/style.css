@@ -115,6 +115,14 @@ label {
 /* Source: https://sarahholleydesign.com/pure-css-custom-error-messaging-for-default-form-elements */
 
 
+.stock-list{
+  display: flex; /* Gør børnene (nav + content) liggende ved siden af hinanden */
+  max-width: 1000px; 
+  margin: auto; 
+  padding: 20px;
+  flex: 1; /* Fylder resten af pladsen */
+  padding: 20px;
+}
 
 /* Dette er til stockList */
 table {
