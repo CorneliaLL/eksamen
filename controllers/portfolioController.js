@@ -32,6 +32,10 @@ async function getPortfolioByID(req, res) {
     return res.status(404).send("Portfolio not found");
 
     const account = await Account.findAccountByID(accountID)
+    if (!account) {
+      console.log("Account not found for ID:", accountID);
+      return res.status(404).send("Account not found");
+    }
     const holdings = await Portfolio.getHoldings(portfolioID);
     const acquisitionPrice = await Portfolio.calculateAcquisitionPrice(portfolioID);
     let totalExpectedValue = 0;
@@ -43,12 +47,12 @@ async function getPortfolioByID(req, res) {
       const gain = await Portfolio.calculateUnrealizedGain(portfolioID, h.Ticker);
       const gak = await Portfolio.calculateGAK(portfolioID, h.Ticker);
 
-      h.expectedValue = expected;
-      h.unrealizedGain = gain;
-      h.gak = gak;
+      h.expectedValue = expected !== null ? expected : 0;
+      h.unrealizedGain = gain !== null ? gain : 0;
+      h.gak = gak !== null ? gak : 0;;
 
-      totalExpectedValue += expected;
-      totalUnrealizedGain += gain;
+      totalExpectedValue += h.expected;
+      totalUnrealizedGain += h.gain;
 
     }
 
@@ -56,7 +60,6 @@ async function getPortfolioByID(req, res) {
       portfolio, 
       holdings, 
       account,
-      gak,
       acquisitionPrice: acquisitionPrice.toFixed(2),
       totalExpectedValue: totalExpectedValue.toFixed(2),
       totalUnrealizedGain: totalUnrealizedGain.toFixed(2)

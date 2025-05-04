@@ -77,7 +77,7 @@ class Portfolio {
       .input("Ticker", sql.NVarChar, Ticker)
       .query(`
         SELECT
-          SUM(pricePerShare * quantity) AS totalCost,
+          SUM(totalPrice * quantity) AS totalCost,
           SUM(quantity) AS totalQuantity
         FROM Trades
         WHERE portfolioID = @portfolioID AND Ticker = @Ticker AND tradeType = 'buy'
@@ -98,8 +98,8 @@ class Portfolio {
       .input("portfolioID", sql.Int, portfolioID)
       .query(`
         SELECT
-          SUM(pricePerShare * quantity) AS totalCost,
-          SUM(quantity) AS totalQuantity,
+          SUM(totalPrice * quantity) AS totalCost,
+          SUM(quantity) AS totalQuantity
         FROM Trades
         WHERE portfolioID = @portfolioID AND tradeType = 'buy'
         `);
@@ -139,7 +139,7 @@ class Portfolio {
       .input("Ticker", sql.NVarChar, Ticker)
       .query(`
         SELECT
-          SUM(pricePerShare * quantity) AS totalCost, 
+          SUM(totalPrice * quantity) AS totalCost, 
           SUM(quantity) AS totalQuantity
         FROM Trades
         WHERE portfolioID = @portfolioID AND Ticker = @Ticker
