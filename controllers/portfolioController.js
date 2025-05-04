@@ -25,26 +25,40 @@ async function getPortfolioByID(req, res) {
     if (!userID) 
     return res.status(401).send("Unauthorized");
 
-    const { portfolioID } = req.params;
+    const { accountID, portfolioID } = req.params;
+
     const portfolio = await Portfolio.findPortfolioByID(portfolioID); 
     if (!portfolio) 
     return res.status(404).send("Portfolio not found");
 
+    const account = await Account.findAccountByID(portfolio.accountID)
     const holdings = await Portfolio.getHoldings(portfolioID);
+
 
     //calculate the GAK for the portfolio 
     //MANGLER
 
 
 
-    res.render("portfolio", { portfolio, holdings });
+    res.render("portfolio", { portfolio, holdings, account });
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Failed to fetch portfolio");
   }
 }
 
+async function renderCreatePortfolio(req, res) {
+  try {
+    const userID = req.session.userID;
+    if (!userID) return res.status(401).send("Unauthorized");
 
+    const accounts = await Account.getAllAccounts(userID);
+    res.render('createPortfolio', { accounts });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Failed to fetch accounts");
+  }
+}
 
 // Create a new portfolio
 async function handleCreatePortfolio(req, res) {
@@ -95,6 +109,7 @@ async function showPortfolioAnalysis(req, res) {
 module.exports = {
   getPortfolios,
   getPortfolioByID,
+  renderCreatePortfolio,
   handleCreatePortfolio,
   showPortfolioAnalysis,
 };

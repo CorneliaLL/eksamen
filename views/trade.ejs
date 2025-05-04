@@ -36,13 +36,13 @@
           <!--værdier fra stockdata sende fra res.render i controlleren-->
           <div class="stock-card"> <!--card like container for stock info - visuelt-->
             <div class="stock-header"> <!--shows stock name and ticker-->
-              <h3><%= stockData.stockName %> (<%= stockData.Ticker %>)</h3>
+              <h3><%= stockData.stockName %> (<%= stockData.ticker %>)</h3>
             </div>
             <!--shows the stock newest current price and currency-->
             <div class="stock-details"> <!--current price with currency, 24-hour price change, (uses dynamic css classes if price change is positive or negative?)-->
               <div class="detail-item"> 
                 <span class="label">Current Price</span>
-                <span class="value"><%= stockData.ClosePrice %> <%= stockData.stockCurrency %></span>
+                <span class="value"><%= stockData.closePrice %> <%= stockData.stockCurrency %></span>
               </div>
 
               <!--24 hour price change -->
@@ -65,7 +65,7 @@
         <!--form that sends post req to /trade endpoint with trade info-->
         <form action="/trade" method="POST" class="tradeForm">
           <!--hidden input to store the selected stock ticker--> 
-          <input type="hidden" name="Ticker" value="<%= stockData ? stockData.Ticker : '' %>"> 
+          <input type="hidden" name="Ticker" value="<%= stockData ? stockData.ticker : '' %>"> 
           
           <!--portfolio selection that user must select which portfolio to trade in-->
           <div class="form-group">
@@ -95,7 +95,7 @@
 
         </div>
         <!--transaction fee input field with a default value of 0, required by trade controller-->
-        <div class=""form-group>
+        <div class="form-group">
           <label for="fee">Transaction Fee:</label> <br>
           <input type="number" id="fee" name="fee" required class="form-input" min="0" step="0.01" value="0">
         </div>
@@ -121,5 +121,3 @@
 
 </body>
 </html> 
-
-<!--class="createNewAccountBtn"?? button-->

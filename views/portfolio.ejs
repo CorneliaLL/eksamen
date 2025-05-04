@@ -44,9 +44,9 @@
       <p>This portfolio does not contain any stocks yet.</p>
     <% } %>
   </div>
-    <a href="/portfolio" class="btn">← Back to my portfolios</a>
+    <a href="/account/<%= account.accountID %>" class="btn">← Back to my portfolios</a>
     <a href="/transactions/<%= portfolio.accountID %>" class="btn">View Transactions</a>
-    <a href="/trade" class="btn">Trade Stock</a>
+    <a href="/trade/:portfolioID/:accountID" class="btn">Trade Stock</a>
   </div>
 </body>
 </html>

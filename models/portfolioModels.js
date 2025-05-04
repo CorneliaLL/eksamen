@@ -64,6 +64,7 @@ class Portfolio {
     return result.recordset[0] || null;
   }
 
+
   // Calculate GAK (Average Acquisition Price) for a stock
   // GAK = (total cost of share / total quantity of shares)
   // calculates the average acquisition prie for a stoick in a portfolio
