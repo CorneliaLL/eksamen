@@ -115,58 +115,69 @@ async function showChart(req, res){
 };
 
 
+// In-memory objekt der bruges til at gemme daglige ændringer uden at gemme det i en database
+const stockChanges = {};
+
 //handles visualizing of lists of stocks 
-async function listStocks(req, res){
+// Henter aktier fra databasen via model
+// Tilføjer 'dailyChange' for hver aktie fra stockChanges-objektet (hvis tilgængelig)
+async function listStocks(req, res) {
     try {
-        const stocks = await Stocks.getAllStocks(); //gets all stocks from database
+        const stocks = await Stocks.getAllStocks(); // henter alle aktier fra databasen
 
+        // For hver aktie: tilføj dailyChange fra in-memory lager (eller fallback)
         for (let stock of stocks) {
-            const updatedPrice = await fetchStockData(stock.ticker);
-
-            if (updatedPrice && updatedPrice.dailyChange) {
-                stock.dailyChange = updatedPrice.dailyChange;
-            } else {
-                stock.dailyChange = 'Ikke tilgængelig';
-            }
+            stock.dailyChange = stockChanges[stock.Ticker] || 'Ikke tilgængelig';
         }
-        console.log('Stock sample:', stocks[0]);
-        res.render('stockList', { stocks }); //gets stocks for lists
+        // Sender listen videre til EJS-skabelonen for visning
+        res.render('stockList', { stocks }); // sender til EJS
     } catch (error) {
-        console.error('Cannot get stock list:', error);
-        res.status(500).send('Cannot get stocks'); //error message
+        console.error('Fejl ved hentning af aktieliste:', error);
+        res.status(500).send('Serverfejl');
     }
-};
+}
 
-//Måske noget der kan bruges til price history
-//handles calling api: get stockdata from alpha vantage and saves in database
-/*async function updateStock(req, res) {
-    const { ticker } = req.params; //gets ticker from URL
-    try {
-        const stockData = await fetchStockData(ticker);
 
-        const priceResponse = await axios.get(`https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${ticker}&apikey=5WEYK0DRXVCFWJPW`);
-        const priceData = priceResponse.data['Time Series (Daily)'];
+// Funktion: Opdaterer dailyChange for alle aktier én gang om dagen
+// Henter alle aktier fra DB
+// Bruger fetchStockData() til at hente nyeste data fra Alpha Vantage
+// Beregner dailyChange og gemmer det midlertidigt i stockChanges
 
-        const dates = Object.keys(priceData);
-        const today = dates[0];
-        const yesterday = dates[1];
+async function updateDailyChange() {
+  try {
+    const stocks = await Stocks.getAllStocks(); // Hent aktier fra databasen
+    const tickers = [];
 
-        const todayClose = parseFloat(priceData[today]['4. close']);
-        const yesterdayClose = parseFloat(priceData[yesterday]['4. close']);
-        const dailyChange = todayClose - yesterdayClose;
+    for (const stock of stocks) {
+        tickers.push(stock.Ticker); // Tilføjer alle tickers, inkl. dubletter
+      }
 
-        res.send(`Stock data for ${ticker} is updated with ${dailyChange.toFixed(2)}`);
-    } catch (error) {
-        console.error('Cannot fetch stock data:', error);
-        res.status(500).send('Cannot fetch stock data'); //error message 
+    for (const ticker of tickers) {
+        const stockData = await fetchStockData(ticker); // Hent ny data fra API
+
+        // Hvis vi har gyldig daily chane, gemmer den i memory-objektet
+        if (stockData?.dailyChange) {
+            stockChanges[ticker] = stockData.dailyChange;
+            console.log(`${ticker}: ${stockData.dailyChange}%`);
+          }
     }
-};
-*/
+  } catch (err) {
+    console.error("Fejl i opdatering:", err);
+  }
+}
+
+// Initial opdatering af aktiedata ved serverstart
+updateDailyChange();
+
+// Cron-job: opdater daglig ændring hver dag kl. 17:00 (serverens tidszone)
+// Format: 'minutter timer dag måned ugedag'
+cron.schedule('0 17 * * *', updateDailyChange);
 
 module.exports = {
     handleFetchStock, //post: add new stock
     handleGetStockByTicker, //get specific stock 
     handleStockSearch, //search ticker 
     showChart, //shows side for stock graph 
-    listStocks, //shows list for stocks 
+    listStocks, //shows list for stocks  
+    updateDailyChange
 }
