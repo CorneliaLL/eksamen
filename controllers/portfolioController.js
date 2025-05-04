@@ -31,16 +31,36 @@ async function getPortfolioByID(req, res) {
     if (!portfolio) 
     return res.status(404).send("Portfolio not found");
 
-    const account = await Account.findAccountByID(portfolio.accountID)
+    const account = await Account.findAccountByID(accountID)
     const holdings = await Portfolio.getHoldings(portfolioID);
+    const acquisitionPrice = await Portfolio.calculateAcquisitionPrice(portfolioID);
+    let totalExpectedValue = 0;
+    let totalUnrealizedGain = 0;
 
+  //For loop that loops through 
+    for (const h of holdings) {
+      const expected = await Portfolio.calculateExpectedValue(portfolioID, h.Ticker);
+      const gain = await Portfolio.calculateUnrealizedGain(portfolioID, h.Ticker);
+      const gak = await Portfolio.calculateGAK(portfolioID, h.Ticker);
 
-    //calculate the GAK for the portfolio 
-    //MANGLER
+      h.expectedValue = expected;
+      h.unrealizedGain = gain;
+      h.gak = gak;
 
+      totalExpectedValue += expected;
+      totalUnrealizedGain += gain;
 
+    }
 
-    res.render("portfolio", { portfolio, holdings, account });
+    res.render("portfolio", { 
+      portfolio, 
+      holdings, 
+      account,
+      gak,
+      acquisitionPrice: acquisitionPrice.toFixed(2),
+      totalExpectedValue: totalExpectedValue.toFixed(2),
+      totalUnrealizedGain: totalUnrealizedGain.toFixed(2)
+    });
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Failed to fetch portfolio");
@@ -94,7 +114,7 @@ async function showPortfolioAnalysis(req, res) {
     if (!portfolio) return res.status(404).send("Portfolio not found");
     if (portfolio.userID !== userID) return res.status(403).send("Unauthorized");
 
-    const gak = await Portfolio.calculateGAK(portfolioID, stockSymbol);
+    const gak = await Portfolio.calculateGAK(portfolioID, Ticker);
     const expectedValue = await Portfolio.calculateExpectedValue(portfolioID, Ticker);
     const unrealizedGain = await Portfolio.calculateUnrealizedGain(portfolioID, Ticker);
 
