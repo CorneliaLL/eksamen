@@ -7,7 +7,7 @@ const accountController = require("../controllers/accountController");
 
 router.get('/createPortfolio', portfolioController.renderCreatePortfolio);
 router.get("/portfolio", portfolioController.getPortfolios, accountController.getAccountByID);
-router.get("/portfolio/:portfolioID", portfolioController.getPortfolioByID);
+router.get("/portfolio/:portfolioID/:accountID", portfolioController.getPortfolioByID);
 router.get("/portfolioAnalysis/:portfolioID/:stockSymbol", portfolioController.showPortfolioAnalysis);
 
 router.post("/createPortfolio", portfolioController.handleCreatePortfolio);

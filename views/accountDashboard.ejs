@@ -48,7 +48,7 @@
                   <td><%= portfolio.accountID %></td>
                   <td><%= new Date(portfolio.registrationDate).toLocaleDateString() %></td>
                   <td>
-                    <a href="/portfolio/<%= portfolio.portfolioID %>">View</a>
+                    <a href="/portfolio/<%= portfolio.portfolioID %>/<%= account.accountID %>">View</a>
                   </td>
                 </tr>
               <% }) %>
