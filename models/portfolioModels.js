@@ -88,6 +88,24 @@ class Portfolio {
 
 //calculates GAK directly so it can be fetched directly
     return totalCost / totalQuantity;
+
+  }
+
+// Calculate total cost for acquisition price and quantity of shares
+  static async calculateAcquisitionPrice(portfolioID) {
+    const pool = await connectToDB();
+    const result = await pool.request()
+      .input("portfolioID", sql.Int, portfolioID)
+      .query(`
+        SELECT
+          SUM(pricePerShare * quantity) AS totalCost,
+          SUM(quantity) AS totalQuantity,
+        FROM Trades
+        WHERE portfolioID = @portfolioID AND tradeType = 'buy'
+        `);
+    
+    const { totalCost } = result.recordset[0];
+    return totalCost;
   }
 
   // Calculate Expected Value of a stock in a portfolio based on live price from API
