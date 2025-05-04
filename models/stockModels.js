@@ -61,8 +61,22 @@ class Stocks{ //stockID slettet - fordi SQL laver ID'et selv. Simplere og mere s
     
         return result.recordset; //returns tickers as array   
         }
-    }
 
+    static async getStocksByPortfolioID(portfolioID) {
+        const pool = await connectToDB(); // Connects to DB
+        const result = await pool.request()
+          .input('PortfolioID', sql.Int, portfolioID) // <-- Tilføj input her
+          .query(`
+          SELECT Ticker, LatestDate, ClosePrice, StockCurrency, PortfolioID
+          FROM Stocks
+          WHERE PortfolioID = @PortfolioID
+          ORDER BY Ticker, LatestDate DESC
+          `);
+      
+        return result.recordset;
+      }
+
+};  
 //bruges ikke endnu
 //Skal hente daglig priser fra vores API
 class PriceHistory{ 

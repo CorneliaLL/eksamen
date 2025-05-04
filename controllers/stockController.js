@@ -121,7 +121,9 @@ const stockChanges = {};
 // Tilføjer 'dailyChange' for hver aktie fra stockChanges-objektet (hvis tilgængelig)
 async function listStocks(req, res) {
     try {
-        const stocks = await Stocks.getAllStocks(); // henter alle aktier fra databasen
+        const { portfolioID } = req.params;
+
+        const stocks = await Stocks.getStocksByPortfolioID(portfolioID); // henter alle aktier fra databasen
 
         // For hver aktie: tilføj dailyChange fra in-memory lager (eller fallback)
         for (let stock of stocks) {
