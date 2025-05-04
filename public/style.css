@@ -115,16 +115,20 @@ label {
 /* Source: https://sarahholleydesign.com/pure-css-custom-error-messaging-for-default-form-elements */
 
 
+/* Dette er til stockList */
+.stock-layout {
+  display: flex;
+  min-height: 100vh;
+}
+
 .stock-list{
-  display: flex; /* Gør børnene (nav + content) liggende ved siden af hinanden */
   max-width: 1000px; 
   margin: auto; 
   padding: 20px;
-  flex: 1; /* Fylder resten af pladsen */
-  padding: 20px;
-}
+  flex: 1;
+  margin-top: 0;
+  }
 
-/* Dette er til stockList */
 table {
 
   width: 100%;
