@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 //stockController controls the flow between users req, service and model. Takes in post and get req from browser. 
 //uses services to get data from api, uses models to save and get data from database, sends res to user.
 const cron = require('node-cron');
@@ -180,3 +181,5 @@ module.exports = {
     updateDailyChange
 }
 //uwdwdio
+=======
+>>>>>>> 879bfba57f6a20349820068a8828acca7366719f
