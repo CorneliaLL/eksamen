@@ -74,15 +74,6 @@ async function handleStockSearch(req, res) {
     }
 }*/
 
-//bruges ikke rigtig endnu
-async function loadSearchView(req, res) {
-    res.render("trade" , {
-        stockData: null,
-        error: "Stock not found in database",
-        success: null
-      });
-}
-
 //håndterer aktiesøgning fra en ticker - bindeled mellem trade.ejs og db
 async function handleStockSearch(req, res) {
   try {
