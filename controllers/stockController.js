@@ -59,11 +59,17 @@ async function handleStockSearch(req, res) {
   try {
     const { ticker } = req.body; //henter ticker
 
+    const {portfolioID, accountID} = req.params
+
+    console.log(portfolioID, accountID)
+
     if (!ticker) {
       return res.render("trade", {
         stockData: null,
         error: "Ticker is required",
-        success: null
+        success: null,
+        portfolioID, 
+        accountID,
       });
     }
 
@@ -73,7 +79,9 @@ async function handleStockSearch(req, res) {
       return res.render("trade", {
         stockData: null,
         error: "Stock not found in database",
-        success: null
+        success: null,
+        portfolioID, 
+        accountID,
       });
     }
 
@@ -93,7 +101,9 @@ async function handleStockSearch(req, res) {
     res.render("trade", {
       stockData,
       error: null,
-      success: null
+      success: null,
+      portfolioID, 
+      accountID,
     });
 
   } catch (err) {
@@ -101,7 +111,9 @@ async function handleStockSearch(req, res) {
     res.render("trade", {
       stockData: null,
       error: "Internal server error",
-      success: null
+      success: null,
+      portfolioID, 
+      accountID,
     });
   }
 }

@@ -3,7 +3,7 @@
 <%- include('./partials/head.ejs') %>
 
 <!-- link to dashboard stylesheet -->
-<link rel="stylesheet" href="dashboard.css">
+<link rel="stylesheet" href="/dashboard.css">
 
 <body>
   <%- include('./partials/nav.ejs') %>
@@ -22,7 +22,7 @@
 
         <!--connection to search functionality-->
         <!--search form. sends post req to /search endpoint-->
-        <form action="/search" method="POST" id="searchForm">
+        <form action="/trade/<%= portfolioID %>/<%= accountID %>" method="POST" id="searchForm">
           <div class="searchContainer">
             <!--input field for stock ticker-->
             <input type="text" name="ticker" id="tickerSearch" placeholder="Enter stock ticker (e.g. AAPL for Apple Inc)" required>

@@ -19,6 +19,10 @@ router.get('/trade', (req, res) => {
 //search for stock data 
 router.post("/search", handleStockSearch);
 
+router.get("/trade/:portfolioID/:accountID", handleStockSearch);
+
+router.post("/trade/:portfolioID/:accountID", handleStockSearch);
+
 // handle the trade form submission
 router.post("/trade", handleTrade);
 

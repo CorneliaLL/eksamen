@@ -29,9 +29,12 @@ async function getPortfolioByID(req, res) {
 
     const portfolio = await Portfolio.findPortfolioByID(portfolioID); 
     if (!portfolio) 
-    return res.status(404).send("Portfolio not found");
+    return res.status(404).send("Portfolio not found")
+  console.log(portfolio)
 
     const account = await Account.findAccountByID(accountID)
+    console.log(account)
+
     if (!account) {
       console.log("Account not found for ID:", accountID);
       return res.status(404).send("Account not found");
