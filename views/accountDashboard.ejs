@@ -14,34 +14,38 @@
     </div>
     <div class="boxContainer">
       <div class="createPortfolio">
-        <a href="/createPortfolio">Create portfolio!</a>
+        <form action="/createPortfolio" method="GET">
+          <button class="createPortfolioBtn">Create portfolio</button>
+          </form>
       </div>
     <div class="valueandprice">
     <div class="totalValue">
-      <h3>Total value in <%= account.currency %></h3>
+      <h4>Total value in <%= account.currency %></h4>
+        <h4><%= totalAcquisitionPrice.toFixed(2) %> <%= account.currency %></h4>
     </div>
     <div class="priceChange">
-      <h3>price change</h3>
+      <h4>price change</h4>
     </div>
     </div>
     <div class="piechart">
       <!--INSERT CHART HERE-->
-      <h3>Pie chart</h3>
+      <h4>Pie chart</h4>
     </div>
     <div class="balance">
       <h3> Balance: <%= account.balance.toFixed(2) %> <%= account.currency %> </h3>
+      <div class="updateBalance">
       <form action="/account/<%= account.accountID %>/transaction" method="POST">
-        <div class="updateBalance">
           <label for="amount">Select amount:</label>
           <input type="number" name="amount" id="amount" step="0.01" required />
 
           <label for="type">Transaction type:</label>
           <select name="type" id="type" required>
             <option value="deposit">Deposit</option>
-            <option value="withdrawal">Withdrawal</option>
+            <option value="withdrawal">Withdraw</option>
           </select>
         <button type="submit">Update balance</button>
       </form>
+    </div>
     </div>
     <div class="portfolioList">
       <h2>My portfolios</h2>

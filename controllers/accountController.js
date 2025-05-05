@@ -85,7 +85,7 @@ async function getAccountByID(req, res){
       } else {
 
           //change to res.render
-          res.render("accountDashboard", { account, portfolios: req.portfolios });
+          res.render("accountDashboard", { account, portfolios: req.portfolios, totalAcquisitionPrice: req.totalAcquisitionPrice });
       } 
 
     } catch (err) {
