@@ -27,6 +27,12 @@ body {
     gap: 20px;
     padding: 20px;
   }
+  
+  .accountContainer {
+    display: flex;
+    gap: 40px;
+    align-items: center;
+  }
 
   h1 {
     color: white;
@@ -61,6 +67,19 @@ body {
     border-radius: 5px;
     cursor: pointer;
   }
+  
+.accountBox {
+  background-color: 1B1B19;
+  color: white;
+  border-radius: 12px;
+  padding: 30px;
+  width: 1000px;
+  min-height: 180px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+}
 
 .createPortfolio {
   background-color: 1B1B19;
