@@ -109,6 +109,7 @@ async function handleStockSearch(req, res) {
       }
       // Oversætter DB data til PascelCase til camelCase
       const stockData = {
+        stockID: dbStock.stockID,
         ticker: dbStock.Ticker,
         stockName: dbStock.StockName,
         closePrice: dbStock.ClosePrice,

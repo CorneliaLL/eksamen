@@ -66,6 +66,7 @@
         <form action="/trade" method="POST" class="tradeForm">
           <!--hidden input to store the selected stock ticker--> 
           <input type="hidden" name="Ticker" value="<%= stockData ? stockData.ticker : '' %>"> 
+          <input type="hidden" name="stockID" value="<%= stockData ? stockData.stockID : '' %>">
           
           <!--portfolio selection that user must select which portfolio to trade in-->
           <div class="form-group">

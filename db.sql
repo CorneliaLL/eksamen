@@ -78,6 +78,26 @@ CREATE TABLE Trades (
 );
 -- We had issues with our original Trades SQL code, so here we have made some changes so it is more functional 
 -- We forgot to give tradeID an IDENTITY property, so we had to drop key contraints, remove the column and readd it with the right properties
+CREATE TABLE Trades (
+    tradeID INT IDENTITY(1,1) PRIMARY KEY,
+    portfolioID INT NOT NULL,
+    stockID INT NOT NULL,
+    tradeType VARCHAR(4) CHECK (tradeType IN ('buy', 'sell')) NOT NULL,
+    quantity INT NOT NULL,
+    price DECIMAL(18,4) NOT NULL,
+    fee DECIMAL(18,4) NOT NULL,
+    totalPrice DECIMAL(18,4) NOT NULL,
+    tradeDate DATETIME NOT NULL,
+    accountID INT NOT NULL,
+
+    FOREIGN KEY (portfolioID) REFERENCES Portfolios(portfolioID),
+    FOREIGN KEY (stockID) REFERENCES Stocks(stockID),
+    FOREIGN KEY (accountID) REFERENCES Accounts(accountID)
+);
+
+-- transaction table missing from trade?
+
+
 -- 1. Drop foreign key constraints first
 ALTER TABLE Transactions
 DROP CONSTRAINT FK__Transacti__trade__29221CFB;
