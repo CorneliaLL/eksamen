@@ -32,6 +32,7 @@ async function handleTrade(req, res) {
 
         // Henter aktiedata fra databasen (ikke API!)
         const dbStock = await Stocks.findStockByTicker(Ticker);
+        console.log("line 35 runs")
         if (!dbStock) {
             console.log(`Stock ${Ticker} not found in database`);
             return res.render("trade", {
@@ -49,6 +50,7 @@ async function handleTrade(req, res) {
 
         // Finder kontoen og validerer at den findes og er aktiv
         const account = await Account.findAccountByID(accountID);
+        console.log("53")
         if (!account) {
             console.log(`Account ${accountID} not found`);
             return res.render("trade", {
@@ -74,7 +76,9 @@ async function handleTrade(req, res) {
         // Justerer prisen hvis aktiens valuta ≠ kontoens valuta
         let adjustedPrice = closePrice;
         if (stockCurrency !== accountCurrency) {
+            console.log("79")
             const rate = await storeExchangeRate(stockCurrency, accountCurrency); // henter valutakurs
+            console.log("storeExchangeRate")
             adjustedPrice = closePrice * rate;
             console.log(`Currency converted: ${closePrice} ${stockCurrency} → ${adjustedPrice} ${accountCurrency}`);
         }
@@ -87,6 +91,7 @@ async function handleTrade(req, res) {
 
         // Ved køb: kontrollerer om der er nok midler på kontoen
         if (tradeType === "buy") {
+            console.log("94")
             const hasFunds = await Trade.checkFunds(accountID, totalPrice);
             console.log(`Has funds for buy? ${hasFunds}`);
             if (!hasFunds) {
@@ -100,6 +105,7 @@ async function handleTrade(req, res) {
 
         // Ved salg: kontrollerer om brugeren ejer nok aktier
         if (tradeType === "sell") {
+            console.log("108")
             const hasHoldings = await Trade.checkHoldings(portfolioID, Ticker, qty);
             console.log(`Has holdings to sell? ${hasHoldings}`);
             if (!hasHoldings) {
@@ -139,7 +145,7 @@ async function handleTrade(req, res) {
 
     } catch (err) {
         // Håndterer fejl undervejs og viser fejlmeddelelse i view
-        console.error("Error handling trade:", err);
+       // console.error("Error handling trade:", err.stack);
         res.render("trade", {
             stockData: null,
             error: "Trade could not be processed. Please try again.",

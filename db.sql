@@ -115,9 +115,9 @@ CREATE TABLE Transactions (
 );
 
 CREATE TABLE ExchangeRates (
-    ExchangeRateID INT PRIMARY KEY,
-    Ticker NVARCHAR,
-    FromCurrency FLOAT,
-    ToCurrency FLOAT,
+    ExchangeRateID INT IDENTITY(1, 1) PRIMARY KEY,
+    Ticker VARCHAR(255),
+    FromCurrency VARCHAR(255),
+    ToCurrency VARCHAR(255),
     Rate FLOAT,
 );
