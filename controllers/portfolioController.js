@@ -10,6 +10,8 @@ async function getPortfolios(req, res, next) {
     const { accountID } = req.params;
 
     const portfolios = await Portfolio.getAllPortfolios(userID);
+    
+  //Acquisition price for all portfolios in the account
     let totalAcquisitionPrice = 0;
     for (const p of portfolios) {
       p.acquisitionPrice = await Portfolio.calculateAcquisitionPrice(p.portfolioID);

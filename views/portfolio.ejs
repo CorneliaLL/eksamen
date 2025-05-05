@@ -7,50 +7,55 @@
   <%- include('./partials/nav.ejs') %>
 
   <div class="container">
-  <div class="portfolioContainer">
-    <h1>Portfolio: <%= portfolio.portfolioName %></h1>
-    <p><strong>Account ID:</strong> <%= parseInt(portfolio.accountID) %></p>
-    <p><strong>Created:</strong> <%= new Date(portfolio.registrationDate).toLocaleDateString() %></p>
+    <h1><%= portfolio.portfolioName %></h1>
 
-    <p><strong>Acquisition price:</strong> <%= acquisitionPrice %> <%= account.currency %></p>
-    <p><strong>Expected value:</strong> <%= totalExpectedValue %> <%= account.currency %></p>
-    <p><strong>Unrealized gain:</strong> <%= totalUnrealizedGain %> <%= account.currency %></p>
-    
-    <h2>Holdings</h2>
-    <% if (typeof holdings !== 'undefined' && holdings.length > 0) { %>
-    <div class="tableContainer"> 
+    <div class="dashboard-box">
+      <h2>Portfolio Summary</h2>
+      <!-- Portfolio summary chart HER-->
+    </div>
+
+
+    <!--TILFØJ value distribution donut chart-->
+    <div class="dashboard-box">
+      <h2>Value Distribution</h2>
+      <!--DONUTCHART HER-->
+      <div class="total-value">
+        Total Value: <%= totalRealizedValue %> <%= account.currency %>
+      </div>
+    </div>
+  
+  <div class="dashboard-box">
+  <h2>Holdings</h2>
       <table>
         <thead>
           <tr>
-            <th>Stock ID</th>
+            <th>Ticker</th>
+            <th>Quantity</th>
+            <th>24h Change</th>
+            <th>Price</th>
             <th>GAK</th>
-            <th>Expected Value</th>
-            <th>Unrealized Gain</th>
-            <th>Details</th>
           </tr>
         </thead>
         <tbody>
           <% holdings.forEach(stock => { %>
             <tr>
-              <td><%= stock.stockID %></td>
-              <td><%= stock.gak ? stock.gak.toFixed(2) : "N/A" %></td>
-              <td><%= stock.expectedValue ? stock.expectedValue.toFixed(2) : "N/A" %></td>
-              <td><%= stock.unrealizedGain ? stock.unrealizedGain.toFixed(2) : "N/A" %></td>
-              <td>
-                <a href="/portfolioAnalysis/<%= portfolio.portfolioID %>/<%= stock.stockID %>">Analyze</a>
-              </td>
+              <td><%= stock.Ticker %></td>
+              <td><%= stock.quantity %> pcs</td>
+              <td class="<%= stock.dailyChange >= 0 ? 'positive' : 'negative' %>">
+                <%= stock.dailyChange ? stock.dailyChange.toFixed(2) : "N/A" %> </td>
+              <td><%= stock.currentPrice ? stock.currentPrice.toFixed(2) + ' ' + account.currency : 'N/A' %></td>
+              <td><%= stock.gak ? stock.gak.toFixed(2) : 'N/A' %></td>
             </tr>
           <% }) %>
         </tbody>
       </table>
-    </div> 
-    <% } else { %>
-      <p>This portfolio does not contain any stocks yet.</p>
-    <% } %>
-  </div>
+
     <a href="/account/<%= account.accountID %>" class="btn">← Back to my portfolios</a>
     <a href="/transactions/<%= portfolio.accountID %>" class="btn">View Transactions</a>
     <a href="/trade/<%=portfolio.portfolioID%>/<%=account.accountID%>" class="btn">Trade Stock</a>
+
+
+  </div>
   </div>
 </body>
 </html>
