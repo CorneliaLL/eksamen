@@ -38,17 +38,6 @@ class Portfolio {
     return result.recordset;
   }
 
-  /*
-  static async getAllPortfoliosByAccountID(accountID) {
-    const pool = await connectToDB();
-    const result = await pool.request()
-      .input("accountID", sql.Int, accountID)
-      .query(`
-        SELECT * FROM Portfolios
-        WHHERE accountID = @accountID
-      `);
-  }
-  */
 
   // Find one specific portfolio
   static async findPortfolioByID(portfolioID) {
