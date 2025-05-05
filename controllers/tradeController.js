@@ -1,19 +1,22 @@
+// Importerer nødvendige modeller og services
 const { Trade } = require("../models/tradeModels");
 const { Transaction } = require("../models/transactionModels");
-const { Stocks } = require("../models/stockModels")
-const { storeExchangeRate } = require("../services/fetchExchangeRate"); // Fetches currency conversion rate live
-const { Account } = require("../models/accountModels"); // Account model to check user balance
+const { Stocks } = require("../models/stockModels");
+const { storeExchangeRate } = require("../services/fetchExchangeRate"); // Valutakurs-service
+const { Account } = require("../models/accountModels"); // Konto-model
 
-// Handles a buy or sell trade
-
+// Funktion: Behandler en aktiehandel (køb eller salg)
 async function handleTrade(req, res) {
     try {
+        // Henter brugerens ID fra sessionen
         const userID = req.session.userID;
-        if (!userID) return res.status(401).send("Unauthorized");
+        if (!userID) return res.status(401).send("Unauthorized"); // bruger ikke logget ind
 
+        // Henter nødvendige værdier fra formularen
         const { portfolioID, accountID, Ticker, tradeType, quantity } = req.body;
         console.log(`Trade request received:`, { userID, portfolioID, accountID, Ticker, tradeType, quantity });
 
+        // Validerer at alle felter er udfyldt
         if (!portfolioID || !accountID || !Ticker || !tradeType || !quantity) {
             console.log("Missing required trade fields");
             return res.render("trade", {
@@ -23,9 +26,11 @@ async function handleTrade(req, res) {
             });
         }
 
+        // Konverterer mængde til tal
         const qty = parseFloat(quantity);
         console.log(`Parsed quantity: ${qty}`);
 
+        // Henter aktiedata fra databasen (ikke API!)
         const dbStock = await Stocks.findStockByTicker(Ticker);
         if (!dbStock) {
             console.log(`Stock ${Ticker} not found in database`);
@@ -36,11 +41,13 @@ async function handleTrade(req, res) {
             });
         }
 
+        // Uddrager nødvendige felter fra databasen
         const stockName = dbStock.StockName || Ticker;
         const stockCurrency = dbStock.StockCurrency;
         const closePrice = parseFloat(dbStock.ClosePrice);
         console.log(`Using stock: ${stockName} (${stockCurrency}) @ ${closePrice}`);
 
+        // Finder kontoen og validerer at den findes og er aktiv
         const account = await Account.findAccountByID(accountID);
         if (!account) {
             console.log(`Account ${accountID} not found`);
@@ -54,6 +61,7 @@ async function handleTrade(req, res) {
         const accountCurrency = account.currency;
         console.log(`Account currency: ${accountCurrency}`);
 
+        // Kontrollerer om kontoen er deaktiveret
         if (account.accountStatus === 0) {
             console.log(`Account ${accountID} is deactivated`);
             return res.render("trade", {
@@ -63,18 +71,21 @@ async function handleTrade(req, res) {
             });
         }
 
+        // Justerer prisen hvis aktiens valuta ≠ kontoens valuta
         let adjustedPrice = closePrice;
         if (stockCurrency !== accountCurrency) {
-            const rate = await storeExchangeRate(stockCurrency, accountCurrency);
+            const rate = await storeExchangeRate(stockCurrency, accountCurrency); // henter valutakurs
             adjustedPrice = closePrice * rate;
             console.log(`Currency converted: ${closePrice} ${stockCurrency} → ${adjustedPrice} ${accountCurrency}`);
         }
 
-        const feeRate = 0.005;
+        // Beregner gebyr og totalpris (inkl. fee)
+        const feeRate = 0.005; // 0.5% handelsgebyr
         const transactionFee = qty * adjustedPrice * feeRate;
         const totalPrice = qty * adjustedPrice + transactionFee;
         console.log(`Fee: ${transactionFee.toFixed(2)}, Total price: ${totalPrice.toFixed(2)}`);
 
+        // Ved køb: kontrollerer om der er nok midler på kontoen
         if (tradeType === "buy") {
             const hasFunds = await Trade.checkFunds(accountID, totalPrice);
             console.log(`Has funds for buy? ${hasFunds}`);
@@ -87,6 +98,7 @@ async function handleTrade(req, res) {
             }
         }
 
+        // Ved salg: kontrollerer om brugeren ejer nok aktier
         if (tradeType === "sell") {
             const hasHoldings = await Trade.checkHoldings(portfolioID, Ticker, qty);
             console.log(`Has holdings to sell? ${hasHoldings}`);
@@ -95,6 +107,7 @@ async function handleTrade(req, res) {
             }
         }
 
+        // Opretter en ny handel i databasen
         const tradeID = await Trade.createTrade({
             portfolioID,
             accountID,
@@ -109,19 +122,23 @@ async function handleTrade(req, res) {
         });
         console.log(`Trade created with ID: ${tradeID}`);
 
+        // Opretter en transaktion (beløbet er negativt ved køb, positivt ved salg)
         const transactionAmount = tradeType === "buy" ? -totalPrice : totalPrice;
         const transaction = new Transaction(null, accountID, tradeID, transactionAmount, new Date());
         await transaction.registerTransaction();
         console.log(`Transaction registered: ${transactionAmount}`);
 
+        // Opdaterer brugerens beholdning i porteføljen
         const quantityChange = tradeType === "buy" ? qty : -qty;
         await Trade.adjustHoldings(portfolioID, Ticker, quantityChange);
         console.log(`Holdings adjusted by ${quantityChange} for ${Ticker}`);
 
+        // Omdirigerer brugeren til deres portefølje-side
         console.log(`Trade completed successfully. Redirecting to portfolio ${portfolioID}`);
         res.redirect(`/portfolio/${portfolioID}`);
 
     } catch (err) {
+        // Håndterer fejl undervejs og viser fejlmeddelelse i view
         console.error("Error handling trade:", err);
         res.render("trade", {
             stockData: null,
@@ -132,18 +149,6 @@ async function handleTrade(req, res) {
         });
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
