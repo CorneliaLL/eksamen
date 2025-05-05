@@ -21,15 +21,15 @@ class Stocks{ //stockID slettet - fordi SQL laver ID'et selv. Simplere og mere s
             // Indsætter aktiedata i Stocks tabellen
             await pool.request()
             .input('Ticker', sql.NVarChar(100), stock.ticker)
-            .input('Date', sql.Date, stock.latestDate)
+            .input('LatestDate', sql.Date, stock.latestDate)
             .input('StockName', sql.NVarChar(100), stock.stockName)
             .input('StockCurrency', sql.NVarChar(100), stock.stockCurrency)
             .input('ClosePrice', sql.Decimal(10,2), stock.closePrice)
             .input('StockType', sql.NVarChar(100), stock.stockType)
             .input('PortfolioID', sql.Int, stock.portfolioID)
             .query(`
-            INSERT INTO Stocks (Ticker, Date, StockName, StockCurrency, ClosePrice, StockType, PortfolioID)
-            VALUES (@Ticker, @Date, @StockName, @StockCurrency, @ClosePrice, @StockType, @PortfolioID)
+            INSERT INTO Stocks (Ticker, latestDate, StockName, StockCurrency, ClosePrice, StockType, PortfolioID)
+            VALUES (@Ticker, @LatestDate, @StockName, @StockCurrency, @ClosePrice, @StockType, @PortfolioID)
             `);
         } /*forklaring: gemme funktion - hele objektet gemmes i databasen i stedet for mange enkeltdele
     i stedet for enkeltdata kan vi arbejde med samlede objekter - forelæsning 15 om struktur. skal ikke huske rækkefælgen. kan genbruge objekt i andre funktioner nemmere*/

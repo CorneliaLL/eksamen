@@ -4,7 +4,7 @@
 const axios = require('axios'); //to get data from the internet -> npm install axios
 
 async function fetchStockData(ticker) {
-    const apiKey = '5WEYK0DRXVCFWJPW' //personal alpha vantage api key
+    const apiKey = 'GYAAYWWHIFGTY73B' //personal alpha vantage api key
     const priceUrl = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${ticker}&apikey=${apiKey}`;
     const overviewUrl = `https://www.alphavantage.co/query?function=OVERVIEW&symbol=${ticker}&apikey=${apiKey}`;
     //base url - request daily stock prices - specific stock data - personal api key to get data
@@ -12,6 +12,12 @@ async function fetchStockData(ticker) {
     try {
         const priceResponse = await axios.get(priceUrl); //gets data from api
         const priceData = priceResponse.data; //saves response answer
+
+            // 🔻 Tjek for rate limit-besked fra Alpha Vantage
+    if (priceData['Note'] || priceData['Information']) {
+        console.error("Rate limit eller fejl fra Alpha Vantage:", priceData);
+        return { error: "Rate limit fra Alpha Vantage. Prøv igen senere." };
+      }
 
         if (priceData['Time Series (Daily)']) { //reads newest share price 
 
@@ -55,10 +61,11 @@ async function fetchStockData(ticker) {
 
         } else {
             console.error(`No data was found for`, ticker);
+            return null; 
         }
     } catch (error) { //catches error and sends error message 
         console.error(`Error while collecting data`, error)
-
+        return null;
     }
 }
 
