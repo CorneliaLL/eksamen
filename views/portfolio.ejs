@@ -7,55 +7,80 @@
   <%- include('./partials/nav.ejs') %>
 
   <div class="container">
-    <h1><%= portfolio.portfolioName %></h1>
+    <div class="portfolioContainer">
+      <h1>Portfolio: <%= portfolio.portfolioName %></h1>
 
-    <div class="dashboard-box">
-      <h2>Portfolio Summary</h2>
-      <!-- Portfolio summary chart HER-->
-    </div>
+      <!-- Row: Summary graph + pie chart -->
+      <div class="boxContainer">
+        <div class="dashboard-box1">
+          <h2>Portfolio Value Over Time</h2>
+        </div>
 
+        <div class="dashboard-box2">
+          <h2>Value Distribution</h2>
+        </div>
+      </div>
 
-    <!--TILFØJ value distribution donut chart-->
-    <div class="dashboard-box">
-      <h2>Value Distribution</h2>
-      <!--DONUTCHART HER-->
-      <div class="total-value">
-        Total Value: <%= totalRealizedValue %> <%= account.currency %>
+      <!-- Summary value boxes -->
+      <div class="summary-row">
+        <div class="summary-box">
+          <div class="summary-header">Total Value</div>
+          <div class="summary-amount">
+            <%= acquisitionPrice !== null ? acquisitionPrice.toFixed(2) : '0.00' %> <%= account.currency %>
+          </div>
+        </div>
+        <div class="summary-box">
+          <div class="summary-header">Total Realized Value</div>
+          <div class="summary-amount">
+            <%= totalRealizedValue.toFixed(2) %> <%= account.currency %>
+          </div>
+        </div>
+        <div class="summary-box">
+          <div class="summary-header">Total Unrealized Gain</div>
+          <div class="summary-amount">
+            <%= totalUnrealizedGain.toFixed(2) %> <%= account.currency %>
+          </div>
+        </div>
+      </div>
+
+      <!-- Holdings table -->
+      <div class="dashboard-box3">
+        <h2>Holdings in Portfolio</h2>
+        <div class="tableContainer">
+          <table>
+            <thead>
+              <tr>
+                <th>Ticker</th>
+                <th>Quantity</th>
+                <th>24h Change</th>
+                <th>Price</th>
+                <th>GAK</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% holdings.forEach(stock => { %>
+                <tr>
+                  <td><%= stock.Ticker %></td>
+                  <td><%= stock.quantity %> pcs</td>
+                  <td class="<%= stock.dailyChange >= 0 ? 'positive' : 'negative' %>">
+                    <%= stock.dailyChange ? stock.dailyChange.toFixed(2) + '%' : 'N/A' %>
+                  </td>
+                  <td><%= stock.currentPrice ? stock.currentPrice.toFixed(2) + ' ' + account.currency : 'N/A' %></td>
+                  <td><%= stock.gak ? stock.gak.toFixed(2) : 'N/A' %></td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Navigation buttons -->
+      <div class="button-row">
+        <a href="/account/<%= account.accountID %>" class="btn">← Back to my portfolios</a>
+        <a href="/transactions/<%= portfolio.portfolioID %>" class="btn">View Transactions</a>
+        <a href="/trade/<%= portfolio.portfolioID %>/<%= account.accountID %>" class="btn">Trade Stock</a>
       </div>
     </div>
-  
-  <div class="dashboard-box">
-  <h2>Holdings</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Ticker</th>
-            <th>Quantity</th>
-            <th>24h Change</th>
-            <th>Price</th>
-            <th>GAK</th>
-          </tr>
-        </thead>
-        <tbody>
-          <% holdings.forEach(stock => { %>
-            <tr>
-              <td><%= stock.Ticker %></td>
-              <td><%= stock.quantity %> pcs</td>
-              <td class="<%= stock.dailyChange >= 0 ? 'positive' : 'negative' %>">
-                <%= stock.dailyChange ? stock.dailyChange.toFixed(2) : "N/A" %> </td>
-              <td><%= stock.currentPrice ? stock.currentPrice.toFixed(2) + ' ' + account.currency : 'N/A' %></td>
-              <td><%= stock.gak ? stock.gak.toFixed(2) : 'N/A' %></td>
-            </tr>
-          <% }) %>
-        </tbody>
-      </table>
-
-    <a href="/account/<%= account.accountID %>" class="btn">← Back to my portfolios</a>
-    <a href="/transactions/<%= portfolio.accountID %>" class="btn">View Transactions</a>
-    <a href="/trade/<%=portfolio.portfolioID%>/<%=account.accountID%>" class="btn">Trade Stock</a>
-
-
-  </div>
   </div>
 </body>
 </html>

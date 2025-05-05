@@ -126,7 +126,7 @@ body {
     align-items: center;
   }
 
-  .piechart {
+  .piechart, .donutchart {
     background-color: 1B1B19;
     color: white;
     border-radius: 12px;
@@ -140,7 +140,7 @@ body {
   }
 
   .balance,
-  .portfolioList {
+  .portfolioList, .dashboard-box {
     background-color: 1B1B19;
     color: white;
     border-radius: 12px;
@@ -222,13 +222,54 @@ body {
     }
   }
 
-  /* Box styling for summary and holdings */
-.summary-box, .holdings-box {
-  background-color: #1a1a1a;  
-  border: 1px solid #444;     
-  border-radius: 8px;        
-  padding: 20px;           
-  margin: 20px auto;      
-  max-width: 600px;        
-  color: white; 
+
+.summary-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 40px;
+  margin-bottom: 40px;
+}
+
+.summary-box {
+  background-color: #1B1B19;
+  color: white;
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.summary-header {
+  font-size: 0.9rem;
+  color: #aaa;
+  margin-bottom: 5px;
+}
+
+.summary-amount {
+  font-size: 1.4rem;
+  font-weight: bold;
+}
+
+.boxContainer {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 20px;
+}
+
+.dashboard-box1, .dashboard-box2, .dashboard-box3 {
+  background-color: #1B1B19;
+  border-radius: 12px;
+  padding: 20px;
+  min-height: 300px;
+}
+
+
+.positive {
+  color: #00cc66;
+}
+
+.negative {
+  color: #ff3333;
 }
