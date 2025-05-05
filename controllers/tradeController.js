@@ -12,7 +12,7 @@ async function handleTrade(req, res) {
 
         const { portfolioID, accountID, Ticker, tradeType, quantity, fee } = req.body;
 
-          // Validate required fields
+          // Validate required fields - bruges? test 
           if (!portfolioID || !accountID || !Ticker || !tradeType || !quantity) {
             return res.render("trade", {
                 stockData: null,
@@ -113,6 +113,8 @@ async function handleTrade(req, res) {
         // Update users holdings based on the trade
         const quantityChange = tradeType === "buy" ? qty : -qty;
         await Trade.adjustHoldings(portfolioID, Ticker, quantityChange);
+
+        //skal testes - bør gemme stock data i databasen når en stock købes af en user 
 
         /*if (tradeType === "buy") { - blev brugt før til at opdatere holding men ser ikke ud til at virke 
             await Trade.updateHoldingsAfterBuy(portfolioID, Ticker, qty);

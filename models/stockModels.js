@@ -77,7 +77,7 @@ class Stocks{ //stockID slettet - fordi SQL laver ID'et selv. Simplere og mere s
       }
 
 };  
-//bruges ikke endnu
+//bruges ikke endnu?
 //Skal hente daglig priser fra vores API
 class PriceHistory{ 
     constructor(historyID, stockID, price, priceDate){
