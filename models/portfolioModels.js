@@ -33,7 +33,7 @@ class Portfolio {
       .query(`
         SELECT * FROM Portfolios
         JOIN Accounts ON Portfolios.accountID = Accounts.accountID
-        WHERE userID = @userID
+        WHERE Accounts.userID = @userID
       `);
     return result.recordset;
   }
