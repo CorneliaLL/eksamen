@@ -122,6 +122,9 @@ body {
     grid-column: span 2;
   }
 
+  .updateBalance {
+    align-items: center;
+  }
 
   .createNewAccountBtn {
     background-color: gray;
@@ -164,12 +167,18 @@ body {
   }
 
   .tableContainer {
+    width: 100%;
     color: white;
-    td {
-      color: white;
+    table {
+      width: 100%;
+      text-align: left;
     }
+    td,
     th {
       color: white;
+      padding: 12px 16px;
+      border-bottom: 1px solid #444;
+      white-space: nowrap;
     }
   }
 
