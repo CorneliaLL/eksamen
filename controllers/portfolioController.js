@@ -2,11 +2,12 @@ const { Portfolio } = require("../models/portfolioModels");
 const { Account } = require("../models/accountModels");
 
 
-// Show list of portfolios
+// Show list of portfolios //ÆNDRE
 async function getPortfolios(req, res, next) {
   try {
     const userID = req.session.userID;
     if (!userID) return res.status(401).send("Unauthorized");
+    const { accountID } = req.params;
 
     const portfolios = await Portfolio.getAllPortfolios(userID);
     req.portfolios = portfolios; // saves the portfolios to the req object

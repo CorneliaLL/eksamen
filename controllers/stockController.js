@@ -179,7 +179,7 @@ async function updateDailyChange() {
 }
 
 // Initial opdatering af aktiedata ved serverstart
-updateDailyChange();
+//updateDailyChange();
 
 // Cron-job: opdater daglig ændring hver dag kl. 17:00 (serverens tidszone)
 // Format: 'minutter timer dag måned ugedag'

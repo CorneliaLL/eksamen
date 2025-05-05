@@ -15,8 +15,8 @@ app.use(
     session({
         secret: "token",
         resave: false, //Prevents resaving session if nothing has changed
-        saveUninitialized: true, //Saves session even if it is not initialized
-        cookie: { secure: false, maxAge: 24 * 60 * 60 * 1000 }, //cookie will expire after 1 minute
+        saveUninitialized: false, //DEn her skal måske ændres til false UNDERSØG
+        cookie: { secure: false, maxAge: 24 * 60 * 60 * 1000 },
     })
 );
 

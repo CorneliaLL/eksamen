@@ -35,7 +35,7 @@
           <thead>
             <tr>
               <th>Portfolio Name</th>
-              <th>Account ID</th>
+              <th>Account name</th>
               <th>Created</th>
               <th>Details</th>
             </tr>
@@ -45,7 +45,7 @@
               <% portfolios.forEach(portfolio => { %>
                 <tr>
                   <td><%= portfolio.portfolioName %></td>
-                  <td><%= portfolio.accountID %></td>
+                  <td><%= portfolio.accountName %></td>
                   <td><%= new Date(portfolio.registrationDate).toLocaleDateString() %></td>
                   <td>
                     <a href="/portfolio/<%= portfolio.portfolioID %>/<%= account.accountID %>">View</a>
