@@ -13,7 +13,22 @@
         <h1>Account: <%= account.accountName %> </h1> <!--gets username from database-->
     </div>
     <div class="boxContainer">
-    <div class="topbox">
+      <div class="createPortfolio">
+        <a href="/createPortfolio">Create portfolio!</a>
+      </div>
+    <div class="valueandprice">
+    <div class="totalValue">
+      <h3>Total value in <%= account.currency %></h3>
+    </div>
+    <div class="priceChange">
+      <h3>price change</h3>
+    </div>
+    </div>
+    <div class="piechart">
+      <!--INSERT CHART HERE-->
+      <h3>Pie chart</h3>
+    </div>
+    <div class="balance">
       <h3> Balance: <%= account.balance.toFixed(2) %> <%= account.currency %> </h3>
       <form action="/account/<%= account.accountID %>/transaction" method="POST">
         <div class="updateBalance">
@@ -28,7 +43,7 @@
         <button type="submit">Update balance</button>
       </form>
     </div>
-    <div class="box1">
+    <div class="portfolioList">
       <h2>My portfolios</h2>
       <div class="tableContainer">
         <table>
@@ -58,10 +73,6 @@
           </tbody>
         </table>
       </div>
-    </div>
-    <div class="box2">
-      <h2>Create new portfolio:</h2>
-      <a href="/createPortfolio">Create portfolio!</a>
     </div>
     </div>
     </div>

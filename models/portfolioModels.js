@@ -99,7 +99,7 @@ class Portfolio {
 
   // Calculate Expected Value of a stock in a portfolio based on live price from API
   // Expected value = current price * total quantity of shares
-  static async calculateExpectedValue(portfolioID, Ticker) {
+  static async calculateRealizedValue(portfolioID, Ticker) {
     const pool = await connectToDB();
     const result = await pool.request()
       .input("portfolioID", sql.Int, portfolioID)
@@ -143,8 +143,8 @@ class Portfolio {
     const currentPrice = parseFloat(stockData.closePrice);
 
     // calculate the expected value of the stock in the portfolio
-    const expectedValue = totalQuantity * currentPrice;
-    const unrealizedGain = expectedValue - totalCost;
+    const realizedValue = totalQuantity * currentPrice;
+    const unrealizedGain = realizedValue - totalCost;
 
     //round the unrealized gain to 2 decimal 
     return parseFloat(unrealizedGain.toFixed(2));
@@ -168,10 +168,10 @@ class Portfolio {
       
       // //calculate the GAK, expected value and unleazized gain for each stock 
       const gak = await Portfolio.calculateGAK(portfolioID, Ticker);
-      const expectedValue = await Portfolio.calculateExpectedValue(portfolioID, Ticker); 
+      const realizedValue = await Portfolio.calculateRealizedValue(portfolioID, Ticker); 
       const unrealizedGain = await Portfolio.calculateUnrealizedGain(portfolioID, Ticker);
 
-      holdings.push({ Ticker, gak, expectedValue, unrealizedGain });
+      holdings.push({ Ticker, gak, realizedValue, unrealizedGain });
     }
     return holdings;
   }
