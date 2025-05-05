@@ -28,11 +28,14 @@ body {
     padding: 20px;
   }
   
-  .accountContainer {
+  .accountContainer,
+  .tradeContainer {
     display: flex;
     gap: 40px;
     align-items: center;
   }
+
+  
 
   h1 {
     color: white;
@@ -68,7 +71,8 @@ body {
     cursor: pointer;
   }
 
-.accountBox {
+.accountBox,
+.tradeBox {
   background-color: 1B1B19;
   color: white;
   border-radius: 12px;
