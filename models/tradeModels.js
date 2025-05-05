@@ -74,7 +74,7 @@ class Trade {
 
     // Update holdings after a trade. Either add or remove the quantity based on the trade type
     //quantity change is positive for buy and negative for sell
-    static async adjustHoldings(portfolioID, Ticker, quantityChange) {
+    static async adjustHoldings(portfolioID, Ticker, quantityChange, stockID) {
         const pool = await connectToDB();
 
         //check if the holding exist    
@@ -120,9 +120,10 @@ class Trade {
                     .input("portfolioID", sql.Int, portfolioID)
                     .input("Ticker", sql.NVarChar, Ticker)
                     .input("quantity", sql.Int, quantityChange)
+                    .input("stockID", sql.Int, stockID)
                     .query(`
-                        INSERT INTO Holdings (portfolioID, Ticker, quantity)
-                        VALUES (@portfolioID, @Ticker, @quantity)
+                        INSERT INTO Holdings (portfolioID, Ticker, quantity, stockID)
+                        VALUES (@portfolioID, @Ticker, @quantity, @stockID)
                     `);
             }
         }

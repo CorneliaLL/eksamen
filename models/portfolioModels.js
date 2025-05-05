@@ -1,5 +1,5 @@
 const { connectToDB, sql } = require("../database");
-const { storeStockData } = require("../services/fetchStockData");
+const { fetchStockData } = require("../services/fetchStockData");
 
 class Portfolio {
   constructor(portfolioID, accountID, portfolioName, registrationDate) {
@@ -113,7 +113,7 @@ class Portfolio {
     const { totalQuantity } = result.recordset[0];
     if (!totalQuantity || totalQuantity === 0) return 0;
 
-    const stockData = await storeStockData(Ticker);
+    const stockData = await fetchStockData(Ticker);
     const currentPrice = parseFloat(stockData.closePrice);
 
     return parseFloat((totalQuantity * currentPrice).toFixed(2));
@@ -139,7 +139,7 @@ class Portfolio {
     if (!totalCost || !totalQuantity || totalQuantity === 0) return 0;
 
     // get the current price from the API 
-    const stockData = await storeStockData(Ticker);
+    const stockData = await fetchStockData(Ticker);
     const currentPrice = parseFloat(stockData.closePrice);
 
     // calculate the expected value of the stock in the portfolio

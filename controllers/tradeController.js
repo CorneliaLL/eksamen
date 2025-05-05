@@ -143,13 +143,12 @@ async function handleTrade(req, res) {
 
         // Opdaterer brugerens beholdning i porteføljen
         const quantityChange = tradeType === "buy" ? qty : -qty;
-        await Trade.adjustHoldings(portfolioID, Ticker, quantityChange);
+        await Trade.adjustHoldings(portfolioID, Ticker, quantityChange, stockID);
         console.log(`Holdings adjusted by ${quantityChange} for ${Ticker}`);
 
         // Omdirigerer brugeren til deres portefølje-side
         console.log(`Trade completed successfully. Redirecting to portfolio ${portfolioID}`);
-        res.redirect(`/portfolio/${portfolioID}`);
-        console.log(`Trade completed successfully.`);
+        return res.redirect(`/portfolio/${portfolioID}/${accountID}`);
 
 
     } catch (err) {
