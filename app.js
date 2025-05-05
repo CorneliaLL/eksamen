@@ -15,7 +15,7 @@ app.use(
     session({
         secret: "token",
         resave: false, //Prevents resaving session if nothing has changed
-        saveUninitialized: true, //DEn her skal måske ændres til false UNDERSØG
+        saveUninitialized: false, //DEn her skal måske ændres til false UNDERSØG
         cookie: { secure: false, maxAge: 24 * 60 * 60 * 1000 },
     })
 );
