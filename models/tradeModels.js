@@ -19,21 +19,26 @@ class Trade {
     static async createTrade({ portfolioID, accountID, Ticker, stockName, tradeType, quantity, price, fee, totalPrice, tradeDate }) {
         const pool = await connectToDB();
 
+        console.log("stop")
+        console.log({portfolioID, accountID, Ticker, stockName, tradeType, quantity, price, fee, totalPrice, tradeDate})
+
+        return(5)
+
         const result = await pool.request()
             .input("portfolioID", sql.Int, portfolioID)
             .input("accountID", sql.Int, accountID)
             .input("Ticker", sql.NVarChar, Ticker)
-            .input("stockName", sql.NVarChar, stockName)
             .input("tradeType", sql.NVarChar, tradeType)
             .input("quantity", sql.Int, quantity)
             .input("price", sql.Decimal(18, 4), price)
             .input("fee", sql.Decimal(18, 4), fee)
+            .input("stockID", null)
             .input("totalPrice", sql.Decimal(18, 4), totalPrice)
             .input("tradeDate", sql.DateTime, tradeDate)
             .query(`
-                INSERT INTO Trades (portfolioID, accountID, Ticker, stockName, tradeType, quantity, price, fee, totalPrice, date)
+                INSERT INTO Trades (portfolioID, accountID, stockID, Ticker, tradeType, quantity, price, fee, totalPrice, tradeDate)
                 OUTPUT INSERTED.tradeID
-                VALUES (@portfolioID, @accountID, @Ticker, @stockName, @tradeType, @quantity, @price, @fee, @totalPrice, @tradeDate)
+                VALUES (@portfolioID, @accountID, @stockID, @Ticker, @tradeType, @quantity, @price, @fee, @totalPrice, @tradeDate)
             `);
 
         return result.recordset[0].tradeID;
