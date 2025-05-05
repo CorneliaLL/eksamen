@@ -7,10 +7,9 @@ async function getPortfolios(req, res, next) {
   try {
     const userID = req.session.userID;
     if (!userID) return res.status(401).send("Unauthorized");
-    const { accountID } = req.params;
 
     const portfolios = await Portfolio.getAllPortfolios(userID);
-    
+
   //Acquisition price for all portfolios in the account
     let totalAcquisitionPrice = 0;
     for (const p of portfolios) {

@@ -1,4 +1,5 @@
 const { User } = require("../models/userModels");
+const { Account } = require("../models/accountModels");
  
 //validates password and return an error-message if not true 
  function validatePassword(password){
@@ -69,8 +70,12 @@ async function signup (req, res){
       if (!user) {
         return res.status(404).send("User not found");
       }
+      const accounts = Account.getAllAccounts(userID)
       res.render("/dashboard", {
-        username: user.username
+        username: user.username,
+        accounts,
+        portfolios: req.portfolios,
+        totalAcquisitionPrice: req.totalAcquisitionPrice,
       });
     } catch (err) {
       console.error("Error in renderDashboard;", err.message);
