@@ -10,7 +10,14 @@ async function getPortfolios(req, res, next) {
     const { accountID } = req.params;
 
     const portfolios = await Portfolio.getAllPortfolios(userID);
+    let totalAcquisitionPrice = 0;
+    for (const p of portfolios) {
+      p.acquisitionPrice = await Portfolio.calculateAcquisitionPrice(p.portfolioID);
+
+      totalAcquisitionPrice += p.acquisitionPrice || 0;
+    }
     req.portfolios = portfolios; // saves the portfolios to the req object
+    req.totalAcquisitionPrice = totalAcquisitionPrice;
     next(); // express function to call the next middleware in accountRoute
   } catch (err) {
     console.error(err.message);
@@ -27,7 +34,7 @@ async function getPortfolioByID(req, res) {
     return res.status(401).send("Unauthorized");
 
     const { accountID, portfolioID } = req.params;
-
+  
     const portfolio = await Portfolio.findPortfolioByID(portfolioID); 
     if (!portfolio) 
       return res.status(404).send("Portfolio not found")
