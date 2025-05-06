@@ -152,13 +152,13 @@ class Portfolio {
 
     const holdings = [];
     for (let stock of result.recordset) {
-      const ticker = stock.Ticker;
+      const ticker = stock.ticker;
 
       const gak = await Portfolio.calculateGAK(portfolioID, ticker);
       const realizedValue = await Portfolio.calculateRealizedValue(portfolioID, ticker);
       const unrealizedGain = await Portfolio.calculateUnrealizedGain(portfolioID, ticker);
 
-      holdings.push({ Ticker, quantity, gak, realizedValue, unrealizedGain });
+      holdings.push({ ticker, quantity, gak, realizedValue, unrealizedGain });
     }
     return holdings;
   }

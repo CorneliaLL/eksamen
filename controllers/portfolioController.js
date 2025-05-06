@@ -19,8 +19,8 @@ async function getPortfolios(req, res, next) {
 
       const holdings = await Portfolio.getHoldings(p.portfolioID);
       for (const h of holdings) {
-        const realizedValue = await Portfolio.calculateRealizedValue(p.portfolioID, h.Ticker);
-        const unrealizedGain = await Portfolio.calculateUnrealizedGain(p.portfolioID, h.Ticker);
+        const realizedValue = await Portfolio.calculateRealizedValue(p.portfolioID, h.ticker);
+        const unrealizedGain = await Portfolio.calculateUnrealizedGain(p.portfolioID, h.ticker);
         totalRealizedValue += realizedValue || 0;
         totalUnrealizedGain += unrealizedGain || 0;
       }
@@ -72,9 +72,9 @@ async function getPortfolioByID(req, res) {
 
     // For loop that loops through holdings
     for (const h of holdings) {
-      const expected = await Portfolio.calculateRealizedValue(portfolioID, h.Ticker);
-      const gain = await Portfolio.calculateUnrealizedGain(portfolioID, h.Ticker);
-      const gak = await Portfolio.calculateGAK(portfolioID, h.Ticker);
+      const expected = await Portfolio.calculateRealizedValue(portfolioID, h.ticker);
+      const gain = await Portfolio.calculateUnrealizedGain(portfolioID, h.ticker);
+      const gak = await Portfolio.calculateGAK(portfolioID, h.ticker);
 
       h.realizedValue = expected !== null ? expected : 0;
       h.unrealizedGain = gain !== null ? gain : 0;
@@ -149,16 +149,16 @@ async function showPortfolioAnalysis(req, res) {
     const userID = req.session.userID;
     if (!userID) return res.status(401).send("Unauthorized");
 
-    const { portfolioID, stockSymbol } = req.params;
+    const { portfolioID, stockTicker } = req.params;
     const portfolio = await Portfolio.findPortfolioByID(portfolioID);
     if (!portfolio) return res.status(404).send("Portfolio not found");
     if (portfolio.userID !== userID) return res.status(403).send("Unauthorized");
 
-    const gak = await Portfolio.calculateGAK(portfolioID, stockSymbol);
-    const realizedValue = await Portfolio.calculateExpectedValue(portfolioID, stockSymbol);
-    const unrealizedGain = await Portfolio.calculateUnrealizedGain(portfolioID, stockSymbol);
+    const gak = await Portfolio.calculateGAK(portfolioID, stockTicker);
+    const realizedValue = await Portfolio.calculateExpectedValue(portfolioID, stockTicker);
+    const unrealizedGain = await Portfolio.calculateUnrealizedGain(portfolioID, stockTicker);
 
-    res.render("portfolioAnalysis", { portfolio, stockSymbol, gak, realizedValue, unrealizedGain });
+    res.render("portfolioAnalysis", { portfolio, stockTicker, gak, realizedValue, unrealizedGain });
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Failed to show analysis");
