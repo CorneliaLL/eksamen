@@ -118,6 +118,7 @@ async function handleTrade(req, res) {
                 return res.status(400).send("Insufficient holdings to sell.");
             }
         }
+        console.log("119")
 
         // Opretter en ny handel i databasen
         const tradeID = await Trade.createTrade({
