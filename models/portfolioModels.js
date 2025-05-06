@@ -186,9 +186,9 @@ class Portfolio {
         SUM(price * quantity) AS totalRealizedValue,
         SUM(ClosePrice * quantity) AS totalUnrealizedGain
         FROM Trades
-        JOIN Portfolios ON Trades.portfolioID = Portfolios.portfolioID
-        JOIN Accounts ON Portfolios.accountID = Accounts.accountID
-        JOIN Stocks ON Trades.Ticker = Stocks.Ticker
+        LEFT JOIN Portfolios ON Trades.portfolioID = Portfolios.portfolioID
+        LEFT JOIN Accounts ON Portfolios.accountID = Accounts.accountID
+        LEFT JOIN Stocks ON Trades.Ticker = Stocks.Ticker
         WHERE Accounts.userID = @userID`
   );
 
