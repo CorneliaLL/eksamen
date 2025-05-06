@@ -9,10 +9,7 @@
     <!--main content-->
     <!--nav-->
     <%- include ('./partials/nav.ejs') %>
- 
-    <!-- dashboard container -->
-    <div style="max-width: 1000px; margin: auto; padding: 20px;">
-
+    <div class="container">
     <!--title-->
     <div class="containerTitle">
         <h1>Dashboard</h1> <!--gets username from database-->
@@ -22,35 +19,36 @@
         <div class="summaryBox">
           <div class="summaryHeader">Total Value</div>
           <div class="summaryAmount">
-            <%= typeof totalAcquisitionPrice !== 'undefined' ? totalAcquisitionPrice.toFixed(2) : '0.00' %>
+            <%= totalAcquisitionPrice !== null ? totalAcquisitionPrice.toFixed(2) : '0.00' %>
         </div>
         <div class="summaryBox">
           <div class="summaryHeader">Total Realized Value</div>
           <div class="summaryAmount">
-            <%= typeof totalRealizedValue !== 'undefined' ? totalRealizedValue.toFixed(2) : '0.00' %>
+            <%= totalRealizedValue !== null ? totalRealizedValue.toFixed(2) : '0.00' %>
           </div>
         </div>
         <div class="summaryBox">
           <div class="summaryHeader">Total Unrealized Gain</div>
           <div class="summaryAmount">
-            <%= typeof totalUnrealizedGain !== 'undefined' ? totalUnrealizedGain.toFixed(2) : '0.00' %>
+            <%= totalUnrealizedGain !== null ? totalUnrealizedGain.toFixed(2) : '0.00' %>
           </div>
         </div>
-      </div>
-     <!--line chart section-->
-     <section style="margin-top: 30px; padding: 20px;">
+        </div>
+    </div>
+    <div class="valueBox">
+        <h2>Total value</h2>
+    </div>
+
+           <!--line chart section-->
+    <!-- <section style="margin-top: 30px; padding: 20px;">
             <div style="background-color: #1e1e1e; padding: 20px; border-radius: 15px; max-width: 1000px; margin: auto;">
                 <h2 style="text-align: center;">Total Value</h2>
                 <canvas id="totalPortfolioChart" width="900" height="400"></canvas>
             </div>
         </section>
-
-    </div>
-
-      
       <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!--chart biblo-->
-      <script src="/js/dashboardChart.js"></script> <!--creates graph-->
-    
+      <script src="/js/dashboardChart.js"></script> <!--creates graph-->  
+ </div>
 </body>
 
 </html>
