@@ -141,14 +141,10 @@ class Portfolio {
     const result = await pool.request()
       .input("portfolioID", sql.Int, portfolioID)
       .query(`
-      SELECT Ticker, 
-      SUM(CASE WHEN tradeType = 'buy' THEN quantity ELSE -quantity END) AS quantity
-      FROM Trades
-      WHERE portfolioID = @portfolioID
-      GROUP BY Ticker
-      HAVING SUM(CASE WHEN tradeType = 'buy' THEN quantity ELSE -quantity END) > 0
+        SELECT DISTINCT Trades.Ticker
+        FROM Trades
+        WHERE Trades.portfolioID = @portfolioID
       `);
-
 
     const holdings = [];
     for (let stock of result.recordset) {
@@ -158,7 +154,11 @@ class Portfolio {
       const realizedValue = await Portfolio.calculateRealizedValue(portfolioID, ticker);
       const unrealizedGain = await Portfolio.calculateUnrealizedGain(portfolioID, ticker);
 
+<<<<<<< Updated upstream
       holdings.push({ ticker, quantity, gak, realizedValue, unrealizedGain });
+=======
+      holdings.push({ Ticker: ticker, gak, realizedValue, unrealizedGain });
+>>>>>>> Stashed changes
     }
     return holdings;
   }
@@ -174,17 +174,13 @@ class Portfolio {
           SUM(price * quantity) AS totalRealizedValue,
           SUM(Stocks.ClosePrice * Trades.quantity) AS totalUnrealizedGain
         FROM Trades
-        LEFT JOIN Portfolios ON Trades.portfolioID = Portfolios.portfolioID
-        LEFT JOIN Accounts ON Portfolios.accountID = Accounts.accountID
-        LEFT JOIN Stocks ON Trades.stockID = Stocks.StockID
+        JOIN Portfolios ON Trades.portfolioID = Portfolios.portfolioID
+        JOIN Accounts ON Portfolios.accountID = Accounts.accountID
+        JOIN Stocks ON Trades.stockID = Stocks.StockID
         WHERE Accounts.userID = @userID
       `);
 
-    return {
-      totalAcquisitionPrice: result.recordset[0].totalAcquisitionPrice || 0,
-      totalRealizedValue: result.recordset[0].totalRealizedValue || 0,
-      totalUnrealizedGain: result.recordset[0].totalUnrealizedGain || 0
-    };
+    return result.recordset[0];
   }
 
   // Get top 5 holdings by expected value
@@ -204,26 +200,6 @@ class Portfolio {
       `);
     return result.recordset;
   }
-
-  static async getTop5HoldingsByUnrealizedGain(userID) {
-    const pool = await connectToDB();
-    const result = await pool.request()
-      .input("userID", sql.Int, userID)
-      .query(`
-        SELECT TOP 5 
-          Trades.Ticker, 
-          Portfolios.portfolioName, 
-          SUM((Stocks.ClosePrice * Trades.quantity) - (Trades.price * Trades.quantity)) AS unrealizedGain
-        FROM Trades
-        JOIN Portfolios ON Trades.portfolioID = Portfolios.portfolioID
-        JOIN Accounts ON Portfolios.accountID = Accounts.accountID
-        JOIN Stocks ON Trades.stockID = Stocks.StockID
-        WHERE Accounts.userID = @userID
-        GROUP BY Trades.Ticker, Portfolios.portfolioName
-        ORDER BY unrealizedGain DESC
-      `);
-    return result.recordset;
-  }  
 
   // Get price history for a specific stock
   static async getPriceHistory(stockID) {
