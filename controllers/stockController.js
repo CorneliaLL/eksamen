@@ -3,6 +3,7 @@
 const cron = require('node-cron');
 const { fetchStockData } = require("../services/fetchStockData.js"); //imports service that gets stockdata from alpha vantage
 const { Stocks } = require("../models/stockModels.js"); //imports stock model (database access)
+const { PriceHistory } = require("../models/stockModels.js");
 
 //Handles fetching stock data from the API and storing it in our database. Adds new stock to db from aplha vantage api
 async function handleFetchStock(req,res) {//adds new stock to db
@@ -149,72 +150,66 @@ async function showChart(req, res){
     res.render('stockChart', { ticker }); //sends ticker to ejs 
 };
 
-// In-memory objekt der bruges til at gemme daglige ændringer uden at gemme det i en database
-const stockChanges = {};
-
-//handles visualizing of lists of stocks 
-// Henter aktier fra databasen via model
-// Tilføjer 'dailyChange' for hver aktie fra stockChanges-objektet (hvis tilgængelig)
-async function listStocks(req, res) {
-    try {
-        const { portfolioID } = req.params;
-
-        const stocks = await Stocks.getStocksByPortfolioID(portfolioID); // henter alle aktier fra databasen
-
-        // For hver aktie: tilføj dailyChange fra in-memory lager (eller fallback)
-        for (let stock of stocks) {
-            stock.dailyChange = stockChanges[stock.Ticker] || 'Ikke tilgængelig';
-        }  
-        // Sender listen videre til EJS-skabelonen for visning
-        res.render('stockList', { stocks }); // sender til EJS
-    } catch (error) {
-        console.error('Fejl ved hentning af aktieliste:', error);
-        res.status(500).send('Serverfejl');
-    }
-}
-
-
 // Funktion: Opdaterer dailyChange for alle aktier én gang om dagen
 // Henter alle aktier fra DB
 // Bruger fetchStockData() til at hente nyeste data fra Alpha Vantage
 // Beregner dailyChange og gemmer det midlertidigt i stockChanges
 
-async function updateDailyChange() {
+async function updatePriceHistory() {
   try {
     const stocks = await Stocks.getAllStocks(); // Hent aktier fra databasen
-    const tickers = [];
 
     for (const stock of stocks) {
-        tickers.push(stock.Ticker); // Tilføjer alle tickers, inkl. dubletter
-      }
+        const { StockID: stockID, Ticker: ticker } = stock;
+        const stockData = await fetchStockData(ticker);
 
-    for (const ticker of tickers) {
-        const stockData = await fetchStockData(ticker); // Hent ny data fra API
-
-        // Hvis vi har gyldig daily chane, gemmer den i memory-objektet
-        if (stockData?.dailyChange) {
-            stockChanges[ticker] = stockData.dailyChange;
-            console.log(`${ticker}: ${stockData.dailyChange}%`);
+        if (!stockID || !stockData || stockData.error) {
+            console.warn(`Skipping ${ticker}: missing stockID or fetch error.`);
+            continue;
           }
+
+    const { closePrice, latestDate, timeSeries } = stockData;
+    const dates = Object.keys(timeSeries);
+
+    const previousDate = dates[1];
+    const previousClose = parseFloat(timeSeries[previousDate]['4. close']);
+    const dailyChange = ((closePrice - previousClose) / previousClose) * 100;
+
+
+    let yearlyChange = null;
+      if (dates.length > 99) {
+        const yearAgoDate = dates[99];
+        const yearAgoClose = parseFloat(timeSeries[yearAgoDate]['4. close']);
+        yearlyChange = ((closePrice - yearAgoClose) / yearAgoClose) * 100;
+      }
+    
+    await PriceHistory.storePriceHistory({
+        stockID,
+        price: closePrice,
+        priceDate: latestDate,
+        dailyChange,
+        yearlyChange,
+      });
+
+    console.log(`Price history saved for ${ticker}: Daily ${dailyChange.toFixed(2)}%, Yearly ${yearlyChange?.toFixed(2) || 'N/A'}%`);
     }
   } catch (err) {
-    console.error("Fejl i opdatering:", err);
+    console.error("Failed to update price history:", err);
   }
 }
 
 // Initial opdatering af aktiedata ved serverstart
-//updateDailyChange();
+updatePriceHistory();
 
 // Cron-job: opdater daglig ændring hver dag kl. 17:00 (serverens tidszone)
 // Format: 'minutter timer dag måned ugedag'
-cron.schedule('0 17 * * *', updateDailyChange);
+cron.schedule('0 17 * * *', updatePriceHistory);
 
 module.exports = {
     handleFetchStock, //post: add new stock
     handleGetStockByTicker, //get specific stock 
     handleStockSearch, //search ticker 
     showChart, //shows side for stock graph 
-    listStocks, //shows list for stocks 
-    updateDailyChange
+    updatePriceHistory
 }
 
