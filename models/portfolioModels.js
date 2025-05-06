@@ -141,10 +141,14 @@ class Portfolio {
     const result = await pool.request()
       .input("portfolioID", sql.Int, portfolioID)
       .query(`
-        SELECT DISTINCT Trades.Ticker
-        FROM Trades
-        WHERE Trades.portfolioID = @portfolioID
+      SELECT Ticker, 
+      SUM(CASE WHEN tradeType = 'buy' THEN quantity ELSE -quantity END) AS quantity
+      FROM Trades
+      WHERE portfolioID = @portfolioID
+      GROUP BY Ticker
+      HAVING SUM(CASE WHEN tradeType = 'buy' THEN quantity ELSE -quantity END) > 0
       `);
+
 
     const holdings = [];
     for (let stock of result.recordset) {
@@ -154,7 +158,7 @@ class Portfolio {
       const realizedValue = await Portfolio.calculateRealizedValue(portfolioID, ticker);
       const unrealizedGain = await Portfolio.calculateUnrealizedGain(portfolioID, ticker);
 
-      holdings.push({ Ticker: ticker, gak, realizedValue, unrealizedGain });
+      holdings.push({ Ticker, quantity, gak, realizedValue, unrealizedGain });
     }
     return holdings;
   }
