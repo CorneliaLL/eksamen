@@ -12,12 +12,15 @@
 
       <!-- Row: Summary graph + pie chart -->
       <div class="boxContainer">
-        <div class="dashboardBox1">
-          <h2>Portfolio Value Over Time</h2>
+        <div class="dashboard-box1">
+          <h2>Portfolio Summary</h2>
+          <canvas id="PortfolioSummaryChart"></canvas>
+
         </div>
 
         <div class="dashboardBox2">
           <h2>Value Distribution</h2>
+          <canvas id="valueDistributionChart"></canvas>
         </div>
       </div>
 
@@ -82,5 +85,7 @@
       </div>
     </div>
   </div>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 </body>
 </html>

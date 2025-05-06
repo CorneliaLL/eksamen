@@ -175,6 +175,56 @@ class Portfolio {
     }
     return holdings;
   }
+
+  static async getTotalValue(userID) {
+    const pool = await connectToDB();
+    const result = await pool.request()
+      .input("userID", sql.Int, userID)
+      .query(`
+        SELECT 
+        SUM(CASE WHEN tradeType = 'buy' THEN price * quantity ELSE 0 END) AS totalAcquisitionPrice, 
+        SUM(price * quantity) AS totalRealizedValue,
+        SUM(ClosePrice * quantity) AS totalUnrealizedGain
+        FROM Trades
+        JOIN Portfolios ON Trades.portfolioID = Portfolios.portfolioID
+        JOIN Accounts ON Portfolios.accountID = Accounts.accountID
+        JOIN Stocks ON Trades.Ticker = Stocks.Ticker
+        WHERE Accounts.userID = @userID`
+  );
+
+  return result.recordset[0]
+  }
+
+  static async getTop5Holdings(userID) {
+    const pool = await connectToDB();
+    const result = await pool.request()
+    .input("userID", sql.Int, userID)
+    .query(`
+      SELECT TOP 5 Ticker, portfolioName, SUM(price *quantity) AS expectedValue
+      FROM Trades
+      JOIN Portfolios ON Trades.portfolioID = portfolios.portfolioID
+      JOIN Accounts ON Portfolios.accountID = Accounts.accountID 
+      JOIN Stocks ON Trades.Ticker = Stocks.Ticker
+      WHERE Accounts.UserID = @userID
+      GROUP BY Ticker, portfolioName
+      ORDER BY expectedValue DESC
+      `);
+      return result.recordset;
+  }
+
+  static async getPriceHistory(Ticker) {
+    const pool = await connectToDB();
+    
+    const result = await pool.request()
+      .input("Ticker", sql.NVarChar, Ticker)
+      .query(`
+        SELECT TOP 30 ClosePrice, Date
+        FROM Pricehistory
+        WHERE ticker = @ticker
+        ORDER BY priceDate DESC`
+      );
+      return result.recordset;
+  }
 }
 
 
