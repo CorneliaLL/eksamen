@@ -1,49 +1,51 @@
+<!DOCTYPE html>
 <html lang="en">
-<%- include ('./partials/head.ejs') %>
-
-<!-- Link to dashboard stylesheet -->
+<%- include('./partials/head') %>
 <link rel="stylesheet" href="/dashboard.css">
 
 <body>
+  <%- include('./partials/nav.ejs') %>
 
-    <!-- Main content -->
-    <!-- Navigation bar -->
-    <%- include ('./partials/nav.ejs') %>
+  <div class="container">
+    <div class="portfolioContainer">
+      <h1>Portfolio: <%= portfolio.portfolioName %></h1>
 
-    <div class="container">
-        <!-- Title section -->
-        <div class="containerTitle">
-            <h1>Dashboard</h1> <!-- Gets username or heading from database -->
+      <!-- Row: Summary graph + pie chart -->
+      <div class="boxContainer">
+        <div class="dashboard-box1">
+          <h2>Portfolio Summary</h2>
+          <canvas id="PortfolioSummaryChart"></canvas>
+
         </div>
 
-        <!-- Summary value boxes -->
-        <div class="summaryRow">
-            <div class="summaryBox">
-                <div class="summaryHeader">Total Value</div>
-                <div class="summaryAmount">
-                    <%= typeof totalAcquisitionPrice !== 'undefined' ? totalAcquisitionPrice.toFixed(2) : '0.00' %>
-                </div>
-            </div>
-            <div class="summaryBox">
-                <div class="summaryHeader">Total Realized Value</div>
-                <div class="summaryAmount">
-                    <%= typeof totalRealizedValue !== 'undefined' ? totalRealizedValue.toFixed(2) : '0.00' %>
-                </div>
-            </div>
-            <div class="summaryBox">
-                <div class="summaryHeader">Total Unrealized Gain</div>
-                <div class="summaryAmount">
-                    <%= typeof totalUnrealizedGain !== 'undefined' ? totalUnrealizedGain.toFixed(2) : '0.00' %>
-                </div>
-            </div>
+        <div class="dashboardBox2">
+          <h2>Value Distribution</h2>
+          <canvas id="valueDistributionChart"></canvas>
         </div>
+      </div>
 
-        <div class="valueBox">
-            <h2>Total value overview</h2>
-            <!-- This section can hold more detailed charts or summary if needed -->
+      <!-- Summary value boxes -->
+      <div class="summaryRow">
+        <div class="summaryBox">
+          <div class="summaryHeader">Total Value</div>
+          <div class="summaryAmount">
+            <%= acquisitionPrice !== null ? acquisitionPrice.toFixed(2) : '0.00' %> <%= account.currency %>
+          </div>
         </div>
+        <div class="summaryBox">
+          <div class="summaryHeader">Total Realized Value</div>
+          <div class="summaryAmount">
+            <%= totalRealizedValue.toFixed(2) %> <%= account.currency %>
+          </div>
+        </div>
+        <div class="summaryBox">
+          <div class="summaryHeader">Total Unrealized Gain</div>
+          <div class="summaryAmount">
+            <%= totalUnrealizedGain.toFixed(2) %> <%= account.currency %>
+          </div>
+        </div>
+      </div>
 
-<<<<<<< Updated upstream
       <!-- Holdings table -->
       <div class="dashboardBox3">
         <h2>Holdings in Portfolio</h2>
@@ -61,7 +63,7 @@
             <tbody>
               <% holdings.forEach(stock => { %>
                 <tr>
-                  <td><%= stock.ticker %></td>
+                  <td><%= stock.Ticker %></td>
                   <td><%= stock.quantity %> pcs</td>
                   <td class="<%= stock.dailyChange >= 0 ? 'positive' : 'negative' %>">
                     <%= stock.dailyChange ? stock.dailyChange.toFixed(2) + '%' : 'N/A' %>
@@ -74,22 +76,17 @@
           </table>
         </div>
       </div>
-=======
-        <!-- Optional: Line chart section for future data visualization -->
-        <!-- 
-        <section style="margin-top: 30px; padding: 20px;">
-            <div style="background-color: #1e1e1e; padding: 20px; border-radius: 15px; max-width: 1000px; margin: auto;">
-                <h2 style="text-align: center;">Portfolio Value Over Time</h2>
-                <canvas id="totalPortfolioChart" width="900" height="400"></canvas>
-            </div>
-        </section>
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-        <script src="/js/dashboardChart.js"></script>
-        -->
->>>>>>> Stashed changes
 
+      <!-- Navigation buttons -->
+      <div class="buttonRow">
+        <a href="/account/<%= account.accountID %>" class="btn">← Back to my portfolios</a>
+        <a href="/transactions/<%= portfolio.portfolioID %>" class="btn">View Transactions</a>
+        <a href="/trade/<%= portfolio.portfolioID %>/<%= account.accountID %>" class="btn">Trade Stock</a>
+      </div>
     </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 </body>
-
 </html>
+cdn.jsdelivr.net

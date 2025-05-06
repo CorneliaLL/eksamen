@@ -141,78 +141,26 @@ class Portfolio {
     const result = await pool.request()
       .input("portfolioID", sql.Int, portfolioID)
       .query(`
-        SELECT DISTINCT Trades.Ticker
-        FROM Trades
-        WHERE Trades.portfolioID = @portfolioID
+      SELECT Ticker, 
+      SUM(CASE WHEN tradeType = 'buy' THEN quantity ELSE -quantity END) AS quantity
+      FROM Trades
+      WHERE portfolioID = @portfolioID
+      GROUP BY Ticker
+      HAVING SUM(CASE WHEN tradeType = 'buy' THEN quantity ELSE -quantity END) > 0
       `);
 
     const holdings = [];
     for (let stock of result.recordset) {
-      const ticker = stock.ticker;
+      const ticker = stock.Ticker;
+      const quantity = stock.quantity;
 
       const gak = await Portfolio.calculateGAK(portfolioID, ticker);
       const realizedValue = await Portfolio.calculateRealizedValue(portfolioID, ticker);
       const unrealizedGain = await Portfolio.calculateUnrealizedGain(portfolioID, ticker);
 
-<<<<<<< Updated upstream
-      holdings.push({ ticker, quantity, gak, realizedValue, unrealizedGain });
-=======
-      holdings.push({ Ticker: ticker, gak, realizedValue, unrealizedGain });
->>>>>>> Stashed changes
+      holdings.push({ Ticker: ticker, quantity, gak, realizedValue, unrealizedGain });
     }
     return holdings;
-  }
-
-  // Get overall portfolio value summary for a user
-  static async getTotalValue(userID) {
-    const pool = await connectToDB();
-    const result = await pool.request()
-      .input("userID", sql.Int, userID)
-      .query(`
-        SELECT 
-          SUM(CASE WHEN tradeType = 'buy' THEN price * quantity ELSE 0 END) AS totalAcquisitionPrice,
-          SUM(price * quantity) AS totalRealizedValue,
-          SUM(Stocks.ClosePrice * Trades.quantity) AS totalUnrealizedGain
-        FROM Trades
-        JOIN Portfolios ON Trades.portfolioID = Portfolios.portfolioID
-        JOIN Accounts ON Portfolios.accountID = Accounts.accountID
-        JOIN Stocks ON Trades.stockID = Stocks.StockID
-        WHERE Accounts.userID = @userID
-      `);
-
-    return result.recordset[0];
-  }
-
-  // Get top 5 holdings by expected value
-  static async getTop5Holdings(userID) {
-    const pool = await connectToDB();
-    const result = await pool.request()
-      .input("userID", sql.Int, userID)
-      .query(`
-        SELECT TOP 5 Trades.Ticker, Portfolios.portfolioName, SUM(price * quantity) AS expectedValue
-        FROM Trades
-        JOIN Portfolios ON Trades.portfolioID = Portfolios.portfolioID
-        JOIN Accounts ON Portfolios.accountID = Accounts.accountID
-        JOIN Stocks ON Trades.stockID = Stocks.StockID
-        WHERE Accounts.userID = @userID
-        GROUP BY Trades.Ticker, Portfolios.portfolioName
-        ORDER BY expectedValue DESC
-      `);
-    return result.recordset;
-  }
-
-  // Get price history for a specific stock
-  static async getPriceHistory(stockID) {
-    const pool = await connectToDB();
-    const result = await pool.request()
-      .input("stockID", sql.Int, stockID)
-      .query(`
-        SELECT TOP 30 price, priceDate
-        FROM Pricehistory
-        WHERE stockID = @stockID
-        ORDER BY priceDate DESC
-      `);
-    return result.recordset;
   }
 }
 
