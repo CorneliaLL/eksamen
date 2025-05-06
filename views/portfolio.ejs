@@ -12,39 +12,39 @@
 
       <!-- Row: Summary graph + pie chart -->
       <div class="boxContainer">
-        <div class="dashboard-box1">
+        <div class="dashboardBox1">
           <h2>Portfolio Value Over Time</h2>
         </div>
 
-        <div class="dashboard-box2">
+        <div class="dashboardBox2">
           <h2>Value Distribution</h2>
         </div>
       </div>
 
       <!-- Summary value boxes -->
-      <div class="summary-row">
-        <div class="summary-box">
-          <div class="summary-header">Total Value</div>
-          <div class="summary-amount">
+      <div class="summaryRow">
+        <div class="summaryBox">
+          <div class="summaryHeader">Total Value</div>
+          <div class="summaryAmount">
             <%= acquisitionPrice !== null ? acquisitionPrice.toFixed(2) : '0.00' %> <%= account.currency %>
           </div>
         </div>
-        <div class="summary-box">
-          <div class="summary-header">Total Realized Value</div>
-          <div class="summary-amount">
+        <div class="summaryBox">
+          <div class="summaryHeader">Total Realized Value</div>
+          <div class="summaryAmount">
             <%= totalRealizedValue.toFixed(2) %> <%= account.currency %>
           </div>
         </div>
-        <div class="summary-box">
-          <div class="summary-header">Total Unrealized Gain</div>
-          <div class="summary-amount">
+        <div class="summaryBox">
+          <div class="summaryHeader">Total Unrealized Gain</div>
+          <div class="summaryAmount">
             <%= totalUnrealizedGain.toFixed(2) %> <%= account.currency %>
           </div>
         </div>
       </div>
 
       <!-- Holdings table -->
-      <div class="dashboard-box3">
+      <div class="dashboardBox3">
         <h2>Holdings in Portfolio</h2>
         <div class="tableContainer">
           <table>
@@ -75,7 +75,7 @@
       </div>
 
       <!-- Navigation buttons -->
-      <div class="button-row">
+      <div class="buttonRow">
         <a href="/account/<%= account.accountID %>" class="btn">← Back to my portfolios</a>
         <a href="/transactions/<%= portfolio.portfolioID %>" class="btn">View Transactions</a>
         <a href="/trade/<%= portfolio.portfolioID %>/<%= account.accountID %>" class="btn">Trade Stock</a>

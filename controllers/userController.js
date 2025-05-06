@@ -1,5 +1,6 @@
 const { User } = require("../models/userModels");
 const { Account } = require("../models/accountModels");
+const { Portfolio } = require("../models/portfolioModels");
  
 //validates password and return an error-message if not true 
  function validatePassword(password){
@@ -70,12 +71,34 @@ async function signup (req, res){
       if (!user) {
         return res.status(404).send("User not found");
       }
-      const accounts = Account.getAllAccounts(userID)
-      res.render("/dashboard", {
+      const accounts = await Account.getAllAccounts(userID);
+      const portfolios = await Portfolio.getAllPortfolios(userID);
+
+      let totalAcquisitionPrice = 0;
+      let totalRealizedValue = 0;
+      let totalUnrealizedGain = 0;
+
+      for (const p of portfolios) {
+        const acquisition = await Portfolio.calculateAcquisitionPrice(p.portfolioID);
+        const realized = await Portfolio.calculateRealizedValue(p.portfolioID);
+        const unrealized = await Portfolio.calculateUnrealizedGain(p.portfolioID);
+
+        p.acquisitionPrice += acquisition || 0;
+        p.realizedValue += realized || 0;
+        p.unrealizedGain += unrealized || 0;
+
+        totalAcquisitionPrice += p.acquisitionPrice;
+        totalRealizedValue += p.realizedValue;
+        totalUnrealizedGain += p.unrealizedGain;
+      }
+
+      res.render("dashboard", {
         username: user.username,
         accounts,
-        portfolios: req.portfolios,
-        totalAcquisitionPrice: req.totalAcquisitionPrice,
+        portfolios,
+        totalAcquisitionPrice,
+        totalRealizedValue,
+        totalUnrealizedGain
       });
     } catch (err) {
       console.error("Error in renderDashboard;", err.message);
