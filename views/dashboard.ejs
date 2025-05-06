@@ -19,18 +19,18 @@
         <div class="summaryBox">
           <div class="summaryHeader">Total Value</div>
           <div class="summaryAmount">
-            <%= typeof totalAcquisitionPrice !== 'undefined' ? totalAcquisitionPrice.toFixed(2) : '0.00' %>
+            <%= totalAcquisitionPrice !== null ? totalAcquisitionPrice.toFixed(2) : '0.00' %>
         </div>
         <div class="summaryBox">
           <div class="summaryHeader">Total Realized Value</div>
           <div class="summaryAmount">
-            <%= typeof totalRealizedValue !== 'undefined' ? totalRealizedValue.toFixed(2) : '0.00' %>
+            <%= totalRealizedValue !== null ? totalRealizedValue.toFixed(2) : '0.00' %>
           </div>
         </div>
         <div class="summaryBox">
           <div class="summaryHeader">Total Unrealized Gain</div>
           <div class="summaryAmount">
-            <%= typeof totalUnrealizedGain !== 'undefined' ? totalUnrealizedGain.toFixed(2) : '0.00' %>
+            <%= totalUnrealizedGain !== null ? totalUnrealizedGain.toFixed(2) : '0.00' %>
           </div>
         </div>
         </div>
