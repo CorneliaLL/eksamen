@@ -24,20 +24,19 @@ class Portfolio {
     return result.recordset[0].portfolioID;
   }
 
-//Evt ændre SQL koden 
   // Get all portfolios for a specific user
   static async getAllPortfolios(userID) {
     const pool = await connectToDB();
     const result = await pool.request()
       .input("userID", sql.Int, userID)
       .query(`
-        SELECT * FROM Portfolios
+        SELECT * 
+        FROM Portfolios
         JOIN Accounts ON Portfolios.accountID = Accounts.accountID
         WHERE Accounts.userID = @userID
       `);
     return result.recordset;
   }
-
 
   // Find one specific portfolio
   static async findPortfolioByID(portfolioID) {
@@ -53,182 +52,190 @@ class Portfolio {
     return result.recordset[0] || null;
   }
 
-
   // Calculate GAK (Average Acquisition Price) for a stock
-  // GAK = (total cost of share / total quantity of shares)
-  // calculates the average acquisition prie for a stoick in a portfolio
-
-  //Fetches relevant data from DB and calculates the GAK directly.
-  static async calculateGAK(portfolioID, Ticker) { 
+  static async calculateGAK(portfolioID, ticker) {
     const pool = await connectToDB();
     const result = await pool.request()
-      .input("portfolioID", sql.Int, portfolioID) 
-      .input("Ticker", sql.NVarChar, Ticker)
+      .input("portfolioID", sql.Int, portfolioID)
+      .input("ticker", sql.NVarChar, ticker)
       .query(`
         SELECT
           SUM(price * quantity) AS totalCost,
           SUM(quantity) AS totalQuantity
         FROM Trades
-        WHERE portfolioID = @portfolioID AND Ticker = @Ticker AND tradeType = 'buy'
+        WHERE portfolioID = @portfolioID AND Ticker = @ticker AND tradeType = 'buy'
       `);
 
     const { totalCost, totalQuantity } = result.recordset[0];
     if (!totalCost || !totalQuantity || totalQuantity === 0) return null;
 
-//calculates GAK directly so it can be fetched directly
     return totalCost / totalQuantity;
-
   }
 
-// Calculate total cost for acquisition price and quantity of shares
+  // Calculate total acquisition price (cost) of shares
   static async calculateAcquisitionPrice(portfolioID) {
     const pool = await connectToDB();
     const result = await pool.request()
       .input("portfolioID", sql.Int, portfolioID)
       .query(`
         SELECT
-          SUM(price * quantity) AS totalCost,
-          SUM(quantity) AS totalQuantity
+          SUM(price * quantity) AS totalCost
         FROM Trades
         WHERE portfolioID = @portfolioID AND tradeType = 'buy'
-        `);
-    
+      `);
+
     const { totalCost } = result.recordset[0];
     return totalCost;
   }
 
-  // Calculate Expected Value of a stock in a portfolio based on live price from API
-  // Expected value = current price * total quantity of shares
-  static async calculateRealizedValue(portfolioID, Ticker) {
+  // Calculate realized (current) value based on live price from API
+  static async calculateRealizedValue(portfolioID, ticker) {
     const pool = await connectToDB();
     const result = await pool.request()
       .input("portfolioID", sql.Int, portfolioID)
-      .input("Ticker", sql.NVarChar, Ticker)
+      .input("ticker", sql.NVarChar, ticker)
       .query(`
         SELECT SUM(quantity) AS totalQuantity
         FROM Trades
-        WHERE portfolioID = @portfolioID AND Ticker = @Ticker
+        WHERE portfolioID = @portfolioID AND Ticker = @ticker
       `);
 
     const { totalQuantity } = result.recordset[0];
     if (!totalQuantity || totalQuantity === 0) return 0;
 
-    const stockData = await fetchStockData(Ticker);
+    const stockData = await fetchStockData(ticker);
     const currentPrice = parseFloat(stockData.closePrice);
 
     return parseFloat((totalQuantity * currentPrice).toFixed(2));
   }
 
-  // Calculate Unrealized Gain or Loss
-  //unrealized gain = expected value - total cost of shares
-  static async calculateUnrealizedGain(portfolioID, Ticker) {
+  // Calculate unrealized gain or loss
+  static async calculateUnrealizedGain(portfolioID, ticker) {
     const pool = await connectToDB();
     const result = await pool.request()
       .input("portfolioID", sql.Int, portfolioID)
-      .input("Ticker", sql.NVarChar, Ticker)
+      .input("ticker", sql.NVarChar, ticker)
       .query(`
         SELECT
-          SUM(price * quantity) AS totalCost, 
+          SUM(price * quantity) AS totalCost,
           SUM(quantity) AS totalQuantity
         FROM Trades
-        WHERE portfolioID = @portfolioID AND Ticker = @Ticker
+        WHERE portfolioID = @portfolioID AND Ticker = @ticker
       `);
 
-    
     const { totalCost, totalQuantity } = result.recordset[0];
     if (!totalCost || !totalQuantity || totalQuantity === 0) return 0;
 
-    // get the current price from the API 
-    const stockData = await fetchStockData(Ticker);
+    const stockData = await fetchStockData(ticker);
     const currentPrice = parseFloat(stockData.closePrice);
 
-    // calculate the expected value of the stock in the portfolio
     const realizedValue = totalQuantity * currentPrice;
     const unrealizedGain = realizedValue - totalCost;
 
-    //round the unrealized gain to 2 decimal 
     return parseFloat(unrealizedGain.toFixed(2));
   }
 
-  // Get all holdings (stocks) in a portfolio
+  // Get all holdings (distinct tickers) in portfolio
   static async getHoldings(portfolioID) {
     const pool = await connectToDB();
     const result = await pool.request()
       .input("portfolioID", sql.Int, portfolioID)
       .query(`
-        SELECT DISTINCT Ticker -- use DISTINCT to avoid duplicates
+        SELECT DISTINCT Trades.Ticker
         FROM Trades
-        WHERE portfolioID = @portfolioID
+        WHERE Trades.portfolioID = @portfolioID
       `);
 
+    const holdings = [];
+    for (let stock of result.recordset) {
+      const ticker = stock.Ticker;
 
-    const holdings = []; // initialize an empty array to store the holdings
-    for (let stock of result.recordset) { // iterate over the stocks
-      const Ticker = stock.Ticker; // get the stock ticker
-      
-      // //calculate the GAK, expected value and unleazized gain for each stock 
-      const gak = await Portfolio.calculateGAK(portfolioID, Ticker);
-      const realizedValue = await Portfolio.calculateRealizedValue(portfolioID, Ticker); 
-      const unrealizedGain = await Portfolio.calculateUnrealizedGain(portfolioID, Ticker);
+      const gak = await Portfolio.calculateGAK(portfolioID, ticker);
+      const realizedValue = await Portfolio.calculateRealizedValue(portfolioID, ticker);
+      const unrealizedGain = await Portfolio.calculateUnrealizedGain(portfolioID, ticker);
 
-      holdings.push({ Ticker, gak, realizedValue, unrealizedGain });
+      holdings.push({ Ticker: ticker, gak, realizedValue, unrealizedGain });
     }
     return holdings;
   }
 
+  // Get overall portfolio value summary for a user
   static async getTotalValue(userID) {
     const pool = await connectToDB();
     const result = await pool.request()
       .input("userID", sql.Int, userID)
       .query(`
         SELECT 
-        SUM(CASE WHEN tradeType = 'buy' THEN price * quantity ELSE 0 END) AS totalAcquisitionPrice, 
-        SUM(price * quantity) AS totalRealizedValue,
-        SUM(ClosePrice * quantity) AS totalUnrealizedGain
+          SUM(CASE WHEN tradeType = 'buy' THEN price * quantity ELSE 0 END) AS totalAcquisitionPrice,
+          SUM(price * quantity) AS totalRealizedValue,
+          SUM(Stocks.ClosePrice * Trades.quantity) AS totalUnrealizedGain
         FROM Trades
-        JOIN Portfolios ON Trades.portfolioID = Portfolios.portfolioID
-        JOIN Accounts ON Portfolios.accountID = Accounts.accountID
-        JOIN Stocks ON Trades.Ticker = Stocks.Ticker
-        WHERE Accounts.userID = @userID`
-  );
+        LEFT JOIN Portfolios ON Trades.portfolioID = Portfolios.portfolioID
+        LEFT JOIN Accounts ON Portfolios.accountID = Accounts.accountID
+        LEFT JOIN Stocks ON Trades.stockID = Stocks.StockID
+        WHERE Accounts.userID = @userID
+      `);
 
-  return result.recordset[0]
+    return {
+      totalAcquisitionPrice: result.recordset[0].totalAcquisitionPrice || 0,
+      totalRealizedValue: result.recordset[0].totalRealizedValue || 0,
+      totalUnrealizedGain: result.recordset[0].totalUnrealizedGain || 0
+    };
   }
 
+  // Get top 5 holdings by expected value
   static async getTop5Holdings(userID) {
     const pool = await connectToDB();
     const result = await pool.request()
-    .input("userID", sql.Int, userID)
-    .query(`
-      SELECT TOP 5 Ticker, portfolioName, SUM(price *quantity) AS expectedValue
-      FROM Trades
-      JOIN Portfolios ON Trades.portfolioID = portfolios.portfolioID
-      JOIN Accounts ON Portfolios.accountID = Accounts.accountID 
-      JOIN Stocks ON Trades.Ticker = Stocks.Ticker
-      WHERE Accounts.UserID = @userID
-      GROUP BY Ticker, portfolioName
-      ORDER BY expectedValue DESC
+      .input("userID", sql.Int, userID)
+      .query(`
+        SELECT TOP 5 Trades.Ticker, Portfolios.portfolioName, SUM(price * quantity) AS expectedValue
+        FROM Trades
+        JOIN Portfolios ON Trades.portfolioID = Portfolios.portfolioID
+        JOIN Accounts ON Portfolios.accountID = Accounts.accountID
+        JOIN Stocks ON Trades.stockID = Stocks.StockID
+        WHERE Accounts.userID = @userID
+        GROUP BY Trades.Ticker, Portfolios.portfolioName
+        ORDER BY expectedValue DESC
       `);
-      return result.recordset;
+    return result.recordset;
   }
 
-  static async getPriceHistory(Ticker) {
+  static async getTop5HoldingsByUnrealizedGain(userID) {
     const pool = await connectToDB();
-    
     const result = await pool.request()
-      .input("Ticker", sql.NVarChar, Ticker)
+      .input("userID", sql.Int, userID)
       .query(`
-        SELECT TOP 30 ClosePrice, Date
+        SELECT TOP 5 
+          Trades.Ticker, 
+          Portfolios.portfolioName, 
+          SUM((Stocks.ClosePrice * Trades.quantity) - (Trades.price * Trades.quantity)) AS unrealizedGain
+        FROM Trades
+        JOIN Portfolios ON Trades.portfolioID = Portfolios.portfolioID
+        JOIN Accounts ON Portfolios.accountID = Accounts.accountID
+        JOIN Stocks ON Trades.stockID = Stocks.StockID
+        WHERE Accounts.userID = @userID
+        GROUP BY Trades.Ticker, Portfolios.portfolioName
+        ORDER BY unrealizedGain DESC
+      `);
+    return result.recordset;
+  }  
+
+  // Get price history for a specific stock
+  static async getPriceHistory(stockID) {
+    const pool = await connectToDB();
+    const result = await pool.request()
+      .input("stockID", sql.Int, stockID)
+      .query(`
+        SELECT TOP 30 price, priceDate
         FROM Pricehistory
-        WHERE ticker = @ticker
-        ORDER BY priceDate DESC`
-      );
-      return result.recordset;
+        WHERE stockID = @stockID
+        ORDER BY priceDate DESC
+      `);
+    return result.recordset;
   }
 }
 
-
-
-  module.exports = {
-    Portfolio
-  };
+module.exports = {
+  Portfolio
+};

@@ -89,6 +89,7 @@ CREATE TABLE Trades (
     totalPrice DECIMAL(18,4) NOT NULL,
     tradeDate DATETIME NOT NULL,
     accountID INT NOT NULL,
+    Ticker NVARCHAR(20) NOT NULL
 
     FOREIGN KEY (portfolioID) REFERENCES Portfolios(portfolioID),
     FOREIGN KEY (stockID) REFERENCES Stocks(stockID),
