@@ -1,7 +1,6 @@
 const { Portfolio } = require("../models/portfolioModels");
 const { Account } = require("../models/accountModels");
 
-
 // Show list of portfolios //ÆNDRE
 async function getPortfolios(req, res, next) {
   try {
@@ -27,7 +26,7 @@ async function getPortfolios(req, res, next) {
       }
     }
 
-    const topHoldings = await Portfolio.getTop5HoldingsByValue(userID);
+    const topHoldings = await Portfolio.getTop5Holdings(userID);
     const topGains = await Portfolio.getTop5HoldingsByUnrealizedGain(userID);
 
     req.portfolios = portfolios;
@@ -44,7 +43,6 @@ async function getPortfolios(req, res, next) {
   }
 }
 
-
 // Show portfolio by ID
 async function getPortfolioByID(req, res) {
   try {
@@ -52,31 +50,48 @@ async function getPortfolioByID(req, res) {
     if (!userID) return res.status(401).send("Unauthorized");
 
     const { accountID, portfolioID } = req.params;
+
     const portfolio = await Portfolio.findPortfolioByID(portfolioID);
-    if (!portfolio) return res.status(404).send("Portfolio not found");
+    if (!portfolio)
+      return res.status(404).send("Portfolio not found");
+
+    console.log(portfolio);
 
     const account = await Account.findAccountByID(accountID);
-    if (!account) return res.status(404).send("Account not found");
+    console.log(account);
+
+    if (!account) {
+      console.log("Account not found for ID:", accountID);
+      return res.status(404).send("Account not found");
+    }
 
     const holdings = await Portfolio.getHoldings(portfolioID);
     const acquisitionPrice = await Portfolio.calculateAcquisitionPrice(portfolioID);
     let totalRealizedValue = 0;
     let totalUnrealizedGain = 0;
 
+    // For loop that loops through holdings
     for (const h of holdings) {
-      const realizedValue = await Portfolio.calculateRealizedValue(portfolioID, h.Ticker);
-      const unrealizedGain = await Portfolio.calculateUnrealizedGain(portfolioID, h.Ticker);
+      const expected = await Portfolio.calculateRealizedValue(portfolioID, h.Ticker);
+      const gain = await Portfolio.calculateUnrealizedGain(portfolioID, h.Ticker);
       const gak = await Portfolio.calculateGAK(portfolioID, h.Ticker);
 
-      h.realizedValue = realizedValue !== null ? realizedValue : 0;
-      h.unrealizedGain = unrealizedGain !== null ? unrealizedGain : 0;
+      h.realizedValue = expected !== null ? expected : 0;
+      h.unrealizedGain = gain !== null ? gain : 0;
       h.gak = gak !== null ? gak : 0;
 
       totalRealizedValue += h.realizedValue;
       totalUnrealizedGain += h.unrealizedGain;
     }
 
-    const portfolioDistribution = await Portfolio.getPortfolioDistribution(portfolioID);
+    // 🔻 NEW: Get portfolio value history for graph
+    const valueHistory = await Portfolio.getPriceHistory(portfolioID); // needs to be implemented in your model
+
+    // 🔻 NEW: Prepare pie chart data
+    const pieData = holdings.map(h => ({
+      ticker: h.Ticker,
+      value: h.quantity * (h.currentPrice || 0) // or fallback to gak if no currentPrice
+    }));
 
     res.render("portfolio", {
       portfolio,
@@ -85,14 +100,14 @@ async function getPortfolioByID(req, res) {
       acquisitionPrice,
       totalRealizedValue,
       totalUnrealizedGain,
-      portfolioDistribution
+      valueHistory, // pass to EJS for line chart
+      pieData // pass to EJS for pie chart
     });
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Failed to fetch portfolio");
   }
 }
-
 
 async function renderCreatePortfolio(req, res) {
   try {
@@ -128,8 +143,6 @@ async function handleCreatePortfolio(req, res) {
   }
 }
 
-
-
 // Show portfolio analysis for a specific stock
 async function showPortfolioAnalysis(req, res) {
   try {
@@ -141,19 +154,16 @@ async function showPortfolioAnalysis(req, res) {
     if (!portfolio) return res.status(404).send("Portfolio not found");
     if (portfolio.userID !== userID) return res.status(403).send("Unauthorized");
 
-    const gak = await Portfolio.calculateGAK(portfolioID, Ticker);
-    const realizedValue = await Portfolio.calculateExpectedValue(portfolioID, Ticker);
-    const unrealizedGain = await Portfolio.calculateUnrealizedGain(portfolioID, Ticker);
+    const gak = await Portfolio.calculateGAK(portfolioID, stockSymbol);
+    const realizedValue = await Portfolio.calculateExpectedValue(portfolioID, stockSymbol);
+    const unrealizedGain = await Portfolio.calculateUnrealizedGain(portfolioID, stockSymbol);
 
-    res.render("portfolioAnalysis", { portfolio, Ticker, gak, realizedValue, unrealizedGain });
+    res.render("portfolioAnalysis", { portfolio, stockSymbol, gak, realizedValue, unrealizedGain });
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Failed to show analysis");
   }
 }
-
-
-
 
 module.exports = {
   getPortfolios,
