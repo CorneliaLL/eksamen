@@ -76,12 +76,12 @@ async function signup (req, res){
       const totalAcquisitionPrice = totals.totalAcquisitionPrice || 0;
       const totalRealizedValue = totals.totalRealizedValue || 0;
       const totalUnrealizedGain = totals.totalUnrealizedGain || 0;
-      console.log("DEBUG: totals returned from DB", totals);
+     
       res.render("dashboard", {
         username: user.username,
-        totalAcquisitionPrice: 1234.56,
-        totalRealizedValue: 789.00,
-        totalUnrealizedGain: 445.12
+        totalAcquisitionPrice,
+        totalRealizedValue,
+        totalUnrealizedGain
       });
 
     } catch (err) {
