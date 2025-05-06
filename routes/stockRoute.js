@@ -6,6 +6,10 @@ const stockController = require("../controllers/stockController");
 
 
 /*router.get('/fetchStock/:ticker', stockController.fetchStock);*/ //post? gets stockdata from AV api and saves in db based on ticker from url 
+<<<<<<< Updated upstream
+=======
+router.get('/list', stockController.listStocks); //shows all stocks in db
+>>>>>>> Stashed changes
 router.get('/api/stocks/:ticker', stockController.handleGetStockByTicker); //gets stockdata as json (api)
 router.post('/fetchStock', stockController.handleFetchStock); //gets stockdata from AV api and saves in db based on ticker and portfolioID in req.body
 

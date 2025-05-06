@@ -13,7 +13,11 @@ router.get("/portfolioAnalysis/:portfolioID/:stockSymbol", portfolioController.s
 router.get("/stock-chart/:ticker", (req, res) => {
     res.render('stockChart', { ticker: req.params.ticker });
 });
+<<<<<<< Updated upstream
 router. get('/stocks/api/:ticker', stockController.getStockPriceHistory);
+=======
+router. get('/stocks/api/:ticker', stockController.getPriceHistory);
+>>>>>>> Stashed changes
 
 router.post("/createPortfolio", portfolioController.handleCreatePortfolio);
 

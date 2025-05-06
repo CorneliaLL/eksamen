@@ -4,7 +4,11 @@
 const ticker = document.getElementById('myChart').dataset.ticker;
 
 //fetch stock data and create chart 
+<<<<<<< Updated upstream
 fetch(`/stocks/api/${ticker}`)
+=======
+fetch(`/stocks/api/${stockID}`)
+>>>>>>> Stashed changes
   .then(response => response.json()) //translate server answer from json to js object
   .then(data => { //list with objects date and closeprice
     const labels = data.map(entry => entry.date); //dates - x-axis label
