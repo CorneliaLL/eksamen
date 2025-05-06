@@ -15,6 +15,7 @@ router.get("/stock-chart/:ticker", (req, res) => {
 });
 router.get('/api/portfolio/:portfolioID/graph', portfolioController.getPortfolioGraphData);
 
+
 router.post("/createPortfolio", portfolioController.handleCreatePortfolio);
 
 module.exports = router;

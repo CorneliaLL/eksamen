@@ -9,6 +9,8 @@ document.addEventListener('DOMContentLoaded', () => {
     .then(data => {
       const datasets = [];
 
+      console.log(data)
+
       Object.keys(data).forEach(ticker => {
         const entries = data[ticker];
         datasets.push({

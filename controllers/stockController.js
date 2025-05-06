@@ -165,12 +165,62 @@ async function updatePriceHistory() {
         const { StockID: stockID, Ticker: ticker } = stock;
         const stockData = await fetchStockData(ticker);
 
+        const changes = stockData.timeSeries;
+        const stockDates = Object.keys(changes).sort().reverse(); // sort from latest to earliest
+        // Before looping through stockDates filter out every day except today(in the cron job)
+        // But find a way to call updatePriceHistory one time before adding that.
+        for (let i = 0; i < stockDates.length - 1; i++) {
+          const currentDate = stockDates[i];
+          const previousDate = stockDates[i + 1];
+          const currentStock = changes[currentDate]
+
+          console.log(currentStock)
+        
+          const currentClose = parseFloat(changes[currentDate]['4. close']);
+          const previousClose = parseFloat(changes[previousDate]['4. close']);
+        
+          const dailyChange = currentClose - previousClose;
+          const dailyChangePercent = parseFloat(dailyChange / previousClose) * 100;
+
+
+        
+            const latestDate = stockDates[0];
+            const oldestDate = stockDates[stockDates.length - 1];
+          
+            const firstClose = parseFloat(changes[stockDates[stockDates.length - 1]]['4. close']);
+            const latestClose = parseFloat(changes[latestDate]['4. close']);
+            const oldestClose = parseFloat(changes[oldestDate]['4. close']);
+          
+            const yearlyChange = currentClose - firstClose;
+            const yearlyChangePercent = (yearlyChange / firstClose) * 100;
+
+            console.log(yearlyChangePercent.toFixed(2))
+            console.log(dailyChange.toFixed(2))
+
+
+            
+          
+            console.log(`\nOverall Change (from ${oldestDate} to ${latestDate}):`);
+            console.log(`Change: ${yearlyChange.toFixed(2)} (${yearlyChangePercent.toFixed(2)}%)`);
+          
+
+        await PriceHistory.storePriceHistory({
+            stockID,
+            price: currentClose,
+            priceDate: currentDate,
+            dailyChange: dailyChangePercent.toFixed(2),
+            yearlyChange: yearlyChangePercent.toFixed(2),
+          });
+        }
+      /* //date virkede ikke (samme dato)
         if (!stockID || !stockData || stockData.error) {
             console.warn(`Skipping ${ticker}: missing stockID or fetch error.`);
             continue;
           }
 
     const { closePrice, latestDate, timeSeries } = stockData;
+
+    console.log({latestDate})
     const dates = Object.keys(timeSeries);
 
     const previousDate = dates[1];
@@ -185,6 +235,13 @@ async function updatePriceHistory() {
         yearlyChange = ((closePrice - yearAgoClose) / yearAgoClose) * 100;
       }
     
+      console.log({
+        stockID,
+        price: closePrice,
+        priceDate: latestDate,
+        dailyChange,
+        yearlyChange,
+      })
     await PriceHistory.storePriceHistory({
         stockID,
         price: closePrice,
@@ -193,19 +250,18 @@ async function updatePriceHistory() {
         yearlyChange,
       });
 
-    console.log(`Price history saved for ${ticker}: Daily ${dailyChange.toFixed(2)}%, Yearly ${yearlyChange?.toFixed(2) || 'N/A'}%`);
-    }
-  } catch (err) {
+    console.log(`Price history saved for ${ticker}: Daily ${dailyChange.toFixed(2)}%, Yearly ${yearlyChange?.toFixed(2) || 'N/A'}%`);} */
+  } } catch (err) {
     console.error("Failed to update price history:", err);
   }
 }
 
 // Initial opdatering af aktiedata ved serverstart
-updatePriceHistory();
+//updatePriceHistory(); 
 
 // Cron-job: opdater daglig ændring hver dag kl. 17:00 (serverens tidszone)
 // Format: 'minutter timer dag måned ugedag'
-cron.schedule('0 17 * * *', updatePriceHistory);
+//cron.schedule('0 17 * * *', updatePriceHistory); // Then you can also comment this one out
 
 module.exports = {
     handleFetchStock, //post: add new stock

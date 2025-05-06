@@ -173,7 +173,7 @@ class Portfolio {
         FROM Pricehistory
         WHERE stockID = @stockID
         ORDER BY priceDate DESC
-      `);
+      `); 
     return result.recordset;
   }
   
