@@ -140,7 +140,7 @@ body {
   }
 
   .balance,
-  .portfolioList, .dashboard-box {
+  .portfolioList, .dashboardBox {
     background-color: 1B1B19;
     color: white;
     border-radius: 12px;
@@ -223,14 +223,14 @@ body {
   }
 
 
-.summary-row {
+.summaryRow {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 40px;
   margin-bottom: 40px;
 }
 
-.summary-box {
+.summaryBox {
   background-color: #1B1B19;
   color: white;
   border-radius: 12px;
@@ -241,13 +241,13 @@ body {
   align-items: center;
 }
 
-.summary-header {
+.summaryHeader {
   font-size: 0.9rem;
   color: #aaa;
   margin-bottom: 5px;
 }
 
-.summary-amount {
+.summaryAmount {
   font-size: 1.4rem;
   font-weight: bold;
 }
@@ -258,7 +258,7 @@ body {
   gap: 20px;
 }
 
-.dashboard-box1, .dashboard-box2, .dashboard-box3 {
+.dashboardBox1, .dashboardBox2, .dashboardBox3 {
   background-color: #1B1B19;
   border-radius: 12px;
   padding: 20px;
