@@ -1,11 +1,13 @@
-const { Portfolio } = require("../models/portfolioModels");
-const { Account } = require("../models/accountModels");
+const { connectToDB, sql } = require("../database");
+const { fetchStockData } = require("../services/fetchStockData");
 
-// Show list of portfolios //ÆNDRE
-async function getPortfolios(req, res, next) {
-  try {
-    const userID = req.session.userID;
-    if (!userID) return res.status(401).send("Unauthorized");
+class Portfolio {
+  constructor(portfolioID, accountID, portfolioName, registrationDate) {
+    this.portfolioID = portfolioID;
+    this.accountID = accountID;
+    this.portfolioName = portfolioName;
+    this.registrationDate = registrationDate;
+  }
 
   // Create a new portfolio
   async createNewPortfolio({ accountID, portfolioName, registrationDate }) {
