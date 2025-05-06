@@ -201,10 +201,10 @@ async function updatePriceHistory() {
 }
 
 async function getStockPriceHistory(req, res) {
-  const { ticker } = req.params;
+  const { stockID } = req.params;
 
   try {
-    const history = await Portfolio.getPriceHistoryByTicker(ticker);
+    const history = await Portfolio.getPriceHistoryByStockID(stockID);
     const formatted = history.map(row => ({
       date: row.date,
       closePrice: row.closePrice

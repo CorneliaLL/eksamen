@@ -89,7 +89,8 @@ async function getPortfolioByID(req, res) {
       account,
       acquisitionPrice,
       totalRealizedValue,
-      totalUnrealizedGain
+      totalUnrealizedGain,
+      stockID: holdings.stockID,
     });
   } catch (err) {
     console.error(err.message);
@@ -125,7 +126,7 @@ async function handleCreatePortfolio(req, res) {
     const portfolio = new Portfolio(null, accountID, portfolioName, registrationDate);
     const portfolioID = await portfolio.createNewPortfolio({ accountID, portfolioName, registrationDate });
 
-    res.redirect(/portfolio/${portfolioID});
+    res.redirect(`/portfolio/${portfolioID}`);
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Failed to create portfolio");

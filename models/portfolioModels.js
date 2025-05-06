@@ -162,6 +162,42 @@ class Portfolio {
     }
     return holdings;
   }
+
+  // Get price history for a specific stock
+  static async getPriceHistory(stockID) {
+    const pool = await connectToDB();
+    const result = await pool.request()
+      .input("stockID", sql.Int, stockID)
+      .query(`
+        SELECT TOP 30 price, priceDate
+        FROM Pricehistory
+        WHERE stockID = @stockID
+        ORDER BY priceDate DESC
+      `);
+    return result.recordset;
+  }
+  
+  //Alternativ: Brugervenlig version, som henter historik baseret på ticker-symbol
+  // Det matcher frontend, hvor man bruger /stocks/api/:ticker
+  static async getPriceHistoryByStockID(stockID) {
+    const pool = await connectToDB();
+    const result = await pool.request()
+      .input("stockID", sql.NVarChar, stockID)
+      .query(`
+        SELECT TOP 30 PriceHistory.price, PriceHistory.priceDate
+        FROM PriceHistory
+        JOIN Stocks ON PriceHistory.stockID = Stocks.StockID
+        WHERE Stocks.StockID = @stockID
+        ORDER BY PriceHistory.priceDate ASC
+      `);
+    
+    // Formatterer dato og tal til frontend-venligt format
+    return result.recordset.map(row => ({
+      date: row.priceDate.toISOString().split('T')[0],  // fx "2025-05-06"
+      closePrice: parseFloat(row.price)
+    }));
+  }
+
 }
 
 module.exports = {

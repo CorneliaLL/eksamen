@@ -3,6 +3,9 @@
 <%- include('./partials/head') %>
 <link rel="stylesheet" href="/dashboard.css">
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Import Chart.js -->
+<script src="/js/stockChart.js"></script> <!-- Dit JS -->
+
 <body>
   <%- include('./partials/nav.ejs') %>
 
@@ -12,12 +15,13 @@
 
       <!-- Row: Summary graph + pie chart -->
       <div class="boxContainer">
-        <div class="dashboard-box1">
+        <div class="dashboardBox1">
           <h2>Portfolio Summary</h2>
-          <canvas id="PortfolioSummaryChart"></canvas>
-
+          <div style="max-width: 800px; margin: auto; padding: 20px;">
+            <canvas id="myChart" data-stockid="<%= stockID %>" width="800" height="400"></canvas>
+          </div>
         </div>
-
+      
         <div class="dashboardBox2">
           <h2>Value Distribution</h2>
           <canvas id="valueDistributionChart"></canvas>
@@ -85,7 +89,6 @@
       </div>
     </div>
   </div>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 </body>
 </html>
