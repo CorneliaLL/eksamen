@@ -54,7 +54,7 @@ class Stocks{ //stockID slettet - fordi SQL laver ID'et selv. Simplere og mere s
         //gets tickers from stocks table 
         const result = await pool.request()
             .query(`
-                SELECT Ticker, LatestDate, ClosePrice, StockCurrency 
+                SELECT StockID, Ticker, LatestDate, ClosePrice, StockCurrency 
                 FROM Stocks
                 ORDER BY Ticker, latestDate DESC
             `);
@@ -80,11 +80,28 @@ class Stocks{ //stockID slettet - fordi SQL laver ID'et selv. Simplere og mere s
 //bruges ikke endnu?
 //Skal hente daglig priser fra vores API
 class PriceHistory{ 
-    constructor(historyID, stockID, price, priceDate){
+    constructor(historyID, stockID, price, priceDate, dailyChange, yearlyChange){
         this.historyID = historyID;
         this.stockID = stockID;
         this.price = price;
         this.priceDate = priceDate;
+        this.dailyChange = dailyChange;
+        this.yearlyChange = yearlyChange;
+    }
+
+    static async storePriceHistory({stockID, price, priceDate, dailyChange, yearlyChange}) {    
+        const pool = await connectToDB();
+
+        await pool.request()
+        .input('stockID', sql.Int, stockID)
+        .input('price', sql.Decimal(18,4), price)
+        .input('priceDate', sql.DateTime2(7), priceDate)
+        .input('dailyChange', sql.Decimal(18,4), dailyChange)
+        .input('yearlyChange', sql.Decimal(18,4), yearlyChange)
+        .query(`
+            INSERT INTO PriceHistory (stockID, price, priceDate, dailyChange, yearlyChange)
+            VALUES (@stockID, @price, @priceDate, @dailyChange, @yearlyChange)
+        `);
     }
 }
 
