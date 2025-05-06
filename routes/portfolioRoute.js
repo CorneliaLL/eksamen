@@ -13,7 +13,7 @@ router.get("/portfolioAnalysis/:portfolioID/:stockSymbol", portfolioController.s
 router.get("/stock-chart/:ticker", (req, res) => {
     res.render('stockChart', { ticker: req.params.ticker });
 });
-router. get('/stocks/api/:stockID', stockController.getStockPriceHistory);
+router.get('/api/portfolio/:portfolioID/graph', portfolioController.getPortfolioGraphData);
 
 router.post("/createPortfolio", portfolioController.handleCreatePortfolio);
 

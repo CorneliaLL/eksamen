@@ -177,26 +177,23 @@ class Portfolio {
     return result.recordset;
   }
   
-  //Alternativ: Brugervenlig version, som henter historik baseret på ticker-symbol
-  // Det matcher frontend, hvor man bruger /stocks/api/:ticker
-  static async getPriceHistoryByStockID(stockID) {
+  static async getAllStocksPriceHistory(portfolioID) {
     const pool = await connectToDB();
     const result = await pool.request()
-      .input("stockID", sql.NVarChar, stockID)
+      .input("portfolioID", sql.Int, portfolioID)
       .query(`
-        SELECT TOP 30 PriceHistory.price, PriceHistory.priceDate
-        FROM PriceHistory
-        JOIN Stocks ON PriceHistory.stockID = Stocks.StockID
-        WHERE Stocks.StockID = @stockID
-        ORDER BY PriceHistory.priceDate ASC
+        SELECT S.Ticker, PH.priceDate, PH.price
+        FROM Trades T
+        JOIN Stocks S ON T.stockID = S.StockID
+        JOIN PriceHistory PH ON PH.stockID = S.StockID
+        WHERE T.portfolioID = @portfolioID
+        ORDER BY S.Ticker, PH.priceDate ASC
       `);
-    
-    // Formatterer dato og tal til frontend-venligt format
-    return result.recordset.map(row => ({
-      date: row.priceDate.toISOString().split('T')[0],  // fx "2025-05-06"
-      closePrice: parseFloat(row.price)
-    }));
+  
+    return result.recordset; // fx 100 rækker med Ticker, priceDate, price
   }
+  
+  
 
 }
 

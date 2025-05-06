@@ -155,10 +155,36 @@ async function showPortfolioAnalysis(req, res) {
   }
 }
 
+async function getPortfolioGraphData(req, res) {
+  const { portfolioID } = req.params;
+  try {
+    const raw = await Portfolio.getAllStocksPriceHistory(portfolioID);
+
+    // Gruppér data efter ticker
+    const seriesMap = {};
+
+    raw.forEach(row => {
+      const ticker = row.Ticker;
+      if (!seriesMap[ticker]) seriesMap[ticker] = [];
+
+      seriesMap[ticker].push({
+        date: row.priceDate.toISOString().split('T')[0],
+        price: parseFloat(row.price)
+      });
+    });
+
+    res.json(seriesMap); // fx { AAPL: [...], MSFT: [...] }
+  } catch (err) {
+    console.error('Fejl i grafdata:', err);
+    res.status(500).json({ error: 'Serverfejl' });
+  }
+}
+
 module.exports = {
   getPortfolios,
   getPortfolioByID,
   renderCreatePortfolio,
   handleCreatePortfolio,
   showPortfolioAnalysis,
-};
+  getPortfolioGraphData
+}

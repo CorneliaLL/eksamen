@@ -200,22 +200,6 @@ async function updatePriceHistory() {
   }
 }
 
-async function getStockPriceHistory(req, res) {
-  const { stockID } = req.params;
-
-  try {
-    const history = await Portfolio.getPriceHistoryByStockID(stockID);
-    const formatted = history.map(row => ({
-      date: row.date,
-      closePrice: row.closePrice
-    }));
-    res.json(formatted);
-  } catch (error) {
-    console.error('Error fetching price history:', error);
-    res.status(500).json({ error: 'Failed to fetch price history' });
-  }
-}
-
 // Initial opdatering af aktiedata ved serverstart
 updatePriceHistory();
 
@@ -229,6 +213,5 @@ module.exports = {
     handleStockSearch, //search ticker 
     showChart, //shows side for stock graph 
     updatePriceHistory,
-    getStockPriceHistory
 }
 

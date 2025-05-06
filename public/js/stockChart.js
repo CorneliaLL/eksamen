@@ -1,42 +1,34 @@
-// stockChart.js - viser aktiegraf baseret på stockID
-
 document.addEventListener('DOMContentLoaded', () => {
-  const chartElement = document.getElementById('myChart');
-  if (!chartElement) return;
+  const graphCanvas = document.getElementById('portfolioGraph');
+  const portfolioID = graphCanvas.dataset.portfolioid;
 
-  const stockID = chartElement.dataset.stockid;
+  const ctx = graphCanvas.getContext('2d');
 
-  // Hent historiske data fra serveren
-  fetch(`/api/stocks/id/:${stockID}`)
-    .then(response => response.json())
+  fetch(`/api/portfolio/${portfolioID}/graph`)
+    .then(res => res.json())
     .then(data => {
-      const labels = data.map(entry => entry.date);         // x-akse: datoer
-      const prices = data.map(entry => entry.closePrice);   // y-akse: lukkekurser
+      const datasets = [];
 
-      const ctx = chartElement.getContext('2d');
+      Object.keys(data).forEach(ticker => {
+        const entries = data[ticker];
+        datasets.push({
+          label: ticker,
+          data: entries.map(e => ({ x: e.date, y: e.price })),
+          borderWidth: 2,
+          tension: 0.3
+        });
+      });
+
       new Chart(ctx, {
         type: 'line',
-        data: {
-          labels,
-          datasets: [{
-            label: 'Stock Price',
-            data: prices,
-            borderColor: 'lightblue',
-            backgroundColor: 'rgba(173, 216, 230, 0.3)',
-            borderWidth: 2,
-            tension: 0.4,
-            fill: true
-          }]
-        },
+        data: { datasets },
         options: {
-          responsive: true,
-          maintainAspectRatio: false,
+          parsing: false, // fordi vi bruger x/y-format
           scales: {
-            x: { ticks: { color: 'white' } },
+            x: { type: 'time', time: { unit: 'day' }, ticks: { color: 'white' } },
             y: { ticks: { color: 'white' } }
           }
         }
       });
-    })
-    .catch(error => console.error('Error getting stock data', error));
+    });
 });
