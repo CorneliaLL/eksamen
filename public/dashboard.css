@@ -72,7 +72,8 @@ body {
   }
 
 .accountBox,
-.tradeBox {
+.tradeBox,
+.valueBox {
   background-color: 1B1B19;
   color: white;
   border-radius: 12px;
@@ -140,7 +141,8 @@ body {
   }
 
   .balance,
-  .portfolioList, .dashboardBox {
+  .portfolioList, 
+  .dashboardBox {
     background-color: 1B1B19;
     color: white;
     border-radius: 12px;
