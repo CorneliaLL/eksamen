@@ -1,9 +1,9 @@
 //stockChart.js gets stock data and creates chart in the browser 
 
-//gets ticker from attribute canvas 
+//gets ticker from canvas attribute 
 const ticker = document.getElementById('myChart').dataset.ticker;
 
-//sends http get rq to server to get stock data for ticker 
+//fetch stock data and create chart 
 fetch(`/stocks/api/${ticker}`)
   .then(response => response.json()) //translate server answer from json to js object
   .then(data => { //list with objects date and closeprice

@@ -4,6 +4,7 @@ const cron = require('node-cron');
 const { fetchStockData } = require("../services/fetchStockData.js"); //imports service that gets stockdata from alpha vantage
 const { Stocks } = require("../models/stockModels.js"); //imports stock model (database access)
 const { PriceHistory } = require("../models/stockModels.js");
+const { Portfolio } = require("../models/portfolioModels.js");
 
 //Handles fetching stock data from the API and storing it in our database. Adds new stock to db from aplha vantage api
 async function handleFetchStock(req,res) {//adds new stock to db
@@ -37,6 +38,7 @@ async function handleFetchStock(req,res) {//adds new stock to db
 //Gets specific stock data from our DB for chart view 
 async function handleGetStockByTicker(req, res) {
     const { ticker } = req.params; //gets ticker from url
+    const result = await Stocks.getStockByTicker(ticker);
 
     try {
         const stock = new Stocks();
@@ -198,6 +200,22 @@ async function updatePriceHistory() {
   }
 }
 
+async function getStockPriceHistory(req, res) {
+  const { ticker } = req.params;
+
+  try {
+    const history = await Portfolio.getPriceHistoryByTicker(ticker);
+    const formatted = history.map(row => ({
+      date: row.date,
+      closePrice: row.closePrice
+    }));
+    res.json(formatted);
+  } catch (error) {
+    console.error('Error fetching price history:', error);
+    res.status(500).json({ error: 'Failed to fetch price history' });
+  }
+}
+
 // Initial opdatering af aktiedata ved serverstart
 updatePriceHistory();
 
@@ -210,6 +228,7 @@ module.exports = {
     handleGetStockByTicker, //get specific stock 
     handleStockSearch, //search ticker 
     showChart, //shows side for stock graph 
-    updatePriceHistory
+    updatePriceHistory,
+    getStockPriceHistory
 }
 
