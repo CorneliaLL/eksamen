@@ -40,6 +40,8 @@ async function getPortfolios(req, res, next) {
     res.status(500).send("Failed to fetch portfolios");
   }
 }
+
+
 // Vis portfølje med ID for detaljeret portfolio-side
 async function getPortfolioByID(req, res) {
   try {
@@ -138,7 +140,6 @@ async function handleCreatePortfolio(req, res) {
   }
 }
 
-// Show portfolio analysis page for a specific stock
 // Henter porteføljeID og aktietciker, og beregner GAK, realiseret værdi og urealiseret gevinst for den specifikke aktie i porteføljen 
 // Bruges til at vise detaljeret analyse af en aktie i porteføljen 
 async function showPortfolioAnalysis(req, res) {
