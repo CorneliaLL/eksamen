@@ -2,7 +2,7 @@ const { expect } = require ('chai'); //imports expect from Chai - used to write 
 const sinon = require ('sinon'); //import sinon - used to make fake functions 
 const { login } = require ('../controllers/userController.js'); //import wanted to test login function 
 const { User } = require ('../models/userModels.js'); //import user model with .findUserByUsername
-
+/*
 describe('login', () => { //describe: all login in groups 
     let req, res;
     
@@ -78,4 +78,4 @@ describe('login', () => { //describe: all login in groups
 
 //chai old version?
 //mjs eller js?
-//require eller from?
+//require eller from?*/

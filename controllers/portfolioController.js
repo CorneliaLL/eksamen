@@ -1,7 +1,7 @@
 const { Portfolio } = require("../models/portfolioModels");
 const { Account } = require("../models/accountModels");
 
-// Show list of portfolios (used on dashboard)
+// Vis alle porteføljer for en bruger 
 async function getPortfolios(req, res, next) {
   try {
     const userID = req.session.userID;
@@ -13,11 +13,12 @@ async function getPortfolios(req, res, next) {
     let totalRealizedValue = 0;
     let totalUnrealizedGain = 0;
 
-    // Calculate total values across all portfolios
+    // Beregning af anskaffelsespris, realiseret værdi og urealiseret gevinst for hver portfølje 
     for (const p of portfolios) {
       p.acquisitionPrice = await Portfolio.calculateAcquisitionPrice(p.portfolioID);
       totalAcquisitionPrice += p.acquisitionPrice || 0;
 
+    //Looper gennem holdings for at beregne realiseret værdi og urealiseret gevinst
       const holdings = await Portfolio.getHoldings(p.portfolioID);
       for (const h of holdings) {
         const realizedValue = await Portfolio.calculateRealizedValue(p.portfolioID, h.Ticker);
@@ -27,21 +28,21 @@ async function getPortfolios(req, res, next) {
       }
     }
 
-
-    // Save computed values to request object for use in the next middleware or render
+    // Tilføj beregnede værdier til portføljerne for at vise dem i UI
     req.portfolios = portfolios;
     req.totalAcquisitionPrice = totalAcquisitionPrice;
     req.totalRealizedValue = totalRealizedValue;
     req.totalUnrealizedGain = totalUnrealizedGain;
 
-    next();
+    next(); // Bruger next() til at gå videre til næste route-handler 
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Failed to fetch portfolios");
   }
 }
 
-// Show portfolio by ID (detailed portfolio page)
+
+// Vis portfølje med ID for detaljeret portfolio-side
 async function getPortfolioByID(req, res) {
   try {
     const userID = req.session.userID;
@@ -51,11 +52,11 @@ async function getPortfolioByID(req, res) {
 
     const portfolio = await Portfolio.findPortfolioByID(portfolioID);
     if (!portfolio)
-      return res.status(404).send("Portfolio not found");
+      return res.status(404).send("Portfolio not found"); // returnerer 404 hvis porteføljen ikke findes 
 
     console.log(portfolio);
 
-    const account = await Account.findAccountByID(accountID);
+    const account = await Account.findAccountByID(accountID); // Henter konto med den bestemte accountID
     console.log(account);
 
     if (!account) {
@@ -63,26 +64,29 @@ async function getPortfolioByID(req, res) {
       return res.status(404).send("Account not found");
     }
 
-    const holdings = await Portfolio.getHoldings(portfolioID);
-    const acquisitionPrice = await Portfolio.calculateAcquisitionPrice(portfolioID);
+    const holdings = await Portfolio.getHoldings(portfolioID); // Henter alle holdings for den bestemte portefølje
+    const acquisitionPrice = await Portfolio.calculateAcquisitionPrice(portfolioID); // Henter anskaffelsesprisen for porteføljen
+
     let totalRealizedValue = 0;
     let totalUnrealizedGain = 0;
 
     // Loop through holdings to compute realized and unrealized values
     for (const h of holdings) {
-      const expected = await Portfolio.calculateRealizedValue(portfolioID, h.Ticker);
-      const gain = await Portfolio.calculateUnrealizedGain(portfolioID, h.Ticker);
-      const gak = await Portfolio.calculateGAK(portfolioID, h.Ticker);
+      const expected = await Portfolio.calculateRealizedValue(portfolioID, h.Ticker); // Henter den realiserede værdi for hver holding
+      const gain = await Portfolio.calculateUnrealizedGain(portfolioID, h.Ticker); // Henter den urealiserede gevinst for hver holding
+      const gak = await Portfolio.calculateGAK(portfolioID, h.Ticker); // Henter gennemsnitsanskaffelsesprisen for hver holding (GAK)
 
-      h.realizedValue = expected !== null ? expected : 0;
+    
+      h.realizedValue = expected !== null ? expected : 0; 
       h.unrealizedGain = gain !== null ? gain : 0;
       h.gak = gak !== null ? gak : 0;
 
+      // Summering af realiseret værdi og urealiseret gevinst for alle holdings 
       totalRealizedValue += h.realizedValue;
       totalUnrealizedGain += h.unrealizedGain;
     }
 
-
+    // render portefølje med alle holdings og deres værdier 
     res.render("portfolio", {
       portfolio,
       holdings,
@@ -98,7 +102,8 @@ async function getPortfolioByID(req, res) {
   }
 }
 
-// Render the create portfolio form
+// Vis oprettelsesformular for ny portefølje 
+// Henter alle konti for den pågælgende bruger for at kunne vælge en konto til porteføljen 
 async function renderCreatePortfolio(req, res) {
   try {
     const userID = req.session.userID;
@@ -112,7 +117,9 @@ async function renderCreatePortfolio(req, res) {
   }
 }
 
-// Handle creation of a new portfolio
+
+// Behandler oprettelse af en ny portfolio, mens renderCreatePortfolio viser formularen
+// Henter kontoID og porteføljenavn fra formularen og opretter en ny portefølje samt registreringsdato
 async function handleCreatePortfolio(req, res) {
   try {
     const userID = req.session.userID;
@@ -122,63 +129,77 @@ async function handleCreatePortfolio(req, res) {
     const account = await Account.findAccountByID(accountID);
     if (!account) return res.status(400).send("Invalid account ID");
 
-    const registrationDate = new Date();
+    const registrationDate = new Date(); // Registreringsdato sættes til nuværende dato
     const portfolio = new Portfolio(null, accountID, portfolioName, registrationDate);
     const portfolioID = await portfolio.createNewPortfolio({ accountID, portfolioName, registrationDate });
-
-    res.redirect(`/portfolio/${portfolioID}`);
+ 
+    res.redirect(`/portfolio/${portfolioID}/${accountID}`); // Redirect til den oprettede portefølje 
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Failed to create portfolio");
   }
 }
 
-// Show portfolio analysis page for a specific stock
+// Henter porteføljeID og aktietciker, og beregner GAK, realiseret værdi og urealiseret gevinst for den specifikke aktie i porteføljen 
+// Bruges til at vise detaljeret analyse af en aktie i porteføljen 
 async function showPortfolioAnalysis(req, res) {
   try {
     const userID = req.session.userID;
     if (!userID) return res.status(401).send("Unauthorized");
 
-    const { portfolioID, stockSymbol } = req.params;
-    const portfolio = await Portfolio.findPortfolioByID(portfolioID);
-    if (!portfolio) return res.status(404).send("Portfolio not found");
+    const { portfolioID, stockSymbol } = req.params; 
+    const portfolio = await Portfolio.findPortfolioByID(portfolioID); // Henter portefølje med det specifikke ID
+
+    // tjekker om porteføljen findes og om brugeren ejer den 
+    if (!portfolio) return res.status(404).send("Portfolio not found"); 
     if (portfolio.userID !== userID) return res.status(403).send("Unauthorized");
 
+    // Henter aktieoplysninger for den specifikke aktie i porteføljen 
     const gak = await Portfolio.calculateGAK(portfolioID, stockSymbol);
     const realizedValue = await Portfolio.calculateRealizedValue(portfolioID, stockSymbol);
     const unrealizedGain = await Portfolio.calculateUnrealizedGain(portfolioID, stockSymbol);
 
-    res.render("portfolioAnalysis", { portfolio, stockSymbol, gak, realizedValue, unrealizedGain });
+    res.render("portfolioAnalysis", { portfolio, stockSymbol, gak, realizedValue, unrealizedGain }); // Sender data til visning i UI 
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Failed to show analysis");
   }
+
 }
 
+// Henter grafdata for porteføljen baseret på portfolioID
 async function getPortfolioGraphData(req, res) {
-  const { portfolioID } = req.params;
+  const { portfolioID } = req.params; // Udtræk portfolioID fra URL-parametre
+
   try {
+    // Hent rå historiske prisdata for alle aktier i den angivne portefølje
     const raw = await Portfolio.getAllStocksPriceHistory(portfolioID);
 
-    // Gruppér data efter ticker
+    // Initialisér et objekt til at gruppere data efter ticker-symbol (f.eks. AAPL, MSFT)
     const seriesMap = {};
 
+    // Gennemgå hver række data
     raw.forEach(row => {
-      const ticker = row.Ticker;
-      if (!seriesMap[ticker]) seriesMap[ticker] = [];
+      const ticker = row.Ticker; // Aktiens symbol
+      if (!seriesMap[ticker]) seriesMap[ticker] = []; // Opret array hvis det ikke findes
 
+      // Tilføj datapunkt med dato og pris til tickerens dataserie
       seriesMap[ticker].push({
-        date: row.priceDate.toISOString().split('T')[0],
-        price: parseFloat(row.price)
+        date: row.priceDate.toISOString().split('T')[0], // Formatér dato som YYYY-MM-DD
+        price: parseFloat(row.totalValue) // Konverter pris til tal
       });
     });
 
-    res.json(seriesMap); // fx { AAPL: [...], MSFT: [...] }
+    // Send det strukturerede data som JSON-respons
+    // Eksempel: { AAPL: [...], MSFT: [...] }
+    res.json(seriesMap);
   } catch (err) {
+    // Håndter fejl og send fejlsvar til klienten
     console.error('Fejl i grafdata:', err);
     res.status(500).json({ error: 'Serverfejl' });
   }
 }
+
 
 module.exports = {
   getPortfolios,

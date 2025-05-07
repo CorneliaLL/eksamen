@@ -5,7 +5,7 @@ const { Stocks } = require("../models/stockModels");
 const { storeExchangeRate } = require("../services/fetchExchangeRate"); // Valutakurs-service
 const { Account } = require("../models/accountModels"); // Konto-model
 
-// Funktion: Behandler en aktiehandel (køb eller salg)
+// Behandler en aktiehandel (køb eller salg)
 async function handleTrade(req, res) {
     try {
         // Henter brugerens ID fra sessionen
@@ -98,10 +98,7 @@ async function handleTrade(req, res) {
             console.log(`Has funds for buy? ${hasFunds}`);
             if (!hasFunds) {
               
-                // This is where your currently endng up
-                // This is where you need to igure out how to keep the account and portfolio ID in the URL somehow
-                // OR justredirect to a simple page
-                return res.render("trade", {
+             return res.render("trade", {
                     stockData: null,
                     error: "Insufficient funds",
                     success: null
@@ -118,7 +115,7 @@ async function handleTrade(req, res) {
                 return res.status(400).send("Insufficient holdings to sell.");
             }
         }
-        console.log("119")
+        console.log("119") 
 
         // Opretter en ny handel i databasen
         const tradeID = await Trade.createTrade({

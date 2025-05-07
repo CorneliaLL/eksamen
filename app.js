@@ -48,9 +48,6 @@ app.get("/dashboard", (req, res) => {
   res.render("dashboard");
 });
 
-
-
-  
  //Isn't functional when we put it in userRoute.js, so for our log out to work we have put the endpoint here 
 app.get("/logout", (req, res) => {
 req.session.destroy((err) => {
@@ -61,6 +58,7 @@ req.session.destroy((err) => {
     res.redirect("/"); // Redirect to the homepage after logout
     });
 });
+
 
 
 app.use('/user', userRoutes);
