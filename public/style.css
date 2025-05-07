@@ -161,4 +161,8 @@ th {
   color: #ff3333; /* rød */
   font-weight: bold;
 }
-
+/* nav image */
+.navimage {
+  width: calc(100% + 40px);
+  margin: -20px -20px 0;
+}
