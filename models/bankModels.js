@@ -17,7 +17,7 @@ class Banks {
               return result.recordset;
           }
 
-          async findBankByName(bankName) {
+          static async findBankByName(bankName) {
             const pool = await connectToDB();
             const result = await pool.request()
               .input("bankName", sql.NVarChar, bankName)
