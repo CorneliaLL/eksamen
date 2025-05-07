@@ -1,6 +1,7 @@
 const { storeExchangeRate } = require('../services/fetchExchangeRate');
 const { getExchangeRate } = require('../models/exchangeRateModel');
 
+// Controller til
 const updateExchangeRate = async (req, res) => {
     const { from, to } = req.params;
 
