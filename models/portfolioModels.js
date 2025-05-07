@@ -204,7 +204,7 @@ class Portfolio {
         JOIN Stocks S ON T.stockID = S.StockID  -- Joiner Trades og Stocks tabellerne for at få aktieoplysninger
         JOIN PriceHistory PH ON PH.stockID = S.StockID   -- Joiner PriceHistory tabellen for at få prisoplysninger
         WHERE T.portfolioID = @portfolioID
-        ORDER BY S.Ticker, PH.priceDate ASC
+        ORDER BY S.Ticker, PH.priceDate ASC  -- Sorterer efter ticker og dato i stigende rækkefølge
       `);
   
     return result.recordset; // fx 100 rækker med Ticker, priceDate, price
