@@ -71,9 +71,7 @@ body {
     cursor: pointer;
   }
 
-.accountBox,
-.tradeBox,
-.valueBox {
+.box {
   background-color: 1B1B19;
   color: white;
   border-radius: 12px;
