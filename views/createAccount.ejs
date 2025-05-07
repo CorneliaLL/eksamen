@@ -6,7 +6,7 @@
 <link rel="stylesheet" href="/dashboard.css">
 
 <body>
-  
+  <div class="layout">
     <!--main content-->
     <%- include ('./partials/nav.ejs') %>
     <div class="container">
@@ -14,28 +14,19 @@
         <h1>Create new account</h1> <!--gets username from database-->
     </div>
         <div class="accountForm">
-            <form action="/createAccount" method="POST">
-                <div class="createAccounts">
+            <form action="/createAccount" method="POST" class="createAccounts">
                   <input type="text" name="accountName" placeholder="Account name" required />
-                </div>
-                <div class="createAccounts">
-                  <input type="currency" name="currency" placeholder="Currency" required />
-                </div>
-                <div class="createAccounts">
-                    <input type="balance" name="balance" placeholder="Balance" required />
-                  </div>
-                  <div class="createAccounts">
-                    <label for="bankName">Select Bank:</label>
-                    <select name="bankName" id="bankName" required>
-                      <option value="Danske Bank">Danske Bank</option>
-                      <option value="Jyske Bank">Jyske Bank</option>
-                      <option value="Nordea">Nordea</option>
-                    </select>
-                  </div>
+                  <input type="text" name="currency" placeholder="Currency" required />
+                  <input type="number" name="balance" placeholder="Balance" required />
+                  <label for="bankName">Select Bank:</label>
+                  <select name="bankName" id="bankName" required>
+                    <option value="Danske Bank">Danske Bank</option>
+                    <option value="Jyske Bank">Jyske Bank</option>
+                    <option value="Nordea">Nordea</option>
+                  </select>
                   <button type="Create account">Create account</button>
-                </form>
+            </form>
         </div>
-
     </div>
 </body>
 

@@ -5,28 +5,27 @@
 <link rel="stylesheet" href="/dashboard.css">
 
 <body>
-      
+  <div class="layout">
     <%- include ('./partials/nav.ejs') %>
     <div class="container">
-    <div class="containerTitle">
-        <h1>Account: <%= account.accountName %> </h1> <!--gets username from database-->
-    </div>
-    <div class="boxContainer">
-      <div class="createPortfolio">
+      <div class="containerTitle with-button">
+        <h1>Account: <%= account.accountName %> </h1>
         <form action="/createPortfolio" method="GET">
           <button class="createPortfolioBtn">Create portfolio</button>
-          </form>
+        </form>
       </div>
-    <div class="valueandprice">
-    <div class="totalValue">
+
+    <div class="boxContainer">
+    <div class="box valueandprice">
+    <div class="box totalValue">
       <h4>Total value in <%= account.currency %></h4>
         <h4><%= totalAcquisitionPrice.toFixed(2) %> <%= account.currency %></h4>
     </div>
-    <div class="priceChange">
+    <div class="box priceChange">
       <h4>price change</h4>
     </div>
     </div>
-    <div class="piechart">
+    <div class="box piechart">
       <!--INSERT CHART HERE-->
       <h4>Pie chart</h4>
     </div>
@@ -78,8 +77,9 @@
       </div>
     </div>
     </div>
-    </div>
-    
+  </div>
+  </div>
+  </div> 
 </body>
 
 </html>

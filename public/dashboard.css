@@ -1,17 +1,23 @@
-/*important to show nav and content from dashboard*/
+/*Fælles layout og struktur*/
 body {
-  display: flex;
   margin: 0;
   background-color: black;
   font-family: arial;
 }
 
 .container {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 40px;
+  flex-grow: 1;
   padding: 40px;
+  max-width: 1400px;
+  width: 100%;
+  box-sizing: border-box;
+  margin: 0 auto;
+}
+
+.layout {
+  display: flex;
+  min-height: 100vh;
+  width: 100vw;
 }
 
 .containerTitle {
@@ -20,11 +26,28 @@ body {
   padding: 20px;
 }
 
+.containerTitle.with-button {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+}
+
 .boxContainer {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 20px;
   padding: 20px;
+  max-width: 1400px;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+.boxContainer {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 20px;
+  box-sizing: border-box;
 }
 
 .accountContainer,
@@ -34,25 +57,23 @@ body {
   align-items: center;
 }
 
-
+/*Typografi og grundelementer*/
 
 h1 {
   color: white;
 }
 
-form {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-bottom: 2rem;
-  width: 300px;              /* eller hvad der passer til dit design */
-  padding: 20px; 
+h2 {
+  text-align: center;
 }
 
-.createAccounts{ 
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 10px;
+h3 {
+  text-align: center;
+  color: white;
+}
+
+a {
+  color: white;
 }
 
 input {
@@ -70,49 +91,194 @@ button {
   cursor: pointer;
 }
 
-.accountBox,
-.tradeBox,
-.valueBox {
-background-color: 1B1B19;
-color: white;
-border-radius: 12px;
-padding: 30px;
-width: 1000px;
-min-height: 180px;
-display: flex;
-flex-direction: column;
-justify-content: flex-start;
-align-items: center;
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 2rem;
+  width: 300px;
+  padding: 20px;
+}
+
+.form-select {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+
+}
+
+/*Opret konto (createAccount.ejs)*/
+.accountForm {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.createAccounts {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  background-color: #1B1B19;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.05);
+  width: 100%;
+  max-width: 400px;
+}
+
+.createAccounts label {
+  color: white;
+  font-weight: bold;
+}
+
+.createAccounts input,
+.createAccounts select {
+  padding: 10px;
+  border-radius: 6px;
+  border: none;
+  font-size: 1rem;
+}
+
+.createAccounts input {
+  background-color: white;
+}
+
+.createAccounts select {
+  background-color: #f2f2f2;
+}
+
+.createAccounts button {
+  padding: 10px;
+  font-size: 1rem;
+  border-radius: 6px;
+  color: white;
+  background-color: #4a90e2;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 20px;
+}
+
+.createAccounts button:hover {
+  background-color: #357ab8;
+}
+
+/*Opret portefølje (createPortfolio.ejs)*/
+.portfolioForm {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  border-radius: 12px;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto; /* centrer horisontalt */
+}
+
+.createPortfolios {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  background-color: #1B1B19;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.05);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.createPortfolios label {
+  color: white;
+  font-weight: bold;
+}
+
+.createPortfolios select,
+.createPortfolios input {
+  padding: 10px;
+  border-radius: 6px;
+  border: none;
+  font-size: 1rem;
+}
+
+.createPortfolios input {
+  background-color: white;
+}
+
+.createPortfolios select {
+  background-color: #f2f2f2;
+}
+
+.createPortfolios button {
+  padding: 10px;
+  font-size: 1rem;
+  border-radius: 6px;
+  color: white;
+  background-color: #4a90e2;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.createPortfolios button:hover {
+  background-color: #357ab8;
 }
 
 .createPortfolio {
-background-color: 1B1B19;
-color: white;
-border-radius: 12px;
-padding: 10px 20px;
-width: 100%;
-height: 30px;
-display: flex;
-justify-content: flex-end;
-align-items: center;
-grid-column: span 2;
+  background-color: 1B1B19;
+  color: white;
+  border-radius: 12px;
+  padding: 10px 20px;
+  width: 100%;
+  height: 30px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  grid-column: span 2;
+  box-sizing: border-box;
+  min-height: 180px;
 }
 
 .createPortfolioBtn {
-padding: 3px 8px;
-margin-top: 25px;
-height: 22px;
-font-size: 0.8rem;
-border-radius: 6px;
-color: white;
-background-color: #444;
+  padding: 10px 16px;
+  height: auto;
+  font-size: 1rem;
+  border-radius: 6px;
+  color: white;
+  background-color: #444;
+  border: none;
+  cursor: pointer;
+  margin-top: 0;
+}
+
+/*Dashboard & data-visning*/
+.accountBox,
+.tradeBox,
+.valueBox {
+  background-color: 1B1B19;
+  color: white;
+  border-radius: 12px;
+  padding: 30px;
+  width: 100%;
+  min-height: 180px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  box-sizing: border-box;
 }
 
 .valueandprice {
-display: flex;
-flex-direction: column;
-gap: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
 }
+
 .totalValue,
 .priceChange {
   background-color: 1B1B19;
@@ -124,6 +290,9 @@ gap: 20px;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
 }
 
 .piechart, .donutchart {
@@ -137,10 +306,12 @@ gap: 20px;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  height: 100%;
+  box-sizing: border-box;
 }
 
 .balance,
-.portfolioList, 
+.portfolioList,
 .dashboardBox {
   background-color: 1B1B19;
   color: white;
@@ -153,9 +324,22 @@ gap: 20px;
   justify-content: center;
   align-items: center;
   grid-column: span 2;
+  box-sizing: border-box;
 }
 
+/*Konto-handlinger*/
 .updateBalance {
+  align-items: center;
+}
+
+.updateBalance select {
+  padding: 10px;
+  border-radius: 6px;
+  border: none;
+  font-size: 1rem;
+}
+
+.updateBalance button {
   align-items: center;
 }
 
@@ -174,10 +358,6 @@ gap: 20px;
   align-items: flex-start;
 }
 
-.updateBalance button {
-  align-items: center;
-}
-
 .deactivateForm button {
   background-color: maroon;
 }
@@ -186,91 +366,101 @@ gap: 20px;
   background-color: seagreen;
 }
 
-h3 {
-  text-align: center;
-  color: white;
-}
 
-h2 {
-  text-align: center;
-}
-
-a {
-  color: white;
-}
-
+/*Tabeller og porteføljedata*/
 .tableContainer {
   width: 100%;
   color: white;
-  table {
-    width: 100%;
-    text-align: left;
-  }
-  td,
-  th {
-    color: white;
-    padding: 12px 16px;
-    border-bottom: 1px solid #444;
-    white-space: nowrap;
-  }
+}
+
+.tableContainer table {
+  width: 100%;
+  text-align: left;
+}
+
+.tableContainer td,
+.tableContainer th {
+  color: white;
+  padding: 12px 16px;
+  border-bottom: 1px solid #444;
+  white-space: nowrap;
 }
 
 .portfolioContainer {
-  h1,
-  h2,
-  p {
-    color: white;
-  }
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  box-sizing: border-box;
 }
 
+.portfolioContainer h1,
+.portfolioContainer h2,
+.portfolioContainer p {
+  color: white;
+}
 
+/*Resuméboks og oversigt*/
 .summaryRow {
-display: grid;
-grid-template-columns: repeat(3, 1fr);
-gap: 40px;
-margin-bottom: 40px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 40px;
+  margin-bottom: 30px;
+  padding: 0 20px;
+  width: 100%;
+  box-sizing: border-box;
 }
+
 
 .summaryBox {
-background-color: #1B1B19;
-color: white;
-border-radius: 12px;
-padding: 20px;
-display: flex;
-flex-direction: column;
-justify-content: center;
-align-items: center;
+  background-color: #1B1B19;
+  color: white;
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
 }
 
 .summaryHeader {
-font-size: 0.9rem;
-color: #aaa;
-margin-bottom: 5px;
+  font-size: 0.9rem;
+  color: #aaa;
+  margin-bottom: 5px;
 }
 
 .summaryAmount {
-font-size: 1.4rem;
-font-weight: bold;
-}
-
-.boxContainer {
-display: grid;
-grid-template-columns: 2fr 1fr;
-gap: 20px;
+  font-size: 1.4rem;
+  font-weight: bold;
 }
 
 .dashboardBox1, .dashboardBox2, .dashboardBox3 {
-background-color: #1B1B19;
-border-radius: 12px;
-padding: 20px;
-min-height: 300px;
+  background-color: #1B1B19;
+  border-radius: 12px;
+  padding: 20px;
+  min-height: 300px;
+  box-sizing: border-box;
 }
 
+.dashboardBox3 {
+  max-width: 1400px;
+  margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/*Grafik og farver*/
+canvas {
+  width: 100% !important;
+  height: auto !important;
+  max-width: 100%;
+  display: block;
+}
 
 .positive {
-color: #00cc66;
+  color: #00cc66;
 }
 
 .negative {
-color: #ff3333;
+  color: #ff3333;
 }
