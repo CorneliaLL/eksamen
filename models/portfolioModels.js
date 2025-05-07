@@ -193,22 +193,22 @@ class Portfolio {
     return result.recordset;
   }
   
-  // Henter aktiehistorik for alle aktier i en portefølje 
   static async getAllStocksPriceHistory(portfolioID) {
     const pool = await connectToDB();
     const result = await pool.request()
       .input("portfolioID", sql.Int, portfolioID)
       .query(`
-        SELECT S.Ticker, PH.priceDate, PH.price  
+        SELECT S.Ticker, PH.priceDate, PH.price
         FROM Trades T
-        JOIN Stocks S ON T.stockID = S.StockID  -- Joiner Trades og Stocks tabellerne for at få aktieoplysninger
-        JOIN PriceHistory PH ON PH.stockID = S.StockID   -- Joiner PriceHistory tabellen for at få prisoplysninger
+        JOIN Stocks S ON T.stockID = S.StockID
+        JOIN PriceHistory PH ON PH.stockID = S.StockID
         WHERE T.portfolioID = @portfolioID
-        ORDER BY S.Ticker, PH.priceDate ASC  -- Sorterer efter ticker og dato i stigende rækkefølge
+        ORDER BY S.Ticker, PH.priceDate ASC
       `);
   
     return result.recordset; // fx 100 rækker med Ticker, priceDate, price
   }
+  
 }
 
 module.exports = {
