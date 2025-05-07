@@ -34,3 +34,22 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
 });
+
+
+
+      // ny funktion, som finder dagens dato, summerer prisen på all værdipapirer for gældende dato, og gentager 5 gange
+      /*
+      //et nyt objekt, som kan plottes ind i chart
+      chartdata = [{
+      x: 05-05,
+      y: 280+280+280},
+      {
+      x: 05-04,
+      y: 200+200+200}] */
+
+ 
+
+  
+
+
+
