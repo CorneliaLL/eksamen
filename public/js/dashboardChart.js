@@ -1,7 +1,7 @@
 
 //hente data om samlet porteføljens værdi fra database/API og tegne en graf på Dashboard
 
-/*fetch('/api/portfolio/total-value') //gets data from sever (API endpoint)
+fetch('/api/portfolio/total-value') //gets data from sever (API endpoint)
 //server answers and we translate it to JSON 
   .then(response => response.json())
   .then(data => { //JSON anwser as data
@@ -46,4 +46,4 @@
 
   //error 
   .catch(error => console.error('Error collecting data:', error));
-  //error shows in browsers console */
+  //error shows in browsers console 
