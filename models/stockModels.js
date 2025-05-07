@@ -75,7 +75,6 @@ class Stocks{ //stockID slettet - fordi SQL laver ID'et selv. Simplere og mere s
       
         return result.recordset;
       }
-
 };  
 //bruges ikke endnu?
 //Skal hente daglig priser fra vores API
@@ -108,5 +107,5 @@ class PriceHistory{
 //exports stocks class 
 module.exports = { 
     Stocks,
-    PriceHistory
+    PriceHistory,
 };
