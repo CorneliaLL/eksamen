@@ -164,6 +164,7 @@ async function showPortfolioAnalysis(req, res) {
     console.error(err.message);
     res.status(500).send("Failed to show analysis");
   }
+
 }
 
 // Henter grafdata for porteføljen baseret på proteføljeID
