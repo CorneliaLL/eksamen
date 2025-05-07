@@ -4,7 +4,7 @@ const { handleTrade } = require ('../controllers/tradeController.js'); //import 
 const { Trade } = require ('../models/tradeModels.js'); 
 const { Stocks } = require ('../models/stockModels.js');
 const { Account } = require ('../models/accountModels.js');
-const { storeExchangeRate } = require ('../services/fetchExchangeRate.js');
+const  fetchExchangeRate  = require ('../services/fetchExchangeRate.js');
 const { Transaction } = require ('../models/transactionModels.js')
 
 
@@ -47,11 +47,9 @@ describe('handle trade function', () => {
                 accountStatus: true
             });
   
-            sinon.stub(storeExchangeRate).resolves(1); // No currency conversion needed
+            sinon.stub(fetchExchangeRate, 'storeExchangeRate').resolves(1); // No currency conversion needed
             sinon.stub(Trade, 'checkFunds').resolves(false); // Simulate insufficient funds
             });
-  
-        });
 
         //cleans after each test and removes all fakes (stubs)
         afterEach(() => {
@@ -66,3 +64,4 @@ describe('handle trade function', () => {
             expect(view).to.equal('trade');
             expect(context.error).to.equal('Insufficient funds');
         });
+});

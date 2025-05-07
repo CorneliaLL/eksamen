@@ -32,12 +32,12 @@ const config = {
       trustServerCertificate: false
     },
 };
-
+/*
 const { Stocks } = require('./models/stockModels');
 
 (async () => {
     try {
-        await Stocks.storeStockData(
+        await Stocks.storeStock(
             'AAPL', 
             'Apple Inc', 
             new Date(), 
@@ -51,4 +51,4 @@ const { Stocks } = require('./models/stockModels');
         console.error("Error inserting stock:", err.message);
     }
 })();
-
+*/
