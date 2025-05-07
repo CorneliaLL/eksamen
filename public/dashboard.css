@@ -1,271 +1,276 @@
-
 /*important to show nav and content from dashboard*/
 body {
-    display: flex;
-    margin: 0;
-    background-color: black;
-    font-family: arial;
-  }
-  
-  .container {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 40px;
-    padding: 40px;
-  }
+  display: flex;
+  margin: 0;
+  background-color: black;
+  font-family: arial;
+}
 
-  .containerTitle {
-    display: flex;
-    text-align: left;
+.container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  padding: 40px;
+}
+
+.containerTitle {
+  display: flex;
+  text-align: left;
+  padding: 20px;
+}
+
+.boxContainer {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  padding: 20px;
+}
+
+.accountContainer,
+.tradeContainer {
+  display: flex;
+  gap: 40px;
+  align-items: center;
+}
+
+
+
+h1 {
+  color: white;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 2rem;
+  width: 300px;              /* eller hvad der passer til dit design */
+  padding: 20px; 
+}
+
+.createAccounts{ 
     padding: 20px;
-  }
-
-  .boxContainer {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
-    padding: 20px;
-  }
-  
-  .accountContainer,
-  .tradeContainer {
-    display: flex;
-    gap: 40px;
-    align-items: center;
-  }
-
-  
-
-  h1 {
-    color: white;
-  }
-
-  form {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin-bottom: 2rem;
-    width: 300px;              /* eller hvad der passer til dit design */
-    padding: 20px; 
-  }
-
-  .createAccounts{ 
-      padding: 20px;
-      border: 1px solid #ccc;
-      border-radius: 10px;
-  }
-
-  input {
-    padding: 10px;
     border: 1px solid #ccc;
-    border-radius: 5px;
-  }
+    border-radius: 10px;
+}
 
-  button {
-    background-color: #4a90e2;
-    color: white;
-    border: none;
-    padding: 10px;
-    border-radius: 5px;
-    cursor: pointer;
-  }
+input {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
 
-.box {
+button {
+  background-color: #4a90e2;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.accountBox,
+.tradeBox,
+.valueBox {
+background-color: 1B1B19;
+color: white;
+border-radius: 12px;
+padding: 30px;
+width: 1000px;
+min-height: 180px;
+display: flex;
+flex-direction: column;
+justify-content: flex-start;
+align-items: center;
+}
+
+.createPortfolio {
+background-color: 1B1B19;
+color: white;
+border-radius: 12px;
+padding: 10px 20px;
+width: 100%;
+height: 30px;
+display: flex;
+justify-content: flex-end;
+align-items: center;
+grid-column: span 2;
+}
+
+.createPortfolioBtn {
+padding: 3px 8px;
+margin-top: 25px;
+height: 22px;
+font-size: 0.8rem;
+border-radius: 6px;
+color: white;
+background-color: #444;
+}
+
+.valueandprice {
+display: flex;
+flex-direction: column;
+gap: 20px;
+}
+.totalValue,
+.priceChange {
   background-color: 1B1B19;
   color: white;
   border-radius: 12px;
   padding: 30px;
-  width: 1000px;
-  min-height: 180px;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: center;
-}
-
-.createPortfolio {
-  background-color: 1B1B19;
-  color: white;
-  border-radius: 12px;
-  padding: 10px 20px;
-  width: 100%;
-  height: 30px;
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  grid-column: span 2;
-}
-
-.createPortfolioBtn {
-  padding: 3px 8px;
-  margin-top: 25px;
-  height: 22px;
-  font-size: 0.8rem;
-  border-radius: 6px;
-  color: white;
-  background-color: #444;
-}
-
-.valueandprice {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-  .totalValue,
-  .priceChange {
-    background-color: 1B1B19;
-    color: white;
-    border-radius: 12px;
-    padding: 30px;
-    height: 40px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-  }
-
-  .piechart, .donutchart {
-    background-color: 1B1B19;
-    color: white;
-    border-radius: 12px;
-    padding: 30px;
-    width: 100%;
-    min-height: 180px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-  }
-
-  .balance,
-  .portfolioList, 
-  .dashboardBox {
-    background-color: 1B1B19;
-    color: white;
-    border-radius: 12px;
-    padding: 30px;
-    width: 100%;
-    min-height: 180px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    grid-column: span 2;
-  }
-
-  .updateBalance {
-    align-items: center;
-  }
-
-  .createNewAccountBtn {
-    background-color: gray;
-    align-self: center;
-    margin-bottom: 10px;
-    padding: 8px 14px;
-    font-size: 0.9rem;
-  }
-
-  .deactivateForm,
-  .reactivateForm {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .updateBalance button {
-    align-items: center;
-  }
-  
-  .deactivateForm button {
-    background-color: maroon;
-  }
-
-  .reactivateForm button {
-    background-color: seagreen;
-  }
-
-  h3 {
-    text-align: center;
-    color: white;
-  }
-
-  h2 {
-    text-align: center;
-  }
-
-  a {
-    color: white;
-  }
-
-  .tableContainer {
-    width: 100%;
-    color: white;
-    table {
-      width: 100%;
-      text-align: left;
-    }
-    td,
-    th {
-      color: white;
-      padding: 12px 16px;
-      border-bottom: 1px solid #444;
-      white-space: nowrap;
-    }
-  }
-
-  .portfolioContainer {
-      color: white;
-  }
-
-
-.summaryRow {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 40px;
-  margin-bottom: 40px;
-}
-
-.summaryBox {
-  background-color: #1B1B19;
-  color: white;
-  border-radius: 12px;
-  padding: 20px;
+  height: 40px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
 }
 
-.summaryHeader {
+.piechart, .donutchart {
+  background-color: 1B1B19;
+  color: white;
+  border-radius: 12px;
+  padding: 30px;
+  width: 100%;
+  min-height: 180px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.balance,
+.portfolioList, 
+.dashboardBox {
+  background-color: 1B1B19;
+  color: white;
+  border-radius: 12px;
+  padding: 30px;
+  width: 100%;
+  min-height: 180px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  grid-column: span 2;
+}
+
+.updateBalance {
+  align-items: center;
+}
+
+.createNewAccountBtn {
+  background-color: gray;
+  align-self: center;
+  margin-bottom: 10px;
+  padding: 8px 14px;
   font-size: 0.9rem;
-  color: #aaa;
-  margin-bottom: 5px;
+}
+
+.deactivateForm,
+.reactivateForm {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.updateBalance button {
+  align-items: center;
+}
+
+.deactivateForm button {
+  background-color: maroon;
+}
+
+.reactivateForm button {
+  background-color: seagreen;
+}
+
+h3 {
+  text-align: center;
+  color: white;
+}
+
+h2 {
+  text-align: center;
+}
+
+a {
+  color: white;
+}
+
+.tableContainer {
+  width: 100%;
+  color: white;
+  table {
+    width: 100%;
+    text-align: left;
+  }
+  td,
+  th {
+    color: white;
+    padding: 12px 16px;
+    border-bottom: 1px solid #444;
+    white-space: nowrap;
+  }
+}
+
+.portfolioContainer {
+  h1,
+  h2,
+  p {
+    color: white;
+  }
+}
+
+
+.summaryRow {
+display: grid;
+grid-template-columns: repeat(3, 1fr);
+gap: 40px;
+margin-bottom: 40px;
+}
+
+.summaryBox {
+background-color: #1B1B19;
+color: white;
+border-radius: 12px;
+padding: 20px;
+display: flex;
+flex-direction: column;
+justify-content: center;
+align-items: center;
+}
+
+.summaryHeader {
+font-size: 0.9rem;
+color: #aaa;
+margin-bottom: 5px;
 }
 
 .summaryAmount {
-  font-size: 1.4rem;
-  font-weight: bold;
+font-size: 1.4rem;
+font-weight: bold;
 }
 
 .boxContainer {
-  display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: 20px;
+display: grid;
+grid-template-columns: 2fr 1fr;
+gap: 20px;
 }
 
 .dashboardBox1, .dashboardBox2, .dashboardBox3 {
-  background-color: #1B1B19;
-  border-radius: 12px;
-  padding: 20px;
-  min-height: 300px;
+background-color: #1B1B19;
+border-radius: 12px;
+padding: 20px;
+min-height: 300px;
 }
 
 
 .positive {
-  color: #00cc66;
+color: #00cc66;
 }
 
 .negative {
-  color: #ff3333;
+color: #ff3333;
 }
