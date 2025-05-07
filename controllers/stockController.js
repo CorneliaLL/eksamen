@@ -157,101 +157,76 @@ async function showChart(req, res){
 // Bruger fetchStockData() til at hente nyeste data fra Alpha Vantage
 // Beregner dailyChange og gemmer det midlertidigt i stockChanges
 
+// Funktion til at opdatere pris-historikken for alle aktier i databasen
 async function updatePriceHistory() {
   try {
-    const stocks = await Stocks.getAllStocks(); // Hent aktier fra databasen
+    // Hent alle aktier fra databasen
+    const stocks = await Stocks.getAllStocks();
 
     for (const stock of stocks) {
-        const { StockID: stockID, Ticker: ticker } = stock;
-        const stockData = await fetchStockData(ticker);
+      // Udtræk aktie-ID og ticker-symbol
+      const { StockID: stockID, Ticker: ticker } = stock;
 
-        const changes = stockData.timeSeries;
-        const stockDates = Object.keys(changes).sort().reverse(); // sort from latest to earliest
-        // Before looping through stockDates filter out every day except today(in the cron job)
-        // But find a way to call updatePriceHistory one time before adding that.
-        for (let i = 0; i < stockDates.length - 1; i++) {
-          const currentDate = stockDates[i];
-          const previousDate = stockDates[i + 1];
-          const currentStock = changes[currentDate]
+      // Hent aktiedata fra ekstern API baseret på ticker
+      const stockData = await fetchStockData(ticker);
+      const changes = stockData.timeSeries;
 
-          console.log(currentStock)
+      // Sortér datoer fra nyeste til ældste
+      const stockDates = Object.keys(changes).sort().reverse();
+
+      // CES comment:
+      // Før loopet over stockDates, bør du filtrere, så kun dagens data behandles (når funktionen bruges som cron job)
+      // Men kald funktionen én gang først uden dette filter for at initialisere historikken
+
+      // Loop igennem aktiedata (undtagen sidste indeks for at kunne sammenligne med foregående dag)
+      for (let i = 0; i < stockDates.length - 1; i++) {
+        const currentDate = stockDates[i];
+        const previousDate = stockDates[i + 1];
+        const currentStock = changes[currentDate];
+
+        console.log(currentStock);
+
+        // Udtræk og konverter lukkekurser
+        const currentClose = parseFloat(changes[currentDate]['4. close']);
+        const previousClose = parseFloat(changes[previousDate]['4. close']);
+
+        // Beregn daglig ændring og procent
+        const dailyChange = currentClose - previousClose;
+        const dailyChangePercent = parseFloat(dailyChange / previousClose) * 100;
+
+        // Find datoer og priser til år-til-dato sammenligning
+        const latestDate = stockDates[0];
+        const oldestDate = stockDates[stockDates.length - 1];
+        const firstClose = parseFloat(changes[stockDates[stockDates.length - 1]]['4. close']);
         
-          const currentClose = parseFloat(changes[currentDate]['4. close']);
-          const previousClose = parseFloat(changes[previousDate]['4. close']);
-        
-          const dailyChange = currentClose - previousClose;
-          const dailyChangePercent = parseFloat(dailyChange / previousClose) * 100;
+        //sletter måske 
+        const latestClose = parseFloat(changes[latestDate]['4. close']);
+        const oldestClose = parseFloat(changes[oldestDate]['4. close']);
 
+        // Beregn årlig ændring og procent
+        const yearlyChange = currentClose - firstClose;
+        const yearlyChangePercent = (yearlyChange / firstClose) * 100;
 
-        
-            const latestDate = stockDates[0];
-            const oldestDate = stockDates[stockDates.length - 1];
-          
-            const firstClose = parseFloat(changes[stockDates[stockDates.length - 1]]['4. close']);
-            const latestClose = parseFloat(changes[latestDate]['4. close']);
-            const oldestClose = parseFloat(changes[oldestDate]['4. close']);
-          
-            const yearlyChange = currentClose - firstClose;
-            const yearlyChangePercent = (yearlyChange / firstClose) * 100;
+        // Debug-udskrift
+        console.log(yearlyChangePercent.toFixed(2));
+        console.log(dailyChange.toFixed(2));
+        console.log(`\nOverall Change (from ${oldestDate} to ${latestDate}):`);
+        console.log(`Change: ${yearlyChange.toFixed(2)} (${yearlyChangePercent.toFixed(2)}%)`);
 
-            console.log(yearlyChangePercent.toFixed(2))
-            console.log(dailyChange.toFixed(2))
-
-
-            
-          
-            console.log(`\nOverall Change (from ${oldestDate} to ${latestDate}):`);
-            console.log(`Change: ${yearlyChange.toFixed(2)} (${yearlyChangePercent.toFixed(2)}%)`);
-          
-
+        // Gem data i pris-historik databasen
         await PriceHistory.storePriceHistory({
-            stockID,
-            price: currentClose,
-            priceDate: currentDate,
-            dailyChange: dailyChangePercent.toFixed(2),
-            yearlyChange: yearlyChangePercent.toFixed(2),
-          });
-        }
-      /* //date virkede ikke (samme dato)
-        if (!stockID || !stockData || stockData.error) {
-            console.warn(`Skipping ${ticker}: missing stockID or fetch error.`);
-            continue;
-          }
-
-    const { closePrice, latestDate, timeSeries } = stockData;
-
-    console.log({latestDate})
-    const dates = Object.keys(timeSeries);
-
-    const previousDate = dates[1];
-    const previousClose = parseFloat(timeSeries[previousDate]['4. close']);
-    const dailyChange = ((closePrice - previousClose) / previousClose) * 100;
-
-
-    let yearlyChange = null;
-      if (dates.length > 99) {
-        const yearAgoDate = dates[99];
-        const yearAgoClose = parseFloat(timeSeries[yearAgoDate]['4. close']);
-        yearlyChange = ((closePrice - yearAgoClose) / yearAgoClose) * 100;
+          stockID,
+          price: currentClose,
+          priceDate: currentDate,
+          dailyChange: dailyChangePercent.toFixed(2),
+          yearlyChange: yearlyChangePercent.toFixed(2),
+        });
       }
-    
-      console.log({
-        stockID,
-        price: closePrice,
-        priceDate: latestDate,
-        dailyChange,
-        yearlyChange,
-      })
-    await PriceHistory.storePriceHistory({
-        stockID,
-        price: closePrice,
-        priceDate: latestDate,
-        dailyChange,
-        yearlyChange,
-      });
 
-    console.log(`Price history saved for ${ticker}: Daily ${dailyChange.toFixed(2)}%, Yearly ${yearlyChange?.toFixed(2) || 'N/A'}%`);} */
-  } } catch (err) {
+      // Udskriv opsummering for aktien
+      console.log(`Price history saved for ${ticker}: Daily ${dailyChange.toFixed(2)}%, Yearly ${yearlyChange?.toFixed(2) || 'N/A'}%`);
+    }
+  } catch (err) {
     console.error("Failed to update price history:", err);
   }
 }
