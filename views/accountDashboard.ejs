@@ -6,7 +6,6 @@
 
 <body>
       
-    <!--main content-->
     <%- include ('./partials/nav.ejs') %>
     <div class="container">
     <div class="containerTitle">
@@ -31,7 +30,7 @@
       <!--INSERT CHART HERE-->
       <h4>Pie chart</h4>
     </div>
-    <div class="balance">
+    <div class="box balance">
       <h3> Balance: <%= account.balance.toFixed(2) %> <%= account.currency %> </h3>
       <div class="updateBalance">
       <form action="/account/<%= account.accountID %>/transaction" method="POST">
@@ -47,7 +46,7 @@
       </form>
     </div>
     </div>
-    <div class="portfolioList">
+    <div class="box portfolioList">
       <h2>My portfolios</h2>
       <div class="tableContainer">
         <table>
