@@ -192,9 +192,6 @@ class Portfolio {
   
     return result.recordset; // fx 100 rækker med Ticker, priceDate, price
   }
-  
-  
-
 }
 
 module.exports = {
