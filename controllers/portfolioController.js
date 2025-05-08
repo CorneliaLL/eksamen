@@ -71,6 +71,8 @@ async function getPortfolioByID(req, res) {
     let totalUnrealizedGain = 0;
 
     // Loop through holdings to compute realized and unrealized values
+    // looper gennem holdings for at beregne realiseret værdi og urealiseret gevinst
+    // tilføjer værdierne til totalRealizedValue og totalUnrealizedGain
     for (const h of holdings) {
       const expected = await Portfolio.calculateRealizedValue(portfolioID, h.Ticker); // Henter den realiserede værdi for hver holding
       const gain = await Portfolio.calculateUnrealizedGain(portfolioID, h.Ticker); // Henter den urealiserede gevinst for hver holding
