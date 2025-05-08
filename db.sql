@@ -3,8 +3,7 @@ CREATE TABLE Users (
   name NVARCHAR(100) NOT NULL,
   username NVARCHAR(100) NOT NULL,
   email NVARCHAR(100) NOT NULL,
-  password NVARCHAR(100) NOT NULL,
-  age INT NOT NULL
+  password NVARCHAR(100) NOT NULL
 );
 
 CREATE TABLE Banks (
@@ -39,17 +38,16 @@ CREATE TABLE Portfolios (
 );
 
 CREATE TABLE Stocks (
-    StockID INT IDENTITY(1,1) PRIMARY KEY,
-    Ticker NVARCHAR(20) NOT NULL,
-    LatestDate DATE NOT NULL,
-    ClosePrice DECIMAL(10,2) NOT NULL,
+    stockID INT IDENTITY(1,1) PRIMARY KEY,
+    ticker NVARCHAR(20) NOT NULL,
+    latestDate DATE NOT NULL,
+    closePrice DECIMAL(10,2) NOT NULL,
     portfolioID INT,
-    StockCurrency NVARCHAR(100),
-    StockName NVARCHAR(100) NOT NULL,
-    StockType NVARCHAR(100)NOT NULL;
+    stockCurrency NVARCHAR(100),
+    stockName NVARCHAR(100) NOT NULL,
+    stockType NVARCHAR(100)NOT NULL;
     FOREIGN KEY (portfolioID) REFERENCES Portfolios(portfolioID)
 );
-
 
 
 CREATE TABLE Pricehistory (
@@ -57,27 +55,11 @@ CREATE TABLE Pricehistory (
   stockID INT NOT NULL,
   price DECIMAL (18,4) NOT NULL,
   priceDate DATETIME2 NOT NULL,
+  dailyChange DECIMAL (18,4) NOT NULL,
+  yearlyChange DECIMAL (18,4) NOT NULL
   FOREIGN KEY (stockID) REFERENCES [dbo].[Stocks](stockID)
 );
 
-CREATE TABLE Trades (
-    tradeID INT PRIMARY KEY,
-    portfolioID INT NOT NULL,
-    stockID INT NOT NULL,
-    tradeType VARCHAR(4) CHECK (tradeType IN ('buy', 'sell')) NOT NULL,
-    quantity INT NOT NULL,
-    price DECIMAL(18,4) NOT NULL,
-    fee DECIMAL(18,4) NOT NULL,
-    totalPrice DECIMAL(18,4) NOT NULL,
-    date DATETIME NOT NULL,
-    accountID INT NOT NULL,
-
-    FOREIGN KEY (portfolioID) REFERENCES Portfolios(portfolioID),
-    FOREIGN KEY (stockID) REFERENCES Stocks(stockID),
-    FOREIGN KEY (accountID) REFERENCES Accounts(accountID)
-);
--- We had issues with our original Trades SQL code, so here we have made some changes so it is more functional 
--- We forgot to give tradeID an IDENTITY property, so we had to drop key contraints, remove the column and readd it with the right properties
 CREATE TABLE Trades (
     tradeID INT IDENTITY(1,1) PRIMARY KEY,
     portfolioID INT NOT NULL,
@@ -89,15 +71,12 @@ CREATE TABLE Trades (
     totalPrice DECIMAL(18,4) NOT NULL,
     tradeDate DATETIME NOT NULL,
     accountID INT NOT NULL,
-    Ticker NVARCHAR(20) NOT NULL
+    ticker NVARCHAR(10) NOT NULL
 
     FOREIGN KEY (portfolioID) REFERENCES Portfolios(portfolioID),
     FOREIGN KEY (stockID) REFERENCES Stocks(stockID),
     FOREIGN KEY (accountID) REFERENCES Accounts(accountID)
 );
-
--- transaction table missing from trade?
-
 
 -- 1. Drop foreign key constraints first
 ALTER TABLE Transactions
@@ -136,9 +115,9 @@ CREATE TABLE Transactions (
 );
 
 CREATE TABLE ExchangeRates (
-    ExchangeRateID INT IDENTITY(1, 1) PRIMARY KEY,
-    Ticker VARCHAR(255),
-    FromCurrency VARCHAR(255),
-    ToCurrency VARCHAR(255),
-    Rate FLOAT,
+    exchangeRateID INT IDENTITY(1, 1) PRIMARY KEY,
+    ticker VARCHAR(255),
+    fromCurrency VARCHAR(255),
+    toCurrency VARCHAR(255),
+    rate FLOAT,
 );
