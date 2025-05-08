@@ -224,12 +224,38 @@ async function getPortfolioGraphData(req, res) {
   }
 }
 
-//nyt 
+//pie chart
+async function getPortfolioPieData(req, res) {
+  const { portfolioID } = req.params;
+  try {
+    console.log("Fetching pie data for portfolio:", portfolioID);
+
+    const holdings = await Portfolio.getHoldings(portfolioID);
+
+    console.log("Holdings received:", holdings);
+
+    const labels = holdings.map(h => h.ticker);
+    const data = holdings.map(h => h.quantity);
+
+    console.log("Pie chart labels:", labels);
+    console.log("Pie chart data:", data);
+
+    res.json({ labels, data });
+  } catch (err) {
+    console.error("Fejl ved piechart-data:", err); // Dette viser dig den præcise fejl i terminalen
+    res.status(500).json({ error: "Serverfejl" });
+  }
+}
+
+
+
+
 
 module.exports = {
   getPortfolios,
   getPortfolioByID,
   renderCreatePortfolio,
   handleCreatePortfolio,
-  getPortfolioGraphData
+  getPortfolioGraphData,
+  getPortfolioPieData
 }

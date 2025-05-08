@@ -8,7 +8,7 @@
 
 <!--<script src="/js/portfolioPieChart.js"></script>  -->
 <script src="/js/stockChart.js"></script> <!-- Dit JS -->
-
+<script src="/js/portfolioPieChart.js"></script> <!-- Dit JS -->
 
 <body>
   <div class="layout">
@@ -22,14 +22,15 @@
       <div class="boxContainer">
         <div class="dashboardBox1">
           <h2>Portfolio Summary</h2>
-          <!--<canvas id="portfolioGraph" data-portfolioid="<%= portfolio.portfolioID %>" ></canvas>-->
           <canvas id="portfolioGraph" width="600" height="300" data-portfolioid="<%= portfolio.portfolioID %>"></canvas>
 
         </div>
       
         <div class="dashboardBox2">
           <h2>Value Distribution</h2>
-          <canvas id="valueDistributionChart"></canvas>
+          <!--<canvas id="valueDistributionChart"></canvas>-->
+          <canvas id="pieChart" width="400" height="400"></canvas>
+
         </div>
       </div>
 
