@@ -65,6 +65,7 @@ async function signup (req, res){
       if (!user) {
         return res.status(404).send("User not found");
       }
+
       
       const totalAcquisitionPrice = totals.totalAcquisitionPrice || 0;
       const totalRealizedValue = totals.totalRealizedValue || 0;
