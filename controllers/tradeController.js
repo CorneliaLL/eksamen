@@ -22,7 +22,9 @@ async function handleTrade(req, res) {
             return res.render("trade", {
                 stockData: null,
                 error: "All fields are required",
-                success: null
+                success: null,
+                portfolioID,
+                accountID
             });
         }
 
