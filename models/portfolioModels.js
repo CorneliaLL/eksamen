@@ -145,7 +145,6 @@ class Portfolio {
     return parseFloat(unrealizedGain.toFixed(2)); 
   }
 
-  // Get all holdings (distinct tickers) in portfolio
   // Beregner GAK, realiseret værdi og urealiseret gevinst for hver aktie i porteføljen
   // Returnerer en liste med aktier og deres tilhørende værdier
   static async getHoldings(portfolioID) {
