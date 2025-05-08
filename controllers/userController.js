@@ -66,11 +66,10 @@ async function signup (req, res){
         return res.status(404).send("User not found");
       }
 
-      
-      const totalAcquisitionPrice = res.locals.totalAcquisitionPrice || 0;
-      const totalRealizedValue = res.locals.totalRealizedValue || 0;
-      const totalUnrealizedGain = res.locals.totalUnrealizedGain || 0;
-     
+      const totalAcquisitionPrice = req.totalAcquisitionPrice;
+      const totalRealizedValue = req.totalRealizedValue;
+      const totalUnrealizedGain = req.totalUnrealizedGain;
+
       res.render("dashboard", {
         username: user.username,
         totalAcquisitionPrice,

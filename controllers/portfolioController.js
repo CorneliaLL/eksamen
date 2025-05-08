@@ -28,9 +28,9 @@ async function getPortfolios(req, res, next) {
 
     // Tilføj beregnede værdier til portføljerne for at vise dem i UI
     req.portfolios = portfolios;
-    res.locals.totalAcquisitionPrice = totalAcquisitionPrice;
-    res.locals.totalRealizedValue = totalRealizedValue;
-    res.locals.totalUnrealizedGain = totalUnrealizedGain;
+    req.totalAcquisitionPrice = totalAcquisitionPrice;
+    req.totalRealizedValue = totalRealizedValue;
+    req.totalUnrealizedGain = totalUnrealizedGain;
 
     next(); // Bruger next() til at gå videre til næste route-handler 
   } catch (err) {
@@ -173,6 +173,5 @@ module.exports = {
   getPortfolioByID,
   renderCreatePortfolio,
   handleCreatePortfolio,
-  showPortfolioAnalysis,
   getPortfolioGraphData
 }
