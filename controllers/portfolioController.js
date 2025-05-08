@@ -19,11 +19,12 @@ async function getPortfolios(req, res, next) {
       totalAcquisitionPrice += p.acquisitionPrice || 0;
 
     //Looper gennem holdings for at beregne realiseret værdi og urealiseret gevinst
-      const holdings = await Portfolio.getHoldings(p.portfolioID);
-      for (const h of holdings) {
-        totalRealizedValue += realizedValue || 0;
-        totalUnrealizedGain += unrealizedGain || 0;
-      }
+    const holdings = await Portfolio.getHoldings(p.portfolioID);
+    for (const h of holdings) {
+      totalRealizedValue += h.realizedValue || 0;
+      totalUnrealizedGain += h.unrealizedGain || 0;
+    }
+    
     }
 
     // Tilføj beregnede værdier til portføljerne for at vise dem i UI
