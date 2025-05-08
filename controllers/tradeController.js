@@ -13,11 +13,11 @@ async function handleTrade(req, res) {
         if (!userID) return res.status(401).send("Unauthorized"); // bruger ikke logget ind
 
         // Henter nødvendige værdier fra formularen
-        let { portfolioID, accountID, Ticker, tradeType, quantity } = req.body;
-        console.log(`Trade request received:`, { userID, portfolioID, accountID, Ticker, tradeType, quantity });
+        let { portfolioID, accountID, ticker, tradeType, quantity } = req.body;
+        console.log(`Trade request received:`, { userID, portfolioID, accountID, ticker, tradeType, quantity });
 
         // Validerer at alle felter er udfyldt
-        if (!portfolioID || !accountID || !Ticker || !tradeType || !quantity) {
+        if (!portfolioID || !accountID || !ticker || !tradeType || !quantity) {
             console.log("Missing required trade fields");
             return res.render("trade", {
                 stockData: null,
@@ -31,10 +31,10 @@ async function handleTrade(req, res) {
         console.log(`Parsed quantity: ${qty}`);
 
         // Henter aktiedata fra databasen (ikke API!)
-        const dbStock = await Stocks.findStockByTicker(Ticker);
+        const dbStock = await Stocks.findStockByTicker(ticker);
         console.log("line 35 runs")
         if (!dbStock) {
-            console.log(`Stock ${Ticker} not found in database`);
+            console.log(`Stock ${ticker} not found in database`);
             return res.render("trade", {
                 stockData: null,
                 error: "Stock not found. Please search for the stock first.",
@@ -43,11 +43,11 @@ async function handleTrade(req, res) {
         }
 
         // Uddrager nødvendige felter fra databasen
-        Ticker = dbStock.Ticker;
-        const stockID = dbStock.StockID;
-        const stockName = dbStock.StockName || Ticker;
-        const stockCurrency = dbStock.StockCurrency;
-        const closePrice = parseFloat(dbStock.ClosePrice);
+        ticker = dbStock.ticker;
+        const stockID = dbStock.stockID;
+        const stockName = dbStock.StockName || ticker;
+        const stockCurrency = dbStock.stockCurrency;
+        const closePrice = parseFloat(dbStock.closePrice);
         console.log(`Using stock: ${stockName} (${stockCurrency}) @ ${closePrice}`);
 
         // Finder kontoen og validerer at den findes og er aktiv
@@ -109,7 +109,7 @@ async function handleTrade(req, res) {
         // Ved salg: kontrollerer om brugeren ejer nok aktier
         if (tradeType === "sell") {
             console.log("108")
-            const hasHoldings = await Trade.checkHoldings(portfolioID, Ticker, qty);
+            const hasHoldings = await Trade.checkHoldings(portfolioID, ticker, qty);
             console.log(`Has holdings to sell? ${hasHoldings}`);
             if (!hasHoldings) {
                 return res.status(400).send("Insufficient holdings to sell.");
@@ -122,7 +122,7 @@ async function handleTrade(req, res) {
             portfolioID,
             accountID,
             stockID: parseInt(stockID),
-            Ticker,
+            ticker,
             stockName,
             tradeType,
             quantity: qty,
@@ -141,8 +141,8 @@ async function handleTrade(req, res) {
 
         // Opdaterer brugerens beholdning i porteføljen
         const quantityChange = tradeType === "buy" ? qty : -qty;
-        await Trade.adjustHoldings(portfolioID, Ticker, quantityChange, stockID);
-        console.log(`Holdings adjusted by ${quantityChange} for ${Ticker}`);
+        await Trade.adjustHoldings(portfolioID, ticker, quantityChange, stockID);
+        console.log(`Holdings adjusted by ${quantityChange} for ${ticker}`);
 
         // Omdirigerer brugeren til deres portefølje-side
         console.log(`Trade completed successfully. Redirecting to portfolio ${portfolioID}`);

@@ -20,16 +20,16 @@ class Stocks{ //stockID slettet - fordi SQL laver ID'et selv. Simplere og mere s
         
             // Indsætter aktiedata i Stocks tabellen
             await pool.request()
-            .input('Ticker', sql.NVarChar(100), stock.ticker)
-            .input('LatestDate', sql.Date, stock.latestDate)
-            .input('StockName', sql.NVarChar(100), stock.stockName)
-            .input('StockCurrency', sql.NVarChar(100), stock.stockCurrency)
-            .input('ClosePrice', sql.Decimal(10,2), stock.closePrice)
-            .input('StockType', sql.NVarChar(100), stock.stockType)
-            .input('PortfolioID', sql.Int, stock.portfolioID)
+            .input('ticker', sql.NVarChar(100), stock.ticker)
+            .input('latestDate', sql.Date, stock.latestDate)
+            .input('stockName', sql.NVarChar(100), stock.stockName)
+            .input('stockCurrency', sql.NVarChar(100), stock.stockCurrency)
+            .input('closePrice', sql.Decimal(10,2), stock.closePrice)
+            .input('stockType', sql.NVarChar(100), stock.stockType)
+            .input('portfolioID', sql.Int, stock.portfolioID)
             .query(`
-            INSERT INTO Stocks (Ticker, latestDate, StockName, StockCurrency, ClosePrice, StockType, PortfolioID)
-            VALUES (@Ticker, @LatestDate, @StockName, @StockCurrency, @ClosePrice, @StockType, @PortfolioID)
+            INSERT INTO Stocks (ticker, latestDate, stockName, stockCurrency, closePrice, stockType, portfolioID)
+            VALUES (@ticker, @latestDate, @stockName, @stockCurrency, @closePrice, @stockType, @portfolioID)
             `);
         } /*forklaring: gemme funktion - hele objektet gemmes i databasen i stedet for mange enkeltdele
     i stedet for enkeltdata kan vi arbejde med samlede objekter - forelæsning 15 om struktur. skal ikke huske rækkefælgen. kan genbruge objekt i andre funktioner nemmere*/
@@ -42,8 +42,8 @@ class Stocks{ //stockID slettet - fordi SQL laver ID'et selv. Simplere og mere s
             .query(`
                 SELECT TOP 1 *
                 FROM Stocks
-                WHERE Ticker = @ticker
-                ORDER BY LatestDate DESC
+                WHERE ticker = @ticker
+                ORDER BY latestDate DESC
             `);
         return result.recordset[0]; // en aktie
     }
@@ -54,9 +54,9 @@ class Stocks{ //stockID slettet - fordi SQL laver ID'et selv. Simplere og mere s
         //gets tickers from stocks table 
         const result = await pool.request()
             .query(`
-                SELECT StockID, Ticker, LatestDate, ClosePrice, StockCurrency 
+                SELECT stockID, ticker, latestDate, closePrice, stockCurrency 
                 FROM Stocks
-                ORDER BY Ticker, latestDate DESC
+                ORDER BY ticker, latestDate DESC
             `);
     
         return result.recordset; //returns tickers as array   
@@ -65,12 +65,12 @@ class Stocks{ //stockID slettet - fordi SQL laver ID'et selv. Simplere og mere s
     static async getStocksByPortfolioID(portfolioID) {
         const pool = await connectToDB(); // Connects to DB
         const result = await pool.request()
-          .input('PortfolioID', sql.Int, portfolioID) // <-- Tilføj input her
+          .input('portfolioID', sql.Int, portfolioID) // <-- Tilføj input her
           .query(`
-          SELECT Ticker, LatestDate, ClosePrice, StockCurrency, PortfolioID
+          SELECT ticker, latestDate, closePrice, stockCurrency, portfolioID
           FROM Stocks
-          WHERE PortfolioID = @PortfolioID
-          ORDER BY Ticker, LatestDate DESC
+          WHERE portfolioID = @portfolioID
+          ORDER BY ticker, latestDate DESC
           `);
       
         return result.recordset;

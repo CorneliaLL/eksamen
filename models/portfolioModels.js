@@ -67,7 +67,7 @@ class Portfolio {
           SUM(price * quantity) AS totalCost,  -- Beregner den samlede omkostning ved køb af aktier
           SUM(quantity) AS totalQuantity   -- Beregner den samlede mængde aktier købt 
         FROM Trades --  Vi bruger Trades-tabellen til at finde købstransaktioner for den specifikke aktie i porteføljen
-        WHERE portfolioID = @portfolioID AND Ticker = @ticker AND tradeType = 'buy' -- Specificerer at vi kun vil have købstransaktioner 
+        WHERE portfolioID = @portfolioID AND ticker = @ticker AND tradeType = 'buy' -- Specificerer at vi kun vil have købstransaktioner 
       `);
       
      // Henter den samlede omkostning og mængde fra vores forespørgsel  
@@ -104,7 +104,7 @@ class Portfolio {
       .query(`
         SELECT SUM(quantity) AS totalQuantity   -- Beregner samlede mængde aktier i porteføljen 
         FROM Trades
-        WHERE portfolioID = @portfolioID AND Ticker = @ticker 
+        WHERE portfolioID = @portfolioID AND ticker = @ticker 
       `);
 
     const { totalQuantity } = result.recordset[0];
@@ -129,7 +129,7 @@ class Portfolio {
           SUM(price * quantity) AS totalCost,
           SUM(quantity) AS totalQuantity
         FROM Trades
-        WHERE portfolioID = @portfolioID AND Ticker = @ticker
+        WHERE portfolioID = @portfolioID AND ticker = @ticker
       `);
 
     const { totalCost, totalQuantity } = result.recordset[0];
@@ -153,11 +153,11 @@ class Portfolio {
     const result = await pool.request()
       .input("portfolioID", sql.Int, portfolioID)
       .query(`
-      SELECT Ticker, 
+      SELECT ticker, 
       SUM(CASE WHEN tradeType = 'buy' THEN quantity ELSE -quantity END) AS quantity   --Bruger case-sætning til at beregne den samlede mængde aktier i porteføljen udfra køb og salg
       FROM Trades
       WHERE portfolioID = @portfolioID
-      GROUP BY Ticker  -- Grupperer resultaterne efter ticker for at få unikke aktier og undgå dubletter 
+      GROUP BY ticker  -- Grupperer resultaterne efter ticker for at få unikke aktier og undgå dubletter 
       HAVING SUM(CASE WHEN tradeType = 'buy' THEN quantity ELSE -quantity END) > 0   -- HAVING SUM bruges til at filtrere resultaterne og kun vise aktier med en positiv mængde, fremfor WHERE som ville filtrere før gruppering 
       `);
 
@@ -165,7 +165,7 @@ class Portfolio {
     
     // iterer over aktierne og henter GAK, realiseret værdi og urealiseret gevinst for hver aktie 
     for (let stock of result.recordset) {
-      const ticker = stock.Ticker; 
+      const ticker = stock.ticker; 
       const quantity = stock.quantity;
 
       const gak = await Portfolio.calculateGAK(portfolioID, ticker); 
@@ -173,7 +173,7 @@ class Portfolio {
       const unrealizedGain = await Portfolio.calculateUnrealizedGain(portfolioID, ticker);
 
       // tilføjer aktien og dens værdier til holdings arrayet
-      holdings.push({ Ticker: ticker, quantity, gak, realizedValue, unrealizedGain });
+      holdings.push({ ticker: ticker, quantity, gak, realizedValue, unrealizedGain });
     }
     return holdings;
   }
@@ -199,15 +199,15 @@ class Portfolio {
     const result = await pool.request()
       .input("portfolioID", sql.Int, portfolioID)
       .query(`
-        SELECT S.Ticker, PH.priceDate, PH.price  
+        SELECT S.ticker, PH.priceDate, PH.price  
         FROM Trades T
-        JOIN Stocks S ON T.stockID = S.StockID  -- Joiner Trades og Stocks tabellerne for at få aktieoplysninger
-        JOIN PriceHistory PH ON PH.stockID = S.StockID   -- Joiner PriceHistory tabellen for at få prisoplysninger
+        JOIN Stocks S ON T.stockID = S.stockID  -- Joiner Trades og Stocks tabellerne for at få aktieoplysninger
+        JOIN PriceHistory PH ON PH.stockID = S.stockID   -- Joiner PriceHistory tabellen for at få prisoplysninger
         WHERE T.portfolioID = @portfolioID
-        ORDER BY S.Ticker, PH.priceDate ASC  -- Sorterer efter ticker og dato i stigende rækkefølge
+        ORDER BY S.ticker, PH.priceDate ASC  -- Sorterer efter ticker og dato i stigende rækkefølge
       `);
   
-    return result.recordset; // fx 100 rækker med Ticker, priceDate, price
+    return result.recordset; // fx 100 rækker med ticker, priceDate, price
   }
 }
 

@@ -54,7 +54,7 @@ class Transaction {
               Transactions.tradeID,
               Transactions.amount,
               Transactions.transactionDate,
-              Trades.Ticker, 
+              Trades.ticker, 
               Trades.tradeType
             FROM Transactions
             LEFT JOIN Trades ON Transactions.tradeID = Trades.tradeID -- LEFT JOIN får alle transaktioner, både trades og almindelige

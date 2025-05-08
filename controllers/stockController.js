@@ -110,18 +110,8 @@ async function handleStockSearch(req, res) {
         // Henter den gemte aktie fra DB
         dbStock = await Stocks.findStockByTicker(ticker); // hent igen efter gem
       }
-      // Oversætter DB data til PascelCase til camelCase
-      const stockData = {
-        stockID: dbStock.stockID,
-        ticker: dbStock.Ticker,
-        stockName: dbStock.StockName,
-        closePrice: dbStock.ClosePrice,
-        stockCurrency: dbStock.StockCurrency,
-        stockType: dbStock.StockType,
-        latestDate: dbStock.LatestDate,
-        portfolioID: dbStock.PortfolioID,
-        priceChange: dbStock.priceChange || null,
-      };
+
+      const stockData = dbStock;
       
       // Viser aktie data i trade.ejs
       res.render("trade", {
@@ -165,14 +155,16 @@ async function updatePriceHistory() {
 
     for (const stock of stocks) {
       // Udtræk aktie-ID og ticker-symbol
-      const { StockID: stockID, Ticker: ticker } = stock;
+      const { stockID: stockID, ticker: ticker } = stock;
 
       // Hent aktiedata fra ekstern API baseret på ticker
       const stockData = await fetchStockData(ticker);
       const changes = stockData.timeSeries;
 
       // Sortér datoer fra nyeste til ældste
-      const stockDates = Object.keys(changes).sort().reverse();
+      const stockDates = Object.keys(changes)
+        .sort((a, b) => new Date(b) - new Date(a));
+        console.log("Sorterede datoer:", stockDates.slice(0, 5));
 
       // CES comment:
       // Før loopet over stockDates, bør du filtrere, så kun dagens data behandles (når funktionen bruges som cron job)
@@ -221,10 +213,11 @@ async function updatePriceHistory() {
           dailyChange: dailyChangePercent.toFixed(2),
           yearlyChange: yearlyChangePercent.toFixed(2),
         });
-      }
 
-      // Udskriv opsummering for aktien
+        // Udskriv opsummering for aktien
       console.log(`Price history saved for ${ticker}: Daily ${dailyChange.toFixed(2)}%, Yearly ${yearlyChange?.toFixed(2) || 'N/A'}%`);
+      
+      }
     }
   } catch (err) {
     console.error("Failed to update price history:", err);
@@ -232,7 +225,7 @@ async function updatePriceHistory() {
 }
 
 // Initial opdatering af aktiedata ved serverstart
-//updatePriceHistory(); 
+updatePriceHistory(); 
 
 // Cron-job: opdater daglig ændring hver dag kl. 17:00 (serverens tidszone)
 // Format: 'minutter timer dag måned ugedag'

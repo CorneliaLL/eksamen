@@ -24,13 +24,13 @@ async function storeExchangeRate(fromCurrency, toCurrency) {
         const pool = await connectToDB(); 
     
         await pool.request()
-        .input('Ticker', sql.NVarChar, ticker)
-        .input('FromCurrency', sql.NVarChar, fromCurrency)
-        .input('ToCurrency', sql.NVarChar, toCurrency)
-        .input('Rate', sql.Decimal(18, 6), rate)
+        .input('ticker', sql.NVarChar, ticker)
+        .input('fromCurrency', sql.NVarChar, fromCurrency)
+        .input('toCurrency', sql.NVarChar, toCurrency)
+        .input('rate', sql.Decimal(18, 6), rate)
         .query(`
-            INSERT INTO ExchangeRates (Ticker, FromCurrency, ToCurrency, Rate)
-            VALUES (@Ticker, @FromCurrency, @ToCurrency, @Rate)
+            INSERT INTO ExchangeRates (ticker, fromCurrency, toCurrency, rate)
+            VALUES (@ticker, @fromCurrency, @toCurrency, @rate)
         `);
         
         return rate;

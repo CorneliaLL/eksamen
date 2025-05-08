@@ -47,7 +47,7 @@
               </div>
 
               <!--24 hour price change -->
-              <% if (stockData.priceChange) { %> <!--if price change exist-->
+              <% if (stockData.priceChange) { %> <!--if price change exist--> <!--Findes priceChange?? Eller skal det være dailyChange-->
                 <div class="detail-item">
                   <span class="label">24h Change</span>
                   <span class="value <%= parseFloat(stockData.priceChange) >= 0 ? 'positive' : 'negative' %>"> <!--make pos and neg, green and red with css?-->

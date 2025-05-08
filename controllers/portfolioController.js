@@ -21,8 +21,8 @@ async function getPortfolios(req, res, next) {
     //Looper gennem holdings for at beregne realiseret værdi og urealiseret gevinst
       const holdings = await Portfolio.getHoldings(p.portfolioID);
       for (const h of holdings) {
-        const realizedValue = await Portfolio.calculateRealizedValue(p.portfolioID, h.Ticker);
-        const unrealizedGain = await Portfolio.calculateUnrealizedGain(p.portfolioID, h.Ticker);
+        const realizedValue = await Portfolio.calculateRealizedValue(p.portfolioID, h.ticker);
+        const unrealizedGain = await Portfolio.calculateUnrealizedGain(p.portfolioID, h.ticker);
         totalRealizedValue += realizedValue || 0;
         totalUnrealizedGain += unrealizedGain || 0;
       }
@@ -74,9 +74,9 @@ async function getPortfolioByID(req, res) {
     // looper gennem holdings for at beregne realiseret værdi og urealiseret gevinst
     // tilføjer værdierne til totalRealizedValue og totalUnrealizedGain
     for (const h of holdings) {
-      const expected = await Portfolio.calculateRealizedValue(portfolioID, h.Ticker); // Henter den realiserede værdi for hver holding
-      const gain = await Portfolio.calculateUnrealizedGain(portfolioID, h.Ticker); // Henter den urealiserede gevinst for hver holding
-      const gak = await Portfolio.calculateGAK(portfolioID, h.Ticker); // Henter gennemsnitsanskaffelsesprisen for hver holding (GAK)
+      const expected = await Portfolio.calculateRealizedValue(portfolioID, h.ticker); // Henter den realiserede værdi for hver holding
+      const gain = await Portfolio.calculateUnrealizedGain(portfolioID, h.ticker); // Henter den urealiserede gevinst for hver holding
+      const gak = await Portfolio.calculateGAK(portfolioID, h.ticker); // Henter gennemsnitsanskaffelsesprisen for hver holding (GAK)
 
     
       h.realizedValue = expected !== null ? expected : 0; 
@@ -89,6 +89,7 @@ async function getPortfolioByID(req, res) {
     }
 
     // render portefølje med alle holdings og deres værdier 
+    console.log("Holdings:", holdings);
     res.render("portfolio", {
       portfolio,
       holdings,
@@ -179,7 +180,7 @@ async function getPortfolioGraphData(req, res) {
     const seriesMap = {};
 
     raw.forEach(row => {
-      const ticker = row.Ticker;
+      const ticker = row.ticker;
       if (!seriesMap[ticker]) seriesMap[ticker] = [];
 
       seriesMap[ticker].push({

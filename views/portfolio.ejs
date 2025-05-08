@@ -68,7 +68,7 @@
             <tbody>
               <% holdings.forEach(stock => { %>
                 <tr>
-                  <td><%= stock.Ticker %></td>
+                  <td><%= stock.ticker %></td>
                   <td><%= stock.quantity %> pcs</td>
                   <td class="<%= stock.dailyChange >= 0 ? 'positive' : 'negative' %>">
                     <%= stock.dailyChange ? stock.dailyChange.toFixed(2) + '%' : 'N/A' %>

@@ -25,8 +25,8 @@ const showExchangeRate = async (req, res) => {
         res.send({
             from,
             to,
-            rate: rateInfo.Rate,
-            date: rateInfo.Date
+            rate: rateInfo.rate,
+            date: rateInfo.date
         });
     } catch (err) {
         res.status(500).send("Could not fetch exchange rate.");

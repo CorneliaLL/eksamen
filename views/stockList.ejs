@@ -24,8 +24,8 @@
       <tbody>
         <% stocks.forEach(stock => { %>
           <tr>
-            <td><%= stock.PortfolioID %></td>
-            <td><%= stock.Ticker %></td>
+            <td><%= stock.portfolioID %></td>
+            <td><%= stock.ticker %></td>
             <td>
               <% if (stock.latestDate) { %>
                 <%= new Date(stock.latestDate).toISOString().slice(0, 10) %>
@@ -33,7 +33,7 @@
                 Ikke tilgængelig
               <% } %>
             </td>            
-            <td><%= stock.ClosePrice %> <%= stock.stockCurrency %></td>
+            <td><%= stock.closePrice %> <%= stock.stockCurrency %></td>
             <td><%= stock.dailyChange %>%</td>
           </tr>
           
