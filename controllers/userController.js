@@ -67,9 +67,9 @@ async function signup (req, res){
       }
 
       
-      const totalAcquisitionPrice = totals.totalAcquisitionPrice || 0;
-      const totalRealizedValue = totals.totalRealizedValue || 0;
-      const totalUnrealizedGain = totals.totalUnrealizedGain || 0;
+      const totalAcquisitionPrice = res.locals.totalAcquisitionPrice || 0;
+      const totalRealizedValue = res.locals.totalRealizedValue || 0;
+      const totalUnrealizedGain = res.locals.totalUnrealizedGain || 0;
      
       res.render("dashboard", {
         username: user.username,

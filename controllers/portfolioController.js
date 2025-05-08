@@ -21,8 +21,6 @@ async function getPortfolios(req, res, next) {
     //Looper gennem holdings for at beregne realiseret værdi og urealiseret gevinst
       const holdings = await Portfolio.getHoldings(p.portfolioID);
       for (const h of holdings) {
-        const realizedValue = await Portfolio.calculateRealizedValue(p.portfolioID, h.ticker);
-        const unrealizedGain = await Portfolio.calculateUnrealizedGain(p.portfolioID, h.ticker);
         totalRealizedValue += realizedValue || 0;
         totalUnrealizedGain += unrealizedGain || 0;
       }
@@ -30,9 +28,9 @@ async function getPortfolios(req, res, next) {
 
     // Tilføj beregnede værdier til portføljerne for at vise dem i UI
     req.portfolios = portfolios;
-    req.totalAcquisitionPrice = totalAcquisitionPrice;
-    req.totalRealizedValue = totalRealizedValue;
-    req.totalUnrealizedGain = totalUnrealizedGain;
+    res.locals.totalAcquisitionPrice = totalAcquisitionPrice;
+    res.locals.totalRealizedValue = totalRealizedValue;
+    res.locals.totalUnrealizedGain = totalUnrealizedGain;
 
     next(); // Bruger next() til at gå videre til næste route-handler 
   } catch (err) {
@@ -143,32 +141,6 @@ async function handleCreatePortfolio(req, res) {
   }
 }
 
-// Henter porteføljeID og aktietciker, og beregner GAK, realiseret værdi og urealiseret gevinst for den specifikke aktie i porteføljen 
-// Bruges til at vise detaljeret analyse af en aktie i porteføljen 
-async function showPortfolioAnalysis(req, res) {
-  try {
-    const userID = req.session.userID;
-    if (!userID) return res.status(401).send("Unauthorized");
-
-    const { portfolioID, stockSymbol } = req.params; 
-    const portfolio = await Portfolio.findPortfolioByID(portfolioID); // Henter portefølje med det specifikke ID
-
-    // tjekker om porteføljen findes og om brugeren ejer den 
-    if (!portfolio) return res.status(404).send("Portfolio not found"); 
-    if (portfolio.userID !== userID) return res.status(403).send("Unauthorized");
-
-    // Henter aktieoplysninger for den specifikke aktie i porteføljen 
-    const gak = await Portfolio.calculateGAK(portfolioID, stockSymbol);
-    const realizedValue = await Portfolio.calculateRealizedValue(portfolioID, stockSymbol);
-    const unrealizedGain = await Portfolio.calculateUnrealizedGain(portfolioID, stockSymbol);
-
-    res.render("portfolioAnalysis", { portfolio, stockSymbol, gak, realizedValue, unrealizedGain }); // Sender data til visning i UI 
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Failed to show analysis");
-  }
-
-}
 
 // Henter grafdata for porteføljen baseret på proteføljeID
 async function getPortfolioGraphData(req, res) {
