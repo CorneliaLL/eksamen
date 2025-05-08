@@ -176,7 +176,7 @@ async function updatePriceHistory() {
         const previousDate = stockDates[i + 1];
         const currentStock = changes[currentDate];
 
-        console.log(currentStock);
+       // console.log(currentStock);
 
         // Udtræk og konverter lukkekurser
         const currentClose = parseFloat(changes[currentDate]['4. close']);
@@ -200,11 +200,11 @@ async function updatePriceHistory() {
         const yearlyChangePercent = (yearlyChange / firstClose) * 100;
 
         // Debug-udskrift
-        console.log(yearlyChangePercent.toFixed(2));
+       /* console.log(yearlyChangePercent.toFixed(2));
         console.log(dailyChange.toFixed(2));
         console.log(`\nOverall Change (from ${oldestDate} to ${latestDate}):`);
         console.log(`Change: ${yearlyChange.toFixed(2)} (${yearlyChangePercent.toFixed(2)}%)`);
-
+*/
         // Gem data i pris-historik databasen
         await PriceHistory.storePriceHistory({
           stockID,
@@ -215,7 +215,7 @@ async function updatePriceHistory() {
         });
 
         // Udskriv opsummering for aktien
-      console.log(`Price history saved for ${ticker}: Daily ${dailyChange.toFixed(2)}%, Yearly ${yearlyChange?.toFixed(2) || 'N/A'}%`);
+    //  console.log(`Price history saved for ${ticker}: Daily ${dailyChange.toFixed(2)}%, Yearly ${yearlyChange?.toFixed(2) || 'N/A'}%`);
       
       }
     }

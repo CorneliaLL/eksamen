@@ -7,8 +7,8 @@
       datasets: [{
         label: "Aktiefordeling",
         data: data.map(d => d.value),
-        backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56']
-        orderColor: 'blue',
+        backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56'],
+        borderColor: 'blue',
       }]
     },
     options: {

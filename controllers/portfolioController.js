@@ -148,8 +148,28 @@ async function getPortfolioGraphData(req, res) {
   try {
     const raw = await Portfolio.getAllStocksPriceHistory(portfolioID);
 
+    // get users portfolio
+    const holdings = await Portfolio.getHoldings(portfolioID);
+
+    console.log({holdings})
+
+
+
+    // now we have price histor AND portfoio
+    // Give me an agrugated history of the portfolio
+
+
     // Gruppér data efter ticker
     const seriesMap = {};
+
+    const months = {
+      "2025-01": "January",
+      "2025-02": "Febuary",
+      "2025-03": "March",
+      "2025-04": "April",
+      "2025-05": "May",
+      "2025-06": "June",
+    }
 
     raw.forEach(row => {
       const ticker = row.ticker;
@@ -157,9 +177,44 @@ async function getPortfolioGraphData(req, res) {
 
       seriesMap[ticker].push({
         date: row.priceDate.toISOString().split('T')[0], 
-        price: parseFloat(row.price)
+        price: parseFloat(row.price),
+        ticker: ticker,
       });
     });
+
+    const monthOrder = ["January", "Febuary", "March", "April", "May", "June"];
+    const monthKeys = Object.keys(months); // ["2025-01", "2025-02", ..., "2025-06"]
+    
+    let resultArray = []
+    holdings.forEach(holding => {
+      const holdingHistory = seriesMap[holding.ticker];
+      const monthlyAggregate = {};
+    
+      holdingHistory.forEach(entry => {
+        const yearMonth = entry.date.slice(0, 7); // e.g. "2025-01"
+        const monthName = months[yearMonth];
+    
+        if (!monthName) return;
+    
+        // If we divide value by the number og days in THAT month the value will actually make sense
+        //need to know the days of very month to do it. not in the middle of the month
+        const value = holding.quantity * entry.price;
+    
+        if (!monthlyAggregate[monthName]) {
+          monthlyAggregate[monthName] = 0;
+        }
+    
+        monthlyAggregate[monthName] += value;
+      });
+    
+      // Create positional array
+      resultArray = monthOrder.map(month => monthlyAggregate[month] || 0);
+    
+      console.log(`Positional monthly values for ${holding.ticker}:`, resultArray);
+    });
+    
+
+    return res.json(resultArray)
 
     res.json(seriesMap); // fx { AAPL: [...], MSFT: [...] }
   } catch (err) {

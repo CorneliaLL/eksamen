@@ -11,7 +11,7 @@ const { Transaction } = require ('../models/transactionModels.js') //fordi handl
 describe('handle trade function', () => {
     let req, res;
         
-        //runs before each test and makes new req and res objects 
+         //runs before each test and makes new req and res objects 
         beforeEach(() => {
             req = { 
                 body: {

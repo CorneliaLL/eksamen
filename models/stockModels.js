@@ -49,18 +49,25 @@ class Stocks{ //stockID slettet - fordi SQL laver ID'et selv. Simplere og mere s
     }
 
 //returns lists of all stocks
-    static async getAllStocks() {
-        const pool = await connectToDB(); //connects to database 
-        //gets tickers from stocks table 
-        const result = await pool.request()
-            .query(`
-                SELECT stockID, ticker, latestDate, closePrice, stockCurrency 
-                FROM Stocks
-                ORDER BY ticker, latestDate DESC
-            `);
+static async getAllStocks() {
+    const pool = await connectToDB();
+    const result = await pool.request().query(`
+        WITH RankedStocks AS (
+            SELECT 
+                stockID, ticker, latestDate, closePrice, stockCurrency,
+                ROW_NUMBER() OVER (PARTITION BY ticker ORDER BY latestDate DESC) AS rn
+            FROM Stocks
+        )
+        SELECT stockID, ticker, latestDate, closePrice, stockCurrency
+        FROM RankedStocks
+        WHERE rn = 1
+        ORDER BY ticker;
+    `);
+    return result.recordset;
+}
+
+
     
-        return result.recordset; //returns tickers as array   
-        }
 
     static async getStocksByPortfolioID(portfolioID) {
         const pool = await connectToDB(); // Connects to DB
@@ -90,19 +97,27 @@ class PriceHistory{
 
     static async storePriceHistory({stockID, price, priceDate, dailyChange, yearlyChange}) {    
         const pool = await connectToDB();
-
-        await pool.request()
+    
+     await pool.request()
         .input('stockID', sql.Int, stockID)
         .input('price', sql.Decimal(18,4), price)
         .input('priceDate', sql.DateTime2(7), priceDate)
         .input('dailyChange', sql.Decimal(18,4), dailyChange)
         .input('yearlyChange', sql.Decimal(18,4), yearlyChange)
         .query(`
-            INSERT INTO PriceHistory (stockID, price, priceDate, dailyChange, yearlyChange)
-            VALUES (@stockID, @price, @priceDate, @dailyChange, @yearlyChange)
+            MERGE PriceHistory AS target
+            USING (SELECT @stockID AS stockID, @priceDate AS priceDate) AS source
+            ON target.stockID = source.stockID AND target.priceDate = source.priceDate
+            WHEN NOT MATCHED THEN
+                INSERT (stockID, price, priceDate, dailyChange, yearlyChange)
+                VALUES (@stockID, @price, @priceDate, @dailyChange, @yearlyChange);
         `);
+        
     }
+
 }
+
+
 
 //exports stocks class 
 module.exports = { 

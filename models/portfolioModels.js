@@ -198,16 +198,17 @@ class Portfolio {
     const result = await pool.request()
       .input("portfolioID", sql.Int, portfolioID)
       .query(`
-        SELECT S.ticker, PH.priceDate, PH.price  
+        SELECT DISTINCT S.ticker, PH.priceDate, PH.price
         FROM Trades T
-        JOIN Stocks S ON T.stockID = S.stockID  -- Joiner Trades og Stocks tabellerne for at få aktieoplysninger
-        JOIN PriceHistory PH ON PH.stockID = S.stockID   -- Joiner PriceHistory tabellen for at få prisoplysninger
+        JOIN Stocks S ON T.stockID = S.stockID
+        JOIN PriceHistory PH ON PH.stockID = S.stockID
         WHERE T.portfolioID = @portfolioID
-        ORDER BY S.ticker, PH.priceDate ASC  -- Sorterer efter ticker og dato i stigende rækkefølge
+        ORDER BY S.ticker, PH.priceDate ASC;
       `);
   
-    return result.recordset; // fx 100 rækker med ticker, priceDate, price
+    return result.recordset;
   }
+  
 }
 
 module.exports = {

@@ -6,7 +6,9 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Import Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
 
+<!--<script src="/js/portfolioPieChart.js"></script>  -->
 <script src="/js/stockChart.js"></script> <!-- Dit JS -->
+
 
 <body>
   <div class="layout">
@@ -20,7 +22,9 @@
       <div class="boxContainer">
         <div class="dashboardBox1">
           <h2>Portfolio Summary</h2>
-          <canvas id="portfolioGraph" data-portfolioid="<%= portfolio.portfolioID %>"></canvas>
+          <!--<canvas id="portfolioGraph" data-portfolioid="<%= portfolio.portfolioID %>" ></canvas>-->
+          <canvas id="portfolioGraph" width="600" height="300" data-portfolioid="<%= portfolio.portfolioID %>"></canvas>
+
         </div>
       
         <div class="dashboardBox2">
