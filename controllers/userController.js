@@ -66,7 +66,6 @@ async function signup (req, res){
         return res.status(404).send("User not found");
       }
       
-      const totals = await Portfolio.getTotalValue(userID);
       const totalAcquisitionPrice = totals.totalAcquisitionPrice || 0;
       const totalRealizedValue = totals.totalRealizedValue || 0;
       const totalUnrealizedGain = totals.totalUnrealizedGain || 0;
