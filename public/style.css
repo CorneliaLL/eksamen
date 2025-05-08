@@ -115,42 +115,7 @@ label {
 /* Source: https://sarahholleydesign.com/pure-css-custom-error-messaging-for-default-form-elements */
 
 
-/* Dette er til stockList */
-.stock-layout {
-  display: flex;
-  min-height: 100vh;
-}
 
-.stock-list{
-  max-width: 1000px; 
-  margin: auto; 
-  padding: 20px;
-  flex: 1;
-  margin-top: 0;
-  }
-
-table {
-
-  width: 100%;
-  background-color: #1a1a1a;
-  border-collapse: collapse;
-}
-
-td {
-  border: 1px solid #444;
-  padding: 12px;
-  text-align: center;
-  color: white;
-}
-
-th {
-  border: 1px solid #444;
-  padding: 12px;
-  text-align: center;
-  color: #4a90e2;
-}
-
-/* Det her bruges når jeg kan få dailyChange vist */
 
 .up {
   color: #00cc66; /* grøn */

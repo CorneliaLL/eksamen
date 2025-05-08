@@ -37,8 +37,7 @@ async function createAccount(req, res) {
 
     // Fetch all banks and validate the bankID
     //const banks = await findBankByName(bankName);
-    const bank = new Banks();
-    const validBank = await bank.findBankByName(bankName);
+    const validBank = await Banks.findBankByName(bankName);
     if (!validBank) {
       return res.status(400).send("Invalid bank ID");
     }

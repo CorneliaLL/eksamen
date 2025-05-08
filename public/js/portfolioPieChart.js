@@ -1,4 +1,4 @@
-const data = JSON.stringify(valueDistribution) 
+/*const data = JSON.stringify(valueDistribution) 
 
   new Chart(document.getElementById('pieChart'), {
     type: 'pie',
@@ -8,6 +8,7 @@ const data = JSON.stringify(valueDistribution)
         label: "Aktiefordeling",
         data: data.map(d => d.value),
         backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56']
+        orderColor: 'blue',
       }]
     },
     options: {
@@ -16,3 +17,4 @@ const data = JSON.stringify(valueDistribution)
       }
     }
   });
+  */

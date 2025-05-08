@@ -135,7 +135,7 @@ async function handleCreatePortfolio(req, res) {
     const portfolio = new Portfolio(null, accountID, portfolioName, registrationDate);
     const portfolioID = await portfolio.createNewPortfolio({ accountID, portfolioName, registrationDate });
  
-    res.redirect(`/portfolio/${portfolioID}/${accountID}`); // Redirect til den oprettede portefølje 
+    res.redirect(`/portfolio/${portfolioID}`); // Redirect til den oprettede portefølje 
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Failed to create portfolio");
@@ -169,39 +169,31 @@ async function showPortfolioAnalysis(req, res) {
 
 }
 
-// Henter grafdata for porteføljen baseret på portfolioID
+// Henter grafdata for porteføljen baseret på proteføljeID
 async function getPortfolioGraphData(req, res) {
-  const { portfolioID } = req.params; // Udtræk portfolioID fra URL-parametre
-
+  const { portfolioID } = req.params;
   try {
-    // Hent rå historiske prisdata for alle aktier i den angivne portefølje
     const raw = await Portfolio.getAllStocksPriceHistory(portfolioID);
 
-    // Initialisér et objekt til at gruppere data efter ticker-symbol (f.eks. AAPL, MSFT)
+    // Gruppér data efter ticker
     const seriesMap = {};
 
-    // Gennemgå hver række data
     raw.forEach(row => {
-      const ticker = row.Ticker; // Aktiens symbol
-      if (!seriesMap[ticker]) seriesMap[ticker] = []; // Opret array hvis det ikke findes
+      const ticker = row.Ticker;
+      if (!seriesMap[ticker]) seriesMap[ticker] = [];
 
-      // Tilføj datapunkt med dato og pris til tickerens dataserie
       seriesMap[ticker].push({
-        date: row.priceDate.toISOString().split('T')[0], // Formatér dato som YYYY-MM-DD
-        price: parseFloat(row.totalValue) // Konverter pris til tal
+        date: row.priceDate.toISOString().split('T')[0], 
+        price: parseFloat(row.price)
       });
     });
 
-    // Send det strukturerede data som JSON-respons
-    // Eksempel: { AAPL: [...], MSFT: [...] }
-    res.json(seriesMap);
+    res.json(seriesMap); // fx { AAPL: [...], MSFT: [...] }
   } catch (err) {
-    // Håndter fejl og send fejlsvar til klienten
     console.error('Fejl i grafdata:', err);
     res.status(500).json({ error: 'Serverfejl' });
   }
 }
-
 
 module.exports = {
   getPortfolios,
