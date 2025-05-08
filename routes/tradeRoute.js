@@ -9,7 +9,9 @@ router.get('/trade', (req, res) => {
     res.render('trade', {
       stockData: null, 
       error: null,
-      success: null
+      success: null,
+      portfolioID: null,
+      accountID: null
     });
   });
 
