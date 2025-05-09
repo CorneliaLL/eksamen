@@ -8,7 +8,6 @@
 <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
 
 <!--<script src="/js/portfolioPieChart.js"></script>  -->
-<script src="/js/stockChart.js"></script> <!-- Dit JS -->
 <script src="/js/portfolioPieChart.js"></script> <!-- Dit JS -->
 
 <body>
@@ -33,8 +32,9 @@
     </div>
     </div>
     <div class="box piechart">
-      <!--INSERT CHART HERE-->
       <h4>Pie chart</h4>
+      <canvas id="portfolioPieChart"></canvas>
+      <script src="/js/portfolioPieChart.js"></script>
     </div>
     <div class="balance">
       <h3> Balance: <%= account.balance.toFixed(2) %> <%= account.currency %> </h3>

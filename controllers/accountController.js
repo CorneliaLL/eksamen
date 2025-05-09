@@ -84,7 +84,13 @@ async function getAccountByID(req, res){
       } else {
 
           //change to res.render
-          res.render("accountDashboard", { account, portfolios: req.portfolios, totalAcquisitionPrice: req.totalAcquisitionPrice });
+          res.render("accountDashboard", { 
+            account, 
+            portfolios: req.portfolios, 
+            totalAcquisitionPrice: req.totalAcquisitionPrice,
+            labels: ['AAPL', 'MSFT'],
+            values: [50, 50] 
+          });
       } 
 
     } catch (err) {
