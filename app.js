@@ -13,7 +13,7 @@ app.set("view engine", "ejs"); //makes it possible to show dynamic html-pages in
 //Configure session middleware
 app.use(
     session({
-        secret: "token",
+        secret: "token", //ret?
         resave: false, //Prevents resaving session if nothing has changed
         saveUninitialized: false, //DEn her skal måske ændres til false UNDERSØG
         cookie: { secure: false, maxAge: 24 * 60 * 60 * 1000 * 100000 },
@@ -67,7 +67,7 @@ app.use("/", portfolioRoutes);
 app.use('/stocks', stockRoutes);
 app.use('/', tradeRoutes);
 app.use('/', transactionRoutes); 
-
+app.use(express.static('public'));
 
 
 //Standard routes
@@ -76,7 +76,6 @@ app.use('/', transactionRoutes);
 app.get("/data", (req, res) => {
     res.send("hello")
 })
-
 
 
 //port 3000

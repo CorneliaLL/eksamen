@@ -224,7 +224,7 @@ async function getPortfolioGraphData(req, res) {
   }
 }
 
-//pie chart
+/*//pie chart
 async function getPortfolioPieData(req, res) {
   const { portfolioID } = req.params;
   try {
@@ -245,7 +245,7 @@ async function getPortfolioPieData(req, res) {
     console.error("Fejl ved piechart-data:", err); // Dette viser dig den præcise fejl i terminalen
     res.status(500).json({ error: "Serverfejl" });
   }
-}
+}*/
 
 
 
@@ -256,6 +256,5 @@ module.exports = {
   getPortfolioByID,
   renderCreatePortfolio,
   handleCreatePortfolio,
-  getPortfolioGraphData,
-  getPortfolioPieData
+  getPortfolioGraphData
 }
