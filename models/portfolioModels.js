@@ -212,7 +212,61 @@ class Portfolio {
     return result.recordset;
   }
   
+static async getTopUnrealizedGains(userID) {
+  try {
+    const pool = await connectToDB();
+
+    const result = await pool.request()
+      .input("userID", sql.Int, userID)
+      .query(`
+        SELECT TOP 5
+          P.portfolioName,
+          T.ticker,
+          SUM(T.quantity * S.closePrice) - SUM(T.price * T.quantity) AS unrealizedGain,
+          SUM(T.quantity * S.closePrice) AS totalValue
+        FROM Trades T
+        JOIN Stocks S ON T.stockID = S.stockID
+        JOIN Portfolios P ON T.portfolioID = P.portfolioID
+        JOIN Accounts A ON P.accountID = A.accountID
+        WHERE A.userID = @userID
+        GROUP BY P.portfolioName, T.ticker
+        ORDER BY unrealizedGain DESC
+      `);
+
+    return result.recordset;
+  } catch (err) {
+    console.error("Error in getTopUnrealizedGains:", err.message);
+    return [];
+  }
 }
+
+static async getTopRealizedValues(userID) {
+  try {
+    const pool = await connectToDB();
+
+    const result = await pool.request()
+      .input("userID", sql.Int, userID)
+      .query(`
+        SELECT TOP 5
+          P.portfolioName,
+          T.ticker,
+          SUM(T.price * T.quantity) AS realizedValue
+        FROM Trades T
+        JOIN Stocks S ON T.stockID = S.stockID
+        JOIN Portfolios P ON T.portfolioID = P.portfolioID
+        JOIN Accounts A ON P.accountID = A.accountID
+        WHERE A.userID = @userID AND T.tradeType = 'sell'
+        GROUP BY P.portfolioName, T.ticker
+        ORDER BY realizedValue DESC
+      `);
+
+    return result.recordset;
+  } catch (err) {
+    return [];
+  }
+}
+}
+
 
 module.exports = {
   Portfolio

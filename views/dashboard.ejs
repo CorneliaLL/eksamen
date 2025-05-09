@@ -36,20 +36,63 @@
         </div>
     </div>
     <div class="valueBox">
-        <h2>Total value</h2>
+  <h2>Top 5 Unrealized Gains</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Portfolio</th>
+        <th>Ticker</th>
+        <th>Unrealized Gain</th>
+        <th>Total Value</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% if (topUnrealizedGains && topUnrealizedGains.length > 0) { %>
+        <% topUnrealizedGains.forEach(item => { %>
+          <tr>
+            <td><%= item.portfolioName %></td>
+            <td><%= item.ticker %></td>
+            <td><%= item.unrealizedGain.toFixed(2) %> DKK</td>
+            <td><%= item.totalValue.toFixed(2) %> DKK</td>
+          </tr>
+        <% }) %>
+      <% } else { %>
+        <tr>
+          <td colspan="4">No data available</td>
+        </tr>
+      <% } %>
+    </tbody>
+  </table>
+</div>
+      <div class="valueBox">
+        <h2>Top 5 Realized Values</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Portfolio</th>
+              <th>Ticker</th>
+              <th>Realized Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% if (topRealizedValues && topRealizedValues.length > 0) { %>
+              <% topRealizedValues.forEach(item => { %>
+                <tr>
+                  <td><%= item.portfolioName %></td>
+                  <td><%= item.ticker %></td>
+                  <td><%= typeof item.realizedValue !== 'undefined' ? item.realizedValue.toFixed(2) : '0.00' %> DKK</td>
+                </tr>
+              <% }) %>
+            <% } else { %>
+              <tr>
+                <td colspan="3">No data available</td>
+              </tr>
+            <% } %>
+          </tbody>
+        </table>
+      </div>
     </div>
-           <!--line chart section-->
-    <!-- <section style="margin-top: 30px; padding: 20px;">
-            <div style="background-color: #1e1e1e; padding: 20px; border-radius: 15px; max-width: 1000px; margin: auto;">
-                <h2 style="text-align: center;">Total Value</h2>
-                <canvas id="totalPortfolioChart" width="900" height="400"></canvas>
-            </div>
-        </section>
-     
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <1--chart biblo-->
-      <script src="/js/dashboardChart.js"></script> <!--creates graph-->  
-  </div>
- </div>
+    </div>
 </body>
 
 </html>
