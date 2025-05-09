@@ -66,7 +66,7 @@ async function signup (req, res){
         return res.status(404).send("User not found");
       }
 
-      
+
 
       const totalAcquisitionPrice = req.totalAcquisitionPrice;
       const totalRealizedValue = req.totalRealizedValue;
@@ -149,7 +149,7 @@ async function changePassword(req, res) {
     // Update the user's password
     await User.updateUserPassword(username, newPassword);
     //res.status(200).json({ message: "Password changed successfully" });
-    res.redirect("/dashboard");
+    res.redirect("/user/dashboard");
   } catch (err) {
     // Catch and handle any error
     res.status(500).json({ error: "Something went wrong while changing the password. Try again" });
