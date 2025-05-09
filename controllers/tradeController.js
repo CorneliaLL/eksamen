@@ -80,8 +80,8 @@ async function handleTrade(req, res) {
         // Justerer prisen hvis aktiens valuta ≠ kontoens valuta
         let adjustedPrice = closePrice;
         if (stockCurrency !== accountCurrency) {
-            console.log("79")
-            const rate = await storeExchangeRate(stockCurrency, accountCurrency); // henter valutakurs
+            console.log("79") 
+            const rate = await storeExchangeRate(stockCurrency, accountCurrency); // henter valutakurs 
             console.log("storeExchangeRate")
             adjustedPrice = closePrice * rate;
             console.log(`Currency converted: ${closePrice} ${stockCurrency} → ${adjustedPrice} ${accountCurrency}`);
