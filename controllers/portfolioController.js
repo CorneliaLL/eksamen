@@ -27,6 +27,12 @@ async function getPortfolios(req, res, next) {
     
     }
 
+    console.log("User portfolios:", portfolios);
+    console.log("Acquisition:", totalAcquisitionPrice);
+    console.log("Realized:", totalRealizedValue);
+    console.log("Unrealized:", totalUnrealizedGain);
+
+
     // Tilføj beregnede værdier til portføljerne for at vise dem i UI
     req.portfolios = portfolios;
     req.totalAcquisitionPrice = totalAcquisitionPrice;

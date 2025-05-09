@@ -47,7 +47,7 @@ async function signup (req, res){
       const user = new User(null, name, username, email, password, age );
       await user.createUser();
 
-      res.redirect("/dashboard");
+      res.redirect("/user/dashboard");
       
       //Catch error that sends server error respons if sign up is a fail
     } catch (err) {
@@ -96,7 +96,7 @@ async function signup (req, res){
       } else {
       
         req.session.userID = user.userID; // Store user in session
-        res.redirect("/dashboard");
+        res.redirect("/user/dashboard");
     }
     } catch (err) {
       res.status(500).render("login", { error: "Login failed. Try again." });
