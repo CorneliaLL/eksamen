@@ -5,7 +5,7 @@ const { Portfolio } = require("../models/portfolioModels");
 //validates password and return an error-message if not true 
  function validatePassword(password){
   //checks if password is long enough
-  if (!password || password.length < 8) {
+  if (!password || password.length < 8){
     return "Password has to be at least 8 characters";
   }
   //checks if password has at least one lowercase letter
