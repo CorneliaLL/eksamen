@@ -38,7 +38,8 @@
       </div>
 
       <!-- Top 5 Unrealized Gains (baseret på profit) -->
-      <div class="valueBox">
+      <div class="valueBoxContainer">
+      <div class="valueBox1">
         <h2>Top 5 Unrealized Gains</h2>
         <table>
           <thead>
@@ -55,7 +56,7 @@
                 <tr>
                   <td><%= item.ticker %></td>
                   <td><%= item.portfolioName %></td>
-                  <td>N/A</td> <!-- tilføje dailyChange -->
+                  <td>N/A</td> <!-- tilføje dailyChange -->          
                   <td><%= item.totalValue.toFixed(2) %> DKK</td>
                 </tr>
               <% }) %>
@@ -69,7 +70,7 @@
       </div>
 
       <!-- Top 5 Realized Values (baseret på værdi) -->
-      <div class="valueBox">
+      <div class="valueBox2">
         <h2>Top 5 Realized Values</h2>
         <table>
           <thead>
@@ -86,7 +87,7 @@
                 <tr>
                   <td><%= item.ticker %></td>
                   <td><%= item.portfolioName %></td>
-                  <td>N/A</td> <!--tilføje dailyChange  -->
+                  <td>N/A</td> <!--tilføje dailyChange  -->              
                   <td><%= typeof item.realizedValue !== 'undefined' ? item.realizedValue.toFixed(2) : '0.00' %> DKK</td>
                 </tr>
               <% }) %>
@@ -101,6 +102,7 @@
 
     </div>
   </div>
+</div>
 </body>
 
 </html>

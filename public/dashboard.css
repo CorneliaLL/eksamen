@@ -57,6 +57,15 @@ body {
   align-items: center;
 }
 
+.valueBoxContainer {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+
 /*Typografi og grundelementer*/
 
 h1 {
@@ -255,8 +264,7 @@ form {
 
 /*Dashboard & data-visning*/
 .accountBox,
-.tradeBox,
-.valueBox {
+.tradeBox{
   background-color: 1B1B19;
   color: white;
   border-radius: 12px;
@@ -325,6 +333,30 @@ form {
   align-items: center;
   grid-column: span 2;
   box-sizing: border-box;
+}
+
+.valueBox1,
+.valueBox2 {
+  background-color: #1B1B19;
+  color: white;
+  border-radius: 12px;
+  padding: 30px;
+  min-height: 300px;
+  box-sizing: border-box;
+}
+
+.valueBox1 table,
+.valueBox2 table {
+  width: 100%;
+  border-collapse: collapse;
+  color: white;
+}
+
+.valueBox1 th, .valueBox1 td,
+.valueBox2 th, .valueBox2 td {
+  padding: 12px;
+  border-bottom: 1px solid #444;
+  text-align: left;
 }
 
 /*Konto-handlinger*/
@@ -451,8 +483,8 @@ form {
 
 /*Grafik og farver*/
 canvas {
-  width: 100% !important;
-  height: auto !important;
+  width: 100%;
+  height: auto;
   max-width: 100%;
   display: block;
 }
