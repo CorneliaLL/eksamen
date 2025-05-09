@@ -7,7 +7,15 @@ async function getPortfolios(req, res, next) {
     const userID = req.session.userID;
     if (!userID) return res.status(401).send("Unauthorized");
 
-    const portfolios = await Portfolio.getAllPortfolios(userID);
+    const accountID = req.params.accountID ? parseInt(req.params.accountID, 10) : null;
+
+    let portfolios = await Portfolio.getAllPortfolios(userID);
+
+    if (accountID) {
+      console.log("Account ID fra URL:", accountID);
+      console.log("Account IDs i portfolios:", portfolios.map(p => p.accountID));
+      portfolios = portfolios.filter(p => p.accountID === accountID);
+    }
 
     let totalAcquisitionPrice = 0;
     let totalRealizedValue = 0;

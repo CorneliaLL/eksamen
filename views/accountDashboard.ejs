@@ -65,7 +65,7 @@
             </tr>
           </thead>
           <tbody>
-            <% if (portfolios.length > 0) { %>
+            <% if (portfolios && portfolios.length > 0) { %>
               <% portfolios.forEach(portfolio => { %>
                 <tr>
                   <td><%= portfolio.portfolioName %></td>

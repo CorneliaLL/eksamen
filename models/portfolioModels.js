@@ -32,9 +32,12 @@ class Portfolio {
     const result = await pool.request()
       .input("userID", sql.Int, userID)
       .query(`
-        SELECT * 
+        SELECT 
+          Portfolios.*, 
+          Accounts.accountName AS accountName,
+          Accounts.currency AS accountCurrency
         FROM Portfolios
-        JOIN Accounts ON Portfolios.accountID = Accounts.accountID -- joiner Portfolios og Accounts tabellerne for at få kontoinformationer
+        JOIN Accounts ON Portfolios.accountID = Accounts.accountID
         WHERE Accounts.userID = @userID
       `);
     return result.recordset;
