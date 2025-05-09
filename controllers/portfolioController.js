@@ -1,5 +1,6 @@
 const { Portfolio } = require("../models/portfolioModels");
 const { Account } = require("../models/accountModels");
+const { Stocks, PriceHistory } = require("../models/stockModels");
 
 // Vis alle porteføljer for en bruger 
 async function getPortfolios(req, res, next) {
@@ -90,11 +91,15 @@ async function getPortfolioByID(req, res) {
       const expected = await Portfolio.calculateRealizedValue(portfolioID, h.ticker); // Henter den realiserede værdi for hver holding
       const gain = await Portfolio.calculateUnrealizedGain(portfolioID, h.ticker); // Henter den urealiserede gevinst for hver holding
       const gak = await Portfolio.calculateGAK(portfolioID, h.ticker); // Henter gennemsnitsanskaffelsesprisen for hver holding (GAK)
+      const priceInfo = await PriceHistory.getPriceInfo(h.ticker); // TILFØJET: Henter prisinfo fra PriceHistory 
+      const dbStock = await Stocks.findStockByTicker(h.ticker); // TILFØJET: Henter tickerInfo
 
-    
       h.realizedValue = expected !== null ? expected : 0; 
       h.unrealizedGain = gain !== null ? gain : 0;
       h.gak = gak !== null ? gak : 0;
+      h.currentPrice = priceInfo?.price ?? null;
+      h.dailyChange = priceInfo?.dailyChange ?? null;
+      h.stockCurrency = dbStock?.stockCurrency ?? null;
 
       // Summering af realiseret værdi og urealiseret gevinst for alle holdings 
       totalRealizedValue += h.realizedValue;
@@ -110,7 +115,7 @@ async function getPortfolioByID(req, res) {
       acquisitionPrice,
       totalRealizedValue,
       totalUnrealizedGain,
-      stockID: holdings.stockID,
+      stockID: holdings.stockID
     });
   } catch (err) {
     console.error(err.message);

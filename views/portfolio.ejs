@@ -79,7 +79,7 @@
                   <td class="<%= stock.dailyChange >= 0 ? 'positive' : 'negative' %>">
                     <%= stock.dailyChange ? stock.dailyChange.toFixed(2) + '%' : 'N/A' %>
                   </td>
-                  <td><%= stock.currentPrice ? stock.currentPrice.toFixed(2) + ' ' + account.currency : 'N/A' %></td>
+                  <td><%= stock.currentPrice ? stock.currentPrice.toFixed(2) + ' ' + stock.stockCurrency : 'N/A' %></td>
                   <td><%= stock.gak ? stock.gak.toFixed(2) : 'N/A' %></td>
                 </tr>
               <% }) %>

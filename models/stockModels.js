@@ -114,6 +114,20 @@ class PriceHistory{
         `);
         
     }
+    
+    static async getPriceInfo(ticker) {
+        const pool = await connectToDB();
+        const result = await pool.request()
+        .input('ticker', sql.NVarChar, ticker)
+        .query(`
+            SELECT TOP 1 PH.price, PH.dailyChange
+            FROM PriceHistory PH
+            JOIN Stocks S ON PH.stockID = S.stockID
+            WHERE S.ticker = ticker
+            ORDER BY PH.priceDate DESC
+            `);
+        return result.recordset[0];
+    }
 
 }
 
