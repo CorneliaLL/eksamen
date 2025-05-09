@@ -10,17 +10,18 @@
     <!--nav-->
     <%- include ('./partials/nav.ejs') %>
     <div class="container">
-    <!--title-->
-    <div class="containerTitle">
-        <h1>Dashboard</h1> <!--gets username from database-->
-    </div>
+      <!--title-->
+      <div class="containerTitle">
+        <h1>Dashboard</h1>
+      </div>
+
       <!-- Summary value boxes -->
       <div class="summaryRow">
         <div class="summaryBox">
           <div class="summaryHeader">Total Value</div>
           <div class="summaryAmount">
             <%= typeof totalAcquisitionPrice !== 'undefined' ? totalAcquisitionPrice.toFixed(2) : '0.00' %>
-        </div>
+          </div>
         </div>
         <div class="summaryBox">
           <div class="summaryHeader">Total Realized Value</div>
@@ -34,66 +35,72 @@
             <%= typeof totalUnrealizedGain !== 'undefined' ? totalUnrealizedGain.toFixed(2) : '0.00' %>
           </div>
         </div>
-    </div>
-    <div class="valueBox">
-  <h2>Top 5 Unrealized Gains</h2>
-  <table>
-    <thead>
-      <tr>
-        <th>Portfolio</th>
-        <th>Ticker</th>
-        <th>Unrealized Gain</th>
-        <th>Total Value</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% if (topUnrealizedGains && topUnrealizedGains.length > 0) { %>
-        <% topUnrealizedGains.forEach(item => { %>
-          <tr>
-            <td><%= item.portfolioName %></td>
-            <td><%= item.ticker %></td>
-            <td><%= item.unrealizedGain.toFixed(2) %> DKK</td>
-            <td><%= item.totalValue.toFixed(2) %> DKK</td>
-          </tr>
-        <% }) %>
-      <% } else { %>
-        <tr>
-          <td colspan="4">No data available</td>
-        </tr>
-      <% } %>
-    </tbody>
-  </table>
-</div>
+      </div>
+
+      <!-- Top 5 Unrealized Gains (baseret på profit) -->
+      <div class="valueBox">
+        <h2>Top 5 Unrealized Gains</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Navn</th>
+              <th>Portfolio</th>
+              <th>24h Change</th>
+              <th>Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% if (topUnrealizedGains && topUnrealizedGains.length > 0) { %>
+              <% topUnrealizedGains.forEach(item => { %>
+                <tr>
+                  <td><%= item.ticker %></td>
+                  <td><%= item.portfolioName %></td>
+                  <td>N/A</td> <!-- tilføje dailyChange -->
+                  <td><%= item.totalValue.toFixed(2) %> DKK</td>
+                </tr>
+              <% }) %>
+            <% } else { %>
+              <tr>
+                <td colspan="4">No data available</td>
+              </tr>
+            <% } %>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Top 5 Realized Values (baseret på værdi) -->
       <div class="valueBox">
         <h2>Top 5 Realized Values</h2>
         <table>
           <thead>
             <tr>
+              <th>Navn</th>
               <th>Portfolio</th>
-              <th>Ticker</th>
-              <th>Realized Value</th>
+              <th>24h Change</th>
+              <th>Value</th>
             </tr>
           </thead>
           <tbody>
             <% if (topRealizedValues && topRealizedValues.length > 0) { %>
               <% topRealizedValues.forEach(item => { %>
                 <tr>
-                  <td><%= item.portfolioName %></td>
                   <td><%= item.ticker %></td>
+                  <td><%= item.portfolioName %></td>
+                  <td>N/A</td> <!--tilføje dailyChange  -->
                   <td><%= typeof item.realizedValue !== 'undefined' ? item.realizedValue.toFixed(2) : '0.00' %> DKK</td>
                 </tr>
               <% }) %>
             <% } else { %>
               <tr>
-                <td colspan="3">No data available</td>
+                <td colspan="4">No data available</td>
               </tr>
             <% } %>
           </tbody>
         </table>
       </div>
+
     </div>
-    </div>
+  </div>
 </body>
 
 </html>
-cdn.jsdelivr.net

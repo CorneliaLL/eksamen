@@ -72,7 +72,7 @@ async function signup (req, res){
       const totalRealizedValue = req.totalRealizedValue;
       const totalUnrealizedGain = req.totalUnrealizedGain;
       const topUnrealizedGains = await Portfolio.getTopUnrealizedGains(userID);
-      const topRealizedValues = await Portfolio.getTopRealizedValues(userID);
+      const topRealizedValues = await Portfolio.getTopTotalValues(userID);
       
       res.render("dashboard", {
         username: user.username,
