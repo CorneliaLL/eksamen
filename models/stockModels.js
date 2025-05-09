@@ -123,7 +123,7 @@ class PriceHistory{
             SELECT TOP 1 price, dailyChange
             FROM PriceHistory PH
             JOIN Stocks S ON PH.stockID = S.stockID
-            WHERE S.ticker = ticker
+            WHERE S.ticker = @ticker
             ORDER BY PH.priceDate DESC
             `);
         return result.recordset[0];
