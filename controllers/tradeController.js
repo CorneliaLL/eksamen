@@ -40,7 +40,9 @@ async function handleTrade(req, res) {
             return res.render("trade", {
                 stockData: null,
                 error: "Stock not found. Please search for the stock first.",
-                success: null
+                success: null,
+                portfolioID,
+                accountID
             });
         }
 
