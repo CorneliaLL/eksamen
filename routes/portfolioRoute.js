@@ -14,7 +14,6 @@ router.get("/stock-chart/:ticker", (req, res) => {
     res.render('stockChart', { ticker: req.params.ticker });
 });
 router.get('/api/portfolio/:portfolioID/graph', portfolioController.getPortfolioGraphData);
-router.get('/api/portfolio/:portfolioID/pie', portfolioController.getPortfolioPieData);
 
 router.post("/createPortfolio", portfolioController.handleCreatePortfolio);
 

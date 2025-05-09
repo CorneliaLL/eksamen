@@ -1,58 +1,37 @@
-document.addEventListener("DOMContentLoaded", () => {
-  const canvas = document.getElementById("portfolioGraph");
-  if (!canvas) return;
+<canvas id="portfolioPieChart"></canvas>
 
-  const portfolioID = canvas.dataset.portfolioid;
-
-  fetch(`/portfolio/${portfolioID}/pie`)
-    .then(res => res.json())
-    .then(({ labels, data }) => {
-      const ctx = document.getElementById("pieChart").getContext("2d");
-
-      new Chart(ctx, {
-        type: "pie",
-        data: {
-          labels: labels,
-          datasets: [{
-            label: "Stocks in Portfolio",
-            data: data,
-            borderWidth: 1,
-          }],
-        },
-        options: {
-          responsive: true,
-        },
-      });
-    })
-    .catch(err => {
-      console.error("Failed to load pie chart:", err);
-    });
-
-});
-
-
-
-
-
-
-
-/*const data = JSON.stringify(valueDistribution) 
-
-  new Chart(document.getElementById('pieChart'), {
-    type: 'pie',
+const ctx = document.getElementById('portfolioPieChart').getContext('2d');
+const portfolioPieChart = new Chart(ctx, {
+    type: 'doughnut',
     data: {
-      labels: data.map(d => d.label),
-      datasets: [{
-        label: "Aktiefordeling",
-        data: data.map(d => d.value),
-        backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56'],
-        borderColor: 'blue',
-      }]
+        labels: ['AAPL', 'MSFT', 'GOOGL', 'AMZN'],
+        datasets: [{
+            label: 'Portfolio Distribution',
+            data: [35, 24, 12, 14], // Percentages
+            backgroundColor: [
+                '#facc15', // AAPL - yellow
+                '#3b82f6', // MSFT - blue
+                '#10b981', // GOOGL - green
+                '#f97316'  // AMZN - orange
+            ],
+            borderWidth: 1
+        }]
     },
     options: {
-      plugins: {
-        legend: { labels: { color: 'white' } }
-      }
+        responsive: true,
+        plugins: {
+            legend: {
+                position: 'right',
+                labels: {
+                    color: 'white'
+                }
+            },
+            title: {
+                display: true,
+                text: 'Fordeling af værdi',
+                color: 'white'
+            }
+        }
     }
-  });
-  */
+});
+
