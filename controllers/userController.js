@@ -1,6 +1,7 @@
 const { User } = require("../models/userModels");
 const { Account } = require("../models/accountModels");
 const { Portfolio } = require("../models/portfolioModels");
+const { PriceHistory} = require("../models/stockModels")
  
 //validates password and return an error-message if not true 
  function validatePassword(password){
@@ -73,6 +74,7 @@ async function signup (req, res){
       const totalUnrealizedGain = req.totalUnrealizedGain;
       const topUnrealizedGains = await Portfolio.getTopUnrealizedGains(userID);
       const topRealizedValues = await Portfolio.getTopTotalValues(userID);
+      const priceInfo = await PriceHistory.getPriceInfo(ticker); // TILFØJER
       
       res.render("dashboard", {
         username: user.username,
@@ -80,7 +82,8 @@ async function signup (req, res){
         totalRealizedValue,
         totalUnrealizedGain,
         topUnrealizedGains,
-        topRealizedValues
+        topRealizedValues,
+        priceInfo // TILFØJET
       });
 
     } catch (err) {
