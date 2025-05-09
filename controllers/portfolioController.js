@@ -162,7 +162,7 @@ async function handleCreatePortfolio(req, res) {
 }
 
 
-// Henter grafdata for porteføljen baseret på proteføljeID
+// Henter grafdata for porteføljen baseret på porteføljeID
 async function getPortfolioGraphData(req, res) {
   const { portfolioID } = req.params;
   try {
