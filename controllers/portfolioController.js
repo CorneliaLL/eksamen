@@ -98,8 +98,8 @@ async function getPortfolioByID(req, res) {
       h.unrealizedGain = gain !== null ? gain : 0;
       h.gak = gak !== null ? gak : 0;
       h.currentPrice = priceInfo?.price ?? null;
-      h.dailyChange = priceInfo?.dailyChange ?? null;
-      h.stockCurrency = dbStock?.stockCurrency ?? null;
+      h.dailyChange = priceInfo?.dailyChange ?? null; // TILFØJET
+      h.stockCurrency = dbStock?.stockCurrency ?? null; // TILFØJET
 
       // Summering af realiseret værdi og urealiseret gevinst for alle holdings 
       totalRealizedValue += h.realizedValue;

@@ -1,6 +1,7 @@
 const { User } = require("../models/userModels");
 const { Account } = require("../models/accountModels");
 const { Portfolio } = require("../models/portfolioModels");
+const { PriceHistory} = require("../models/stockModels")
  
 //validates password and return an error-message if not true 
  function validatePassword(password){
@@ -73,6 +74,18 @@ async function signup (req, res){
       const totalUnrealizedGain = req.totalUnrealizedGain;
       const topUnrealizedGains = await Portfolio.getTopUnrealizedGains(userID);
       const topRealizedValues = await Portfolio.getTopTotalValues(userID);
+      
+       // Hent prisinfo for topUnrealizedGains
+        for (let item of topUnrealizedGains) {
+            const priceInfo = await PriceHistory.getPriceInfo(item.ticker);
+            item.priceInfo = priceInfo; // Tilføj prisinfo til hvert element
+        }
+
+        // Hent prisinfo for topRealizedValues
+        for (let item of topRealizedValues) {
+            const priceInfo = await PriceHistory.getPriceInfo(item.ticker);
+            item.priceInfo = priceInfo; // Tilføj prisinfo til hvert element
+        }
       
       res.render("dashboard", {
         username: user.username,
