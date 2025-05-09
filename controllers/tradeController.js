@@ -136,10 +136,14 @@ async function handleTrade(req, res) {
         console.log(`Trade created with ID: ${tradeID}`);
 
         // Opretter en transaktion (beløbet er negativt ved køb, positivt ved salg)
+        //registrer køb af aktier i en portefølje 
         const transactionAmount = tradeType === "buy" ? -totalPrice : totalPrice;
-        const transaction = new Transaction(null, accountID, tradeID, transactionAmount, new Date());
-        await transaction.registerTransaction();
-        console.log(`Transaction registered: ${transactionAmount}`);
+        await Transaction.registerTransaction({
+            accountID,
+            tradeID,
+            amount: transactionAmount,
+            transactionDate: new Date()
+          });
 
         // Opdaterer brugerens beholdning i porteføljen
         const quantityChange = tradeType === "buy" ? qty : -qty;
