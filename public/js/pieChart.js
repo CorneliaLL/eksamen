@@ -1,8 +1,8 @@
 document.addEventListener("DOMContentLoaded", () => {
     const canvas = document.getElementById("pieChart");
     if (!canvas) return; // beskyt mod fejl
-
     const ctx = canvas.getContext("2d");
+    
     new Chart(ctx, {
         type: 'pie',
         data: {
