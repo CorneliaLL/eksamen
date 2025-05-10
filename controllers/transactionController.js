@@ -41,8 +41,12 @@ async function handleAccountTransaction(req, res) {
     const assignedAmount = type === "deposit" ? chosenAmount : -chosenAmount; 
 
     //Opretter en ny transaction og registrer den i databasen 
-    const transaction = new Transaction(null, accountID, null, assignedAmount); 
-    await transaction.registerTransaction(); 
+    await Transaction.registerTransaction({
+      accountID,
+      tradeID: null,
+      amount: assignedAmount
+    });
+    
     res.redirect(`/account/${accountID}`); 
     }catch (err) {
     console.error("Error updating account balance:", err.message);

@@ -17,7 +17,7 @@ async function handleGetStockByTicker(req, res) {
             prices: result.prices 
         });
     
-      } catch (error) { //error message 
+      } catch (error) { //error message
         res.status(500).send('Server error');
       }
 }

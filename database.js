@@ -6,7 +6,7 @@ dotenv.config();
 //Variable which creates connection between our app and our database
 const config = {
     user: "celina",
-    password: DB_PASSWORD,
+    password: process.env.DB_PASSWORD,
     server: "invest-app.database.windows.net",
     database: "invest-app",
     options: {
