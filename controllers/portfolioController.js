@@ -8,9 +8,14 @@ async function getPortfolios(req, res, next) {
     const userID = req.session.userID;
     if (!userID) return res.status(401).send("Unauthorized");
 
+  //Henter accountID fra URL
+  //Bruger ternary expression til at tjekke om accountID findes i URL'en
+  //Hvis det gør, konverteres værdien til et heltal, ellers sættes det lig null
+  //På denne måde kan vi bruge funktionen til at hente alle porteføljer for en bruger men også separere dem ud fra accountID
     const accountID = req.params.accountID ? parseInt(req.params.accountID, 10) : null;
     let portfolios = await Portfolio.getAllPortfolios(userID);
 
+    //Hvis accountID er angivet, filtreres porteføljerne for at vise dem som tilhører den respektive konto
     if (accountID) {
       portfolios = portfolios.filter(p => p.accountID === accountID); // filterer efter 
     }
@@ -34,13 +39,13 @@ async function getPortfolios(req, res, next) {
     
     }
 
-    // Gemmer resultaterne i req-objekt til brug i UI
+    // Gemmer resultaterne i req-objekt til bruge i frontend
     req.portfolios = portfolios;
     req.totalAcquisitionPrice = totalAcquisitionPrice;
     req.totalRealizedValue = totalRealizedValue;
     req.totalUnrealizedGain = totalUnrealizedGain;
 
-    next(); // Bruger next() til at gå videre til næste route-handler 
+    next(); // Bruger next() for at næste funktion kan kaldes i router
   } catch (err) {
     res.status(500).send("Failed to fetch portfolios");
   }
