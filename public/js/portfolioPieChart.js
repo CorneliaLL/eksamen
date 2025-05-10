@@ -15,14 +15,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 },
                 options: {
                     responsive: true,
-                    plugins: {
-                        legend: {
-                            position: 'right',
-                        labels: {
-                            color: 'white'
-                        }
-                    },
-                }
                 }   
             });    
         })
