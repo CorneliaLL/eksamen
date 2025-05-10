@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
     const canvas = document.getElementById("portfolioPieChart");
-    if (!canvas) return; // beskyt mod fejl
+    if (!canvas) return; 
     const ctx = canvas.getContext("2d");
 
         new Chart(ctx, {
@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 labels: ['AAPL', 'MSFT', 'GOOGL', 'AMZN'],
                 datasets: [{
                     label: 'Portfolio Distribution',
-                    data: [35, 24, 12, 14], // Percentages
+                    data: [35, 24, 12, 14], 
                         borderWidth: 1
                     }]
                 },
