@@ -15,7 +15,7 @@ class Trade {
         this.tradeDate = tradeDate;
     }
 
-    // Create a new trade record in the database
+    //Metode der opretter en ny handel i databasen
     static async createTrade({ portfolioID, accountID, stockID, ticker, stockName, tradeType, quantity, price, fee, totalPrice, tradeDate }) {
         const pool = await connectToDB();
 
@@ -42,7 +42,8 @@ class Trade {
         return result.recordset[0].tradeID;
     }
 
-    // Check if there are enough funds to buy
+    //Metode der checker om der er nok penge på en konto
+    //Bruges når man skal købe aktier
     static async checkFunds(accountID, totalCost) {
         const pool = await connectToDB();
         const result = await pool.request()
@@ -55,7 +56,8 @@ class Trade {
         return balance >= totalCost;
     }
 
-    // Check if there are enough holdings to sell
+    //Metode der checker om der er nok aktier i en portefølje (i holdings)
+    //Holdings er en tabel der indeholder alle aktier i en portefølje
     static async checkHoldings(portfolioID, ticker, quantity) {
         const pool = await connectToDB();
         const result = await pool.request()
@@ -72,12 +74,13 @@ class Trade {
         return currentQuantity >= quantity;
     }
 
-    // Update holdings after a trade. Either add or remove the quantity based on the trade type
-    //quantity change is positive for buy and negative for sell
+    //Metode der opdaterer holdings i databasen efter en handel
+    //Den fjerner eller tilføjer en mængde baseret på trade typen
+    //Quantit ændringen er positiv ved køb og negativ ved salg
     static async adjustHoldings(portfolioID, ticker, quantityChange, stockID) {
         const pool = await connectToDB();
-
-        //check if the holding exist    
+   
+        //Checker om holding eksisterer baseret på portfolioID og ticker
         const result = await pool.request()
             .input("portfolioID", sql.Int, portfolioID)
             .input("ticker", sql.NVarChar, ticker)
@@ -86,12 +89,12 @@ class Trade {
                 WHERE portfolioID = @portfolioID AND ticker = @ticker
             `);
 
-        // if the holding exist, update the quantity    
+        //Hvis holding eksisterer, opdateres den   
         if (result.recordset.length > 0) {
             const currentQuantity = result.recordset[0].quantity;
-            const newQuantity = currentQuantity + quantityChange; // add or subtract trade quantity
+            const newQuantity = currentQuantity + quantityChange; // tilføjer eller trække fra den nuværende mængde
             
-            // update the quantity if its still positive 
+            //Opdaterer quantity hvis den er positiv (større end 0)
             if (newQuantity > 0) {
                 await pool.request()
                     .input("portfolioID", sql.Int, portfolioID)
@@ -102,7 +105,8 @@ class Trade {
                         SET quantity = @quantity
                         WHERE portfolioID = @portfolioID AND ticker = @ticker
                     `);
-            // if the quantity is 0 or less, delete the holding 
+            //Hvis mængden er negativ (0 eller mindre), slettes rækken fra holdings
+            //Dvs, at brugeren ikke har flere aktier tilbage i sin holdings
             } else {
                 await pool.request()
                     .input("portfolioID", sql.Int, portfolioID)
@@ -113,8 +117,7 @@ class Trade {
                     `);
             }
         } else {
-            // Insert a new holding if buying and the holding doesnt exist
-            // if the quantity is positive, insert a new holding
+            //Hvis quantity er positiv, indsættes en ny holding hvis der ikke allerede eksisterer en
             if (quantityChange > 0) {
                 await pool.request()
                     .input("portfolioID", sql.Int, portfolioID)

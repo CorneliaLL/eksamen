@@ -13,7 +13,7 @@ class Account {
     this.deactivationDate = deactivationDate;
   }
 
- 
+//Metode der opretter en ny konto i databasen
 async createNewAccount({ userID, accountName, currency, balance, registrationDate, accountStatus, bankID }) {
   const pool = await connectToDB();
 
@@ -61,6 +61,7 @@ static async reactivateAccount(accountID) {
     `);
 }
 
+//Metode der finder en konto i databasen ved at matche accountID
 static async findAccountByID(accountID) {
   const pool = await connectToDB();
 
@@ -73,7 +74,7 @@ static async findAccountByID(accountID) {
     return result.recordset[0];
 }
 
-
+//Metode der henter alle konti tilhørende en bruger i databasen, matcher med userID
 static async getAllAccounts(userID) {
   const pool = await connectToDB();
 
@@ -99,6 +100,10 @@ static async updateAccountBalance(accountID, changedBalance){
       UPDATE Accounts
       SET balance = balance + @balance
       WHERE accountID = @accountID`)
+
+    //Returnerer resultatet af forespørgslen hvis én eller flere rækker er opdateret
+    //Hvis dette er tilfældet, returneres true
+      return result.rowsAffected[0] > 0;
   }
 }
 

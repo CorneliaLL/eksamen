@@ -10,7 +10,7 @@ class User {
         this.password = password;
         this.age = age;
     }
-
+//Metode der opretter en ny bruger i databasen
 async createUser(){
     const pool = await connectToDB();
 
@@ -30,8 +30,9 @@ async createUser(){
     `);
 
     return { username, email };
-}
+    }
 
+//Metode der finder en bruger i databasen ved at matche brugerID
 static async findUserID(userID) {
     const pool = await connectToDB();
 
@@ -41,8 +42,9 @@ static async findUserID(userID) {
 
 //Returner den første instans i DB der matcher forespørgslen, eller undefined
     return result.recordset[0];
-}
+    }
 
+//Metode der finder en bruger i databasen ved at matche brugernavnet
 static async findUserByUsername(username) {
     const pool = await connectToDB();
 
@@ -51,8 +53,9 @@ static async findUserByUsername(username) {
         .query("SELECT * FROM  Users WHERE username = @username");
 
     return result.recordset[0];
-}
+    }
 
+//Metode der opdaterer brugers kodeord i databasen
 static async updateUserPassword(username, newPassword) {
     const pool = await connectToDB();
 
@@ -61,7 +64,7 @@ static async updateUserPassword(username, newPassword) {
     .input("password", sql.NVarChar, newPassword)
     //Opdaterer brugers kodeord i databasen ved at matche brugernavnet
     .query("UPDATE Users SET password = @password WHERE username = @username");
-}
+    }
 
 }
 

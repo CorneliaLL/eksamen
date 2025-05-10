@@ -1,10 +1,9 @@
-//Stockmodel combines stock objects with db. It saves and gets data. 
+const {connectToDB, sql } = require('../database');  
 
-const {connectToDB, sql } = require('../database'); //sql connection from database.js 
 
-//represents stocks and handling of database 
-class Stocks{ //stockID slettet - fordi SQL laver ID'et selv. Simplere og mere standard ifølge DB teori​ forelæsning 17?
-    constructor(ticker, latestDate, portfolioID, stockName, stockCurrency, closePrice, stockType){
+class Stocks{ 
+    constructor(stockID, ticker, latestDate, portfolioID, stockName, stockCurrency, closePrice, stockType){
+        this.stockID = stockID;
         this.ticker = ticker;
         this.latestDate = latestDate;
         this.portfolioID = portfolioID;
@@ -13,12 +12,10 @@ class Stocks{ //stockID slettet - fordi SQL laver ID'et selv. Simplere og mere s
         this.closePrice = closePrice;
         this.stockType = stockType;
     }
-    //saves stockdata in the database 
-    //input of stockdata in the stock table
+    //Indsætter aktiedata i databasen
         static async storeStock(stock) {
             const pool = await connectToDB(); 
         
-            // Indsætter aktiedata i Stocks tabellen
             await pool.request()
             .input('ticker', sql.NVarChar(100), stock.ticker)
             .input('latestDate', sql.Date, stock.latestDate)
@@ -31,10 +28,9 @@ class Stocks{ //stockID slettet - fordi SQL laver ID'et selv. Simplere og mere s
             INSERT INTO Stocks (ticker, latestDate, stockName, stockCurrency, closePrice, stockType, portfolioID)
             VALUES (@ticker, @latestDate, @stockName, @stockCurrency, @closePrice, @stockType, @portfolioID)
             `);
-        } /*forklaring: gemme funktion - hele objektet gemmes i databasen i stedet for mange enkeltdele
-    i stedet for enkeltdata kan vi arbejde med samlede objekter - forelæsning 15 om struktur. skal ikke huske rækkefælgen. kan genbruge objekt i andre funktioner nemmere*/
+        } 
 
-    //finds newest version of stock by ticker 
+    //Finder den nyeste aktie i databasen ved at matche ticker
     static async findStockByTicker(ticker) {
         const pool = await connectToDB();
         const result = await pool.request()
@@ -48,16 +44,19 @@ class Stocks{ //stockID slettet - fordi SQL laver ID'et selv. Simplere og mere s
         return result.recordset[0]; // en aktie
     }
 
-//returns lists of all stocks
+//Metode der henter alle aktier
 static async getAllStocks() {
     const pool = await connectToDB();
     const result = await pool.request().query(`
+    -- Skaber en Common Table Expression for at rangere aktierne
+    --Får en liste af aktier for hver ticker, hvor den nyeste sorteres som nr. 1
         WITH RankedStocks AS (
             SELECT 
                 stockID, ticker, latestDate, closePrice, stockCurrency,
                 ROW_NUMBER() OVER (PARTITION BY ticker ORDER BY latestDate DESC) AS rn
             FROM Stocks
         )
+        -- Vælger kun den nyeste aktie, nr. 1, for hver ticker og sorterer dem efter ticker
         SELECT stockID, ticker, latestDate, closePrice, stockCurrency
         FROM RankedStocks
         WHERE rn = 1
@@ -66,9 +65,7 @@ static async getAllStocks() {
     return result.recordset;
 }
 
-
-    
-
+    //Metode der henter aktier i en portefølje
     static async getStocksByPortfolioID(portfolioID) {
         const pool = await connectToDB(); // Connects to DB
         const result = await pool.request()
@@ -83,8 +80,8 @@ static async getAllStocks() {
         return result.recordset;
       }
 };  
-//bruges ikke endnu?
-//Skal hente daglig priser fra vores API
+
+//Klasse der henter daglig priser fra vores API
 class PriceHistory{ 
     constructor(historyID, stockID, price, priceDate, dailyChange, yearlyChange){
         this.historyID = historyID;
@@ -95,6 +92,7 @@ class PriceHistory{
         this.yearlyChange = yearlyChange;
     }
 
+    //Metode der gemmer aktiepriser i databasen
     static async storePriceHistory({stockID, price, priceDate, dailyChange, yearlyChange}) {    
         const pool = await connectToDB();
     

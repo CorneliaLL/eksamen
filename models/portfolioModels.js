@@ -1,7 +1,6 @@
 const { connectToDB, sql } = require("../database");
 const { fetchStockData } = require("../services/fetchStockData");
 
-// opretter en porteølje klasse med ID, kontoID, porteføæjenavn og registreringsdato
 class Portfolio {
   constructor(portfolioID, accountID, portfolioName, registrationDate) {
     this.portfolioID = portfolioID;
@@ -10,7 +9,7 @@ class Portfolio {
     this.registrationDate = registrationDate;
   }
 
-  // Metode til at oprette en ny portefølje i databasen 
+  //Metode til at oprette en ny portefølje i databasen 
   async createNewPortfolio({ accountID, portfolioName, registrationDate }) {
     const pool = await connectToDB(); // opretter forbindelse til databasen 
     const result = await pool.request() // opretter en forespørgsel til databsen 
@@ -25,8 +24,7 @@ class Portfolio {
     return result.recordset[0].portfolioID;
   }
 
-  // Metode til at hente alle porteføljer for en given bruger ved at bruge userID som paramterer
-
+  //Metode til at hente alle porteføljer for en given bruger ved at bruge userID som paramterer
   static async getAllPortfolios(userID) {
     const pool = await connectToDB();
     const result = await pool.request()
@@ -37,13 +35,13 @@ class Portfolio {
           Accounts.accountName AS accountName,
           Accounts.currency AS accountCurrency
         FROM Portfolios
-        JOIN Accounts ON Portfolios.accountID = Accounts.accountID
+        JOIN Accounts ON Portfolios.accountID = Accounts.accountID -- Vi bruger JOIN til at koble portfolios sammen med accounts baseret på accountID for af finde userID
         WHERE Accounts.userID = @userID
       `);
     return result.recordset;
   }
 
-  // Find en specifik portefølje ved hjælp af portfolioID
+  //Find en specifik portefølje ved hjælp af portfolioID
   static async findPortfolioByID(portfolioID) {
     const pool = await connectToDB();
     const result = await pool.request()
@@ -57,9 +55,9 @@ class Portfolio {
     return result.recordset[0] || null;
   }
 
-  // metode til at beregne GAK (gennemsnitlig anskaffelsespris) for en given aktie i porteføljen 
-  // Bruger portfolio ID og ticker som paramtre for at finde aktien i databasen 
-  // GAK beregnes ved at tage summen af pris*mængde for køb og dividere med summen af mængden af aktier 
+  //Metode til at beregne GAK (gennemsnitlig anskaffelsespris) for en given aktie i porteføljen 
+  //Bruger portfolioID og ticker som paramtre for at finde aktien i databasen 
+  //GAK beregnes ved at tage summen af pris * mængde for køb og dividere med summen af mængden af aktier 
   static async calculateGAK(portfolioID, ticker) {
     const pool = await connectToDB();
     const result = await pool.request()
@@ -73,7 +71,7 @@ class Portfolio {
         WHERE portfolioID = @portfolioID AND ticker = @ticker AND tradeType = 'buy' -- Specificerer at vi kun vil have købstransaktioner 
       `);
       
-     // Henter den samlede omkostning og mængde fra vores forespørgsel  
+     //Henter den samlede omkostning og mængde fra vores forespørgsel  
     const { totalCost, totalQuantity } = result.recordset[0]; 
     if (!totalCost || !totalQuantity || totalQuantity === 0) return null;
 
@@ -82,7 +80,8 @@ class Portfolio {
   }
 
 
-  // Beregn anskaffelsesprisen (acquisition price) for en given portefølje
+  //Metode der beregner erhvervelsesprisen (acquisition price) for en given portefølje
+  //Erhvervelsesprisen er pris * mængde
   static async calculateAcquisitionPrice(portfolioID) {
     const pool = await connectToDB();
     const result = await pool.request()
@@ -98,7 +97,7 @@ class Portfolio {
     return totalCost;
   }
 
-  // Bereng realiseret værdi (nuværende værdi) baseret på live pris fra API
+  //Metode der beregner forventet værdi (nuværende værdi) baseret på live pris fra API
   static async calculateRealizedValue(portfolioID, ticker) {
     const pool = await connectToDB();
     const result = await pool.request()
@@ -113,15 +112,15 @@ class Portfolio {
     const { totalQuantity } = result.recordset[0];
     if (!totalQuantity || totalQuantity === 0) return 0;
 
-    // Henter aktiekurs fra API 
-    // FetchStockData er en funktion der henter aktiekursen fra vores API
+    //Henter aktiekurs fra API 
+    //FetchStockData er en funktion der henter aktiekursen fra vores ekstern API
     const stockData = await fetchStockData(ticker);
     const currentPrice = parseFloat(stockData.closePrice); 
 
     return parseFloat((totalQuantity * currentPrice).toFixed(2));
   }
 
-  // Beregner urealiseret gevinst for en given aktie i porteføljen
+  //Beregner urealiseret gevinst for en given aktie i porteføljen
   static async calculateUnrealizedGain(portfolioID, ticker) {
     const pool = await connectToDB();
     const result = await pool.request()
@@ -134,7 +133,7 @@ class Portfolio {
         FROM Trades
         WHERE portfolioID = @portfolioID AND ticker = @ticker
       `);
-
+    //Henter totalCost og totalQuantity fra forespørgslen
     const { totalCost, totalQuantity } = result.recordset[0];
     if (!totalCost || !totalQuantity || totalQuantity === 0) return 0;
 
@@ -144,12 +143,13 @@ class Portfolio {
     // Beregner realiseret værdi og urealiseret gevinst 
     const realizedValue = totalQuantity * currentPrice;
     const unrealizedGain = realizedValue - totalCost;
-
+    //Returnerer værdien som et tal med parseFloat
+    //toFixed(2) bruges til at runde til 2 decimaler
     return parseFloat(unrealizedGain.toFixed(2)); 
   }
 
-  // Beregner GAK, realiseret værdi og urealiseret gevinst for hver aktie i porteføljen
-  // Returnerer en liste med aktier og deres tilhørende værdier
+  //Beregner GAK, realiseret værdi og urealiseret gevinst for hver aktie i porteføljen
+  //Returnerer en liste med aktier og deres tilhørende værdier
   static async getHoldings(portfolioID) {
     const pool = await connectToDB();
     const result = await pool.request()
@@ -163,9 +163,9 @@ class Portfolio {
       HAVING SUM(CASE WHEN tradeType = 'buy' THEN quantity ELSE -quantity END) > 0   -- HAVING SUM bruges til at filtrere resultaterne og kun vise aktier med en positiv mængde, fremfor WHERE som ville filtrere før gruppering 
       `);
 
-    const holdings = [];  // Opretter et tomt array til at gemme aktierne og deres værdier
+    const holdings = [];  //Opretter et tomt array til at gemme aktierne og deres værdier
     
-    // iterer over aktierne og henter GAK, realiseret værdi og urealiseret gevinst for hver aktie 
+    //Iterer over aktierne og henter GAK, realiseret værdi og urealiseret gevinst for hver aktie 
     for (let stock of result.recordset) {
       const ticker = stock.ticker; 
       const quantity = stock.quantity;
@@ -174,14 +174,14 @@ class Portfolio {
       const realizedValue = await Portfolio.calculateRealizedValue(portfolioID, ticker);
       const unrealizedGain = await Portfolio.calculateUnrealizedGain(portfolioID, ticker);
 
-      // tilføjer aktien og dens værdier til holdings arrayet
+      //Tilføjer aktien og dens værdier til holdings arrayet
       holdings.push({ ticker: ticker, quantity, gak, realizedValue, unrealizedGain });
     }
     return holdings;
   }
 
-  // Henter aktiehistorik for en given aktie i en portefølje 
-  // Bruges til at vise aktiehistorik i UI
+  //Henter prishistorik for en given aktie i en portefølje 
+  //Bruges til at vise prishistorik i frontend
   static async getPriceHistory(stockID) {
     const pool = await connectToDB();
     const result = await pool.request()
@@ -211,9 +211,9 @@ class Portfolio {
   
     return result.recordset;
   }
-  
+
+//Henter top 5 aktier i porteføljen med de største urealiserede gevinster
 static async getTopUnrealizedGains(userID) {
-  try {
     const pool = await connectToDB();
 
     const result = await pool.request()
@@ -230,42 +230,33 @@ static async getTopUnrealizedGains(userID) {
         JOIN Accounts A ON P.accountID = A.accountID
         WHERE A.userID = @userID
         GROUP BY P.portfolioName, T.ticker
-        ORDER BY unrealizedGain DESC
+        ORDER BY unrealizedGain ASC
       `);
 
     return result.recordset;
-  } catch (err) {
-    console.error("Error in getTopUnrealizedGains:", err.message);
-    return [];
   }
-}
-
+  //Henter top 5 aktier i porteføljen med højest erhvervelsespris
 static async getTopTotalValues(userID) {
-  try {
-    const pool = await connectToDB();
+  const pool = await connectToDB();
 
-    const result = await pool.request()
-      .input("userID", sql.Int, userID)
-      .query(`
-        SELECT TOP 5
-          P.portfolioName,
-          T.ticker,
-          SUM(T.quantity * S.closePrice) AS totalValue
-        FROM Trades T
-        JOIN Stocks S ON T.stockID = S.stockID
-        JOIN Portfolios P ON T.portfolioID = P.portfolioID
-        JOIN Accounts A ON P.accountID = A.accountID
-        WHERE A.userID = @userID
-        GROUP BY P.portfolioName, T.ticker
-        ORDER BY totalValue DESC
-      `);
+  const result = await pool.request()
+    .input("userID", sql.Int, userID)
+    .query(`
+      SELECT TOP 5
+        P.portfolioName,
+        T.ticker,
+        SUM(T.quantity * S.closePrice) AS totalValue
+      FROM Trades T
+      JOIN Stocks S ON T.stockID = S.stockID
+      JOIN Portfolios P ON T.portfolioID = P.portfolioID
+      JOIN Accounts A ON P.accountID = A.accountID
+      WHERE A.userID = @userID
+      GROUP BY P.portfolioName, T.ticker
+      ORDER BY totalValue ASC
+    `);
 
-    return result.recordset;
-  } catch (err) {
-    console.error("Error in getTopTotalValues:", err.message);
-    return [];
+  return result.recordset;
   }
-}
 }
 
 
