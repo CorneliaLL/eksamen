@@ -1,32 +1,37 @@
-<!--EJS file to give user an overview of all their accounts + create account-->
+<!--EJS filen viser oversigt over brugerens konti og giver mulighed for at oprette nye konti-->
 <html lang="en">
 <%- include ('./partials/head.ejs') %>
 
-<!--link to dashboard stylesheet-->
+<!--link til dashboard stylesheet-->
 <link rel="stylesheet" href="dashboard.css">
 
 <body>
   <div class="layout">
-    <!--main content-->
     <%- include ('./partials/nav.ejs') %>
     <div class="container">
+      <!-- Titel-sektion-->
     <div class="containerTitle">
         <h1>Welcome to your account overview</h1> <!--gets username from database-->
     </div>
+    <!--Container til kontooversigt-->
     <div class="accountContainer">
     <div class="accountBox">
+      <!--Knappen til oprettelse af ny konto-->
       <form action="/createAccount" method="GET">
       <button class="createNewAccountBtn">Create new account</button>
       </form>
+      <!--Overviewtitel til accounts-->
       <h2>My accounts</h2>
+      <!-- If statesment til hvis brugeren har konti-->
       <% if (accounts && accounts.length > 0) { %>
         <ul>
           <% accounts.forEach(account => { %>
             <li>
-
+              <!--Link til kontoens dashboard og viser balance, valuta og status-->
               <a href="/account/<%= account.accountID %>"><strong><%= account.accountName %></strong></a><br>
               Balance: <%= account.balance %> <%= account.currency %><br>
               Status: <%= account.accountStatus ? "Active" : "Inactive" %>
+              <!--Hvis konto er aktiv, vises deaktiveringsknap-->
               <% if (account.accountStatus) { %>
                 <div class="deactivateForm">
                 <form action="/account/deactivateAccount/<%= account.accountID %>" method="POST">
@@ -34,10 +39,11 @@
                 </form>
                 </div>
                 <% } %>
-
+                <!--Hvis konto er inaktiv og har en deaktiveringsdato, vises den-->
               <% if (!account.accountStatus && account.deactivationDate) { %>
                 Deactivated on: <%= new Date(account.deactivationDate).toLocaleString() %>
               <% } %>
+              <!--Hvis konto er inaktiv, vises mulighed for genaktivering med reactivate-knap-->
               <% if (!account.accountStatus) { %>
                 <div class="reactivateForm">
                   <form action="/account/reactivateAccount/<%= account.accountID %>" method="POST">
@@ -49,7 +55,7 @@
             </li>
           <% }); %>
         </ul>
-
+          <!--Hvis der ikke findes konti, vises fejlbesked-->
       <% } else { %>
         <p>No accounts found.</p>
       <% } %>
