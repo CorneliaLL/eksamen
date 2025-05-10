@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
     const canvas = document.getElementById("pieChart");
-    if (!canvas) return; // beskyt mod fejl
+    if (!canvas) return; 
     const ctx = canvas.getContext("2d");
     
     new Chart(ctx, {
@@ -21,11 +21,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     labels: {
                         color: 'white'
                     }
-                },
-                title: {
-                    display: true,
-                    text: 'Portfolio distribution',
-                    color: 'white'
                 }
             }
             }   
