@@ -5,6 +5,7 @@ class Banks {
     this.bankID = bankID;
             this.bankName = bankName;
         }
+      //Metode der henter alle banker fra databasen
         static async getBanks() {
           const pool = await connectToDB();
         
@@ -13,10 +14,11 @@ class Banks {
               SELECT bankID, bankName
               FROM Banks
               `);
-              
+            //Returnerer hele listen af bankerne med deres bankID og bank navn
               return result.recordset;
           }
 
+          //Henter en bank i databasen ved at matche bankID
           static async findBankByName(bankName) {
             const pool = await connectToDB();
             const result = await pool.request()

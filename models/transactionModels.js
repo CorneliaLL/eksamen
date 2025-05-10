@@ -9,12 +9,13 @@ class Transaction {
     this.transactionDate = transactionDate;
   }
 
-    // Registrer en ny transaction i databasen og opdater kontobalancen 
+    // Registrer en ny transaktion i databasen og opdater kontobalancen 
+    //TransactionDate = new Date() så den sættes som nuværende dato og tid
     static async registerTransaction({ accountID, tradeID, amount, transactionDate = new Date() }) {
       try {
         const pool = await connectToDB();
   
-        // Indsætter en ny række i Transactions-tabellen
+        //Tilføjer en ny række i Transactions-tabellen med de givne værdier
         await pool.request()
           .input("accountID", sql.Int, accountID)
           .input("tradeID", sql.Int, tradeID)
@@ -40,7 +41,7 @@ class Transaction {
       }
     }
   
-    // Henter alle transaktioner for en given konto
+    //Metode som henter alle transaktioner for en given konto
     static async getTransactions(accountID) {
       try {
         const pool = await connectToDB();
@@ -57,7 +58,7 @@ class Transaction {
               Trades.ticker, 
               Trades.tradeType
             FROM Transactions
-            LEFT JOIN Trades ON Transactions.tradeID = Trades.tradeID -- LEFT JOIN får alle transaktioner, både trades og almindelige
+            LEFT JOIN Trades ON Transactions.tradeID = Trades.tradeID -- LEFT JOIN får alle transaktioner, også dem uden tilknyttede handler (null-værdi)
             WHERE Transactions.accountID = @accountID
             ORDER BY Transactions.transactionDate DESC -- Sorterer så nyeste transaktioner kommer først
           `);
