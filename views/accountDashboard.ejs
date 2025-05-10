@@ -1,44 +1,50 @@
 <html lang="en">
 <%- include ('./partials/head.ejs') %>
 
-<!--link to dashboard stylesheet-->
+<!--link til dashboard stylesheet-->
 <link rel="stylesheet" href="/dashboard.css">
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Import Chart.js -->
+<!-- Importerer Chart.js og omformaterer dato -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script> 
 <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
 
-<!--<script src="/js/pieChart.js"></script>  -->
-<script src="/js/pieChart.js"></script> <!-- Dit JS -->
+<!--Importerer Pie Chart fra pieChart.js filen -->
+<script src="/js/pieChart.js"></script> 
 
 <body>
   <div class="layout">
     <%- include ('./partials/nav.ejs') %>
     <div class="container">
+      <!--Titelsektion-->
       <div class="containerTitle with-button">
         <h1>Account: <%= account.accountName %> </h1>
+        <!--Knap til at oprette portefølje-->
+        <!--GET-metode som sender brugeren videre til en oprettelsesformular-->
         <form action="/createPortfolio" method="GET">
           <button class="createPortfolioBtn">Create portfolio</button>
         </form>
       </div>
-
+    <!--Bruges til grid-container i css-->
     <div class="boxContainer">
     <div class="box valueandprice">
     <div class="box totalValue">
+      <!--Henter Total Value fra controller og til kontoens valuta og sætter til 2 decimaler -->
       <h4>Total value in <%= account.currency %></h4>
         <h4><%= totalAcquisitionPrice.toFixed(2) %> <%= account.currency %></h4>
     </div>
     <div class="box priceChange">
-      <h4>price change</h4>
+      <h4>Price change</h4>
     </div>
     </div>
     <div class="box piechart">
       <h4>Pie chart</h4>
-      <canvas id="pieChart"></canvas>
-      <script src="/js/pieChart.js"></script>
+      <canvas id="pieChart"></canvas> <!--Canvas element hvor grafen vises-->
     </div>
     <div class="balance">
       <h3> Balance: <%= account.balance.toFixed(2) %> <%= account.currency %> </h3>
       <div class="updateBalance">
+      <!--Formular til at indsætte/hæve penge fra kontoen-->
+      <!--POST-metode sender beløb og type til serveren som opdaterer saldo i databasen-->
       <form action="/account/<%= account.accountID %>/transaction" method="POST">
           <label for="amount">Select amount:</label>
           <input type="number" name="amount" id="amount" step="0.01" required />
@@ -55,6 +61,7 @@
     <div class="portfolioList">
       <h2>My portfolios</h2>
       <div class="tableContainer">
+        <!--Laver en table til visning af portefølje detaljer-->
         <table>
           <thead>
             <tr>
@@ -65,6 +72,7 @@
             </tr>
           </thead>
           <tbody>
+            <!--If statement til at tjekke om porteføljer findes-->
             <% if (portfolios && portfolios.length > 0) { %>
               <% portfolios.forEach(portfolio => { %>
                 <tr>
@@ -72,6 +80,7 @@
                   <td><%= portfolio.accountName %></td>
                   <td><%= new Date(portfolio.registrationDate).toLocaleDateString() %></td>
                   <td>
+                    <!--Linker til den enkelte portefølje-->
                     <a href="/portfolio/<%= portfolio.portfolioID %>/<%= account.accountID %>">View</a>
                   </td>
                 </tr>
