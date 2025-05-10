@@ -1,38 +1,24 @@
-//service folder: handles functionality - calls api (stock data) and saves data
+//Service folder: Denne fil henter valutakurder fra ekstern API
+//Axois håndterer automatisk fejl 4xx/5xx og giver direkte data hvorimod fetch bruger json respons manulelt
+const axios = require('axios'); 
 
-const axios = require('axios'); // Hvis vi bruger axios får vi automatisk fejl 4xx/5xx på. Axios giver også direkte data hvorimod fetch bruger json respons manulelt
-const { sql, connectToDB  } = require('../database'); //saves in the SQL database
-
+//Henter og gemmer valutakurs 
 async function storeExchangeRate(fromCurrency, toCurrency) {
-    const apiKey = '6ac9beff21a769655130893e'; // din rigtige nøgle
+    //API-nøgle til exhangerate-API
+    const apiKey = '6ac9beff21a769655130893e';
+    //URL til at hente valutakurser fra en specifik basevaluta
     const url = `https://v6.exchangerate-api.com/v6/${apiKey}/latest/${fromCurrency}`;
 
     try {
+        // Sender GET-req til API
         const response = await axios.get(url);
+        //Gemmer dataobjektet fra svaret
         const data = response.data;
-
-        console.log({data})
         
+        //Henter kursen fra valuta
         const rate = data.conversion_rates[toCurrency];
-        const ticker = `${fromCurrency}${toCurrency}`;
-        console.log({ticker})
-
-        const today = new Date().toISOString().split('T')[0]; 
 
         if (!rate) throw new Error(`Rate not found for ${fromCurrency} to ${toCurrency}`);
-
-        const pool = await connectToDB(); 
-    
-        await pool.request()
-        .input('ticker', sql.NVarChar, ticker)
-        .input('fromCurrency', sql.NVarChar, fromCurrency)
-        .input('toCurrency', sql.NVarChar, toCurrency)
-        .input('rate', sql.Decimal(18, 6), rate)
-        .query(`
-            INSERT INTO ExchangeRates (ticker, fromCurrency, toCurrency, rate)
-            VALUES (@ticker, @fromCurrency, @toCurrency, @rate)
-        `);
-        
         return rate;
     } catch (error) {
         console.error(`Error fetching exchange rate from ${fromCurrency} to ${toCurrency}:`, error);
