@@ -13,7 +13,7 @@ class Banks {
               SELECT bankID, bankName
               FROM Banks
               `);
-            //Returns the whole list
+              
               return result.recordset;
           }
 
@@ -27,9 +27,6 @@ class Banks {
           }
 
 }
-
-  
-  
 
   module.exports = {
     Banks
