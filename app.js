@@ -4,31 +4,27 @@ const app = express()
 const { connectToDB } = require('./database.js');
 
 
-app.use(express.json()) //without this we coukd not return json like we do in the /users  endpoint 
-app.use(express.urlencoded({ extended: true })); //makes it possible to read data from html-formulares
-app.use(express.static("public")); //makes content in public visible and accessible in the browser 
-app.set("view engine", "ejs"); //makes it possible to show dynamic html-pages in ejs 
+//Middleware setup
+//Gør det muligt at parse JSON og form data fra requests
+app.use(express.json()) 
+app.use(express.urlencoded({ extended: true })); 
+//Gør det muligt at se css og js-filer i browseren
+app.use(express.static("public")); 
+//Sætter EJS som view engine, så vi kan bruge EJS til at generere HTML
+app.set("view engine", "ejs");  
 
-//Configure session middleware
+
+//Oprettelse af session - så vi holder brugeren logget ind 
 app.use(
     session({
-        secret: "token", //ret?
-        resave: false, //Prevents resaving session if nothing has changed
-        saveUninitialized: false, //DEn her skal måske ændres til false UNDERSØG
+        secret: "wiqpghwrg34u3hn", //Hemmelig nøgle til at gemme sessionen
+        resave: false, 
+        saveUninitialized: false, 
         cookie: { secure: false, maxAge: 24 * 60 * 60 * 1000 * 100000 },
     })
 );
 
-//Routes
-const userRoutes = require('./routes/userRoute.js');
-//const dashboardRoutes = require('./routes/dashboardRoute.js');
-const accountRoutes = require('./routes/accountRoute.js');
-const portfolioRoutes = require("./routes/portfolioRoute.js");
-const stockRoutes = require('./routes/stockRoute.js');
-const tradeRoutes = require('./routes/tradeRoute.js');
-const transactionRoutes = require('./routes/transactionRoute');
-
-
+//Brugt til test af session (kun brugt til udvikling)
 app.get('/test-session', (req, res) => {
     if (!req.session.testdata) {
       req.session.testdata = "Hello, session!";
@@ -38,13 +34,16 @@ app.get('/test-session', (req, res) => {
     }
   });
 
-//welcome page for login/signup 
+
+//Standard route for at vise forsiden
 app.get("/", (req, res) => {
     res.render("index", { msg: "Welcome" });
 });
 
-
- //Isn't functional when we put it in userRoute.js, so for our log out to work we have put the endpoint here 
+//Isn't functional when we put it in userRoute.js, so for our log out to work we have put the endpoint here 
+//Log ud route.
+//Placeret her fordi den ikke fungerede i userRoute 
+//Sletter sessionen og vidersender til forsiden
 app.get("/logout", (req, res) => {
 req.session.destroy((err) => {
     if (err) {
@@ -56,7 +55,15 @@ req.session.destroy((err) => {
 });
 
 
+//Importering af routes
+const userRoutes = require('./routes/userRoute.js');
+const accountRoutes = require('./routes/accountRoute.js');
+const portfolioRoutes = require("./routes/portfolioRoute.js");
+const stockRoutes = require('./routes/stockRoute.js');
+const tradeRoutes = require('./routes/tradeRoute.js');
+const transactionRoutes = require('./routes/transactionRoute');
 
+//Tilknytter vores routes til endpoints
 app.use('/user', userRoutes);
 app.use('/', accountRoutes);
 app.use("/", portfolioRoutes);
@@ -65,8 +72,7 @@ app.use('/', tradeRoutes);
 app.use('/', transactionRoutes); 
 
 
-
-//port 3000
+//Starter serveren og opretter forbindelse til database
 app.listen(3000, async () => {
   await connectToDB(); 
   console.log('Server is running on http://localhost:3000');

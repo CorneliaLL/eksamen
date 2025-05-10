@@ -13,7 +13,7 @@ class Account {
     this.deactivationDate = deactivationDate;
   }
 
-  // Insert a new account into the database
+ 
 async createNewAccount({ userID, accountName, currency, balance, registrationDate, accountStatus, bankID }) {
   const pool = await connectToDB();
 
@@ -31,13 +31,14 @@ async createNewAccount({ userID, accountName, currency, balance, registrationDat
     `);
 }
 
-// set accountStatus to 0 for deactivating
+//Sætter accountStatus lig 0 (false) så kontoen er deaktiveret
+//Sætter deactivationDate til den nuværende dato og tid med datetime
 static async deactivateAccount(accountID, deactivationDate) {
   const pool = await connectToDB();
 
   return await pool.request()
     .input("accountID", sql.Int, accountID)
-    .input("deactivationDate", sql.DateTime, deactivationDate) // Set current date and time
+    .input("deactivationDate", sql.DateTime, deactivationDate) 
     .query(`
       UPDATE Accounts
       SET accountStatus = 0,
@@ -46,7 +47,8 @@ static async deactivateAccount(accountID, deactivationDate) {
     `);
 }
 
-// Set accountStatus to 1 (reactivate the account)
+//Sætter accountStatis lig 1 (true) så kontoen er aktiv
+//Fjerner deactivationDate og sætter den til null
 static async reactivateAccount(accountID) {
   const pool = await connectToDB();
 
@@ -71,8 +73,7 @@ static async findAccountByID(accountID) {
     return result.recordset[0];
 }
 
-//Async function which fetches all accounts from one user from the DB
-//Static method so we can call the method without instantiating an account object
+
 static async getAllAccounts(userID) {
   const pool = await connectToDB();
 
@@ -82,11 +83,12 @@ static async getAllAccounts(userID) {
       SELECT * FROM Accounts
       WHERE userID = @userID
     `);
-  //Returns the whole list
+  //Returnerer alle konti tilhørende en bruger
     return result.recordset;
     
 }
 
+//Opdaterer saldoen på en konto med UPDATE forespørgsel
 static async updateAccountBalance(accountID, changedBalance){
   const pool = await connectToDB();
   
@@ -103,15 +105,3 @@ static async updateAccountBalance(accountID, changedBalance){
 module.exports = {
   Account
 };
-
-
-
-/* 
-createAccount
-funktioner:
-editAccount()
-deactivateAccount
-reopenAccount
-insertAmount
-withdrawAmount
-*/
