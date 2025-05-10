@@ -1,11 +1,13 @@
 //Service folder: Denne fil henter valutakurder fra ekstern API
 //Axois håndterer automatisk fejl 4xx/5xx og giver direkte data hvorimod fetch bruger json respons manulelt
-const axios = require('axios'); 
+const axios = require('axios');
+const dotenv = require('dotenv');
+dotenv.config(); 
 
 //Henter og gemmer valutakurs 
 async function storeExchangeRate(fromCurrency, toCurrency) {
     //API-nøgle til exhangerate-API
-    const apiKey = '6ac9beff21a769655130893e';
+    const apiKey = process.env.ALPHAVANTAGE_API_KEY_EXCHANGE_RATE;
     //URL til at hente valutakurser fra en specifik basevaluta
     const url = `https://v6.exchangerate-api.com/v6/${apiKey}/latest/${fromCurrency}`;
 

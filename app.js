@@ -2,6 +2,8 @@ const express = require("express");
 const session = require("express-session");
 const app = express()
 const { connectToDB } = require('./database.js');
+const dotenv = require('dotenv');
+dotenv.config();
 
 
 //Middleware setup
@@ -17,7 +19,7 @@ app.set("view engine", "ejs");
 //Oprettelse af session - så vi holder brugeren logget ind 
 app.use(
     session({
-        secret: "wiqpghwrg34u3hn", //Hemmelig nøgle til at gemme sessionen
+        secret: process.env.SESSION_SECRET, //Hemmelig nøgle til at gemme sessionen
         resave: false, 
         saveUninitialized: false, 
         cookie: { secure: false, maxAge: 24 * 60 * 60 * 1000 * 100000 },

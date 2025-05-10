@@ -1,8 +1,10 @@
 //Axois håndterer automatisk fejl 4xx/5xx og giver direkte data hvorimod fetch bruger json respons manulelt
 const axios = require('axios');
+const dotenv = require('dotenv'); 
+dotenv.config();
 
 async function fetchStockData(ticker) {
-  const apiKey = 'GYAAYWWHIFGTY73B'; // Alpha Vantage API nøgle
+  const apiKey = process.env.ALPHAVANTAGE_API_KEY_STOCKS; // Alpha Vantage API nøgle
   //API-endpoint til daglige priser
   const priceUrl = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${ticker}&apikey=${apiKey}`;
   //API-endpoint til aktiens beskrivelse (navn, valuta, type)

@@ -1,10 +1,12 @@
 //configures with mssql:
 const sql = require("mssql")
+const dotenv = require('dotenv');
+dotenv.config();
 
 //Variable which creates connection between our app and our database
 const config = {
     user: "celina",
-    password: "Fes65pkj",
+    password: DB_PASSWORD,
     server: "invest-app.database.windows.net",
     database: "invest-app",
     options: {

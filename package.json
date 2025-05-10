@@ -4,7 +4,8 @@
   "main": "app.js",
   "scripts": {
     "dev": "nodemon app.js",
-    "test": "mocha"
+    "test": "mocha",
+    "eksamen": "npm install && node app.js"
   },
   "keywords": [],
   "author": "",
