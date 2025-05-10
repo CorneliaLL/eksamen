@@ -8,41 +8,41 @@ const { describe, it, beforeEach, afterEach } = require('mocha'); // Mocha test-
 describe('login functionality', () => {
     let req, res;
 
-    // Før hver test laves nye req og res objekter med stub-funktioner
+    //før hver test laves nye req og res objekter med stub funktioner
     beforeEach(() => {
         req = {
-            body: {},     // Bruges til at sende username og password i testen
-            session: {}   // Simulerer session-objektet
+            body: {}, //bruges til at sende username og password 
+            session: {} //simulerer session objektet
         };
 
         res = {
-            status: sinon.stub().returnsThis(),  // Gør det muligt at kæde fx .status(401).render()
-            render: sinon.stub(),                // Stub til at teste visning af sider
-            redirect: sinon.stub()               // Stub til at teste redirect ved succes
+            status: sinon.stub().returnsThis(), //bruges til at kæde res metoder sammen
+            render: sinon.stub(), //stub til at teste visning af sider
+            redirect: sinon.stub() //stub til at teste redirect ved succes
         };
     });
 
-    // Rydder op efter hver test, så ingen stubs påvirker andre tests
+    //rydder op efter hver test så stubs fra tidligere tests ikke påvirker andre tests
     afterEach(() => {
         sinon.restore();
     });
 
-    // Testgruppe for fejlsituationer ved login
+    //fejlsituationer ved login
     describe('Invalid login', () => {
 
-        // Test: Bruger eksisterer ikke → forvent 404 og vis fejlbesked
+        //test1: Bruger eksisterer ikke
         it('should return 404 and show "User not found"', async () => {
             req.body = { username: 'unknown', password: 'test123' };
 
-            // Stubber brugersøgning til at returnere null (bruger ikke fundet)
+            //stubber til at returnere null - bruger ikke fundet
             sinon.stub(User, 'findUserByUsername').resolves(null);
 
             await login(req, res);
 
-            // Tjek at status 404 blev sendt
+            //tjekker at status 404 blev sendt
             expect(res.status.calledWith(404)).to.be.true;
 
-            // Tjek at login-siden vises med korrekt fejlbesked
+            //tjek at login siden viser korrekt fejlbesked
             expect(res.render.calledWith('login', { error: 'User not found' })).to.be.true;
         });
 
@@ -81,10 +81,10 @@ describe('login functionality', () => {
 
             await login(req, res);
 
-            // Forventer at userID gemmes i session
+            //forventer at userID gemmes i session når login er succesfuldt
             expect(req.session.userID).to.equal(1);
 
-            // Forventer redirect til dashboard
+            //forventer redirect til dashboard
             expect(res.redirect.calledWith('/dashboard')).to.be.true;
         });
     });

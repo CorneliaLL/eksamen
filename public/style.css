@@ -61,7 +61,7 @@ form {
     margin-top: -50px;
   }
 
-  /**error message for password/
+  /**styling for error message for password/
 /* Styling wrapper for input elements, including label and error message */
 .input-group {
   color: #333; /* Sets text color to dark gray for improved readability */
@@ -100,30 +100,5 @@ label {
   margin: 5px 0 0; /* Adds top spacing between input and error message */
 }
 
-/* Changes label color when input group has validation errors */
-.input-group.error label {
-  color: #cc0033; /* Inherits standard error red for label text */
-}
-
-/* Applies error styling to input field when validation fails */
-.input-group.error input {
-  background-color: #fce4e4; /* Light red background indicating error state */
-  border: 1px solid #cc0033; /* Prominent red border for visual error cue */
-  outline: none; /* Removes default focus outline for custom styling */
-}
-
 /* Source: https://sarahholleydesign.com/pure-css-custom-error-messaging-for-default-form-elements */
-
-
-
-
-.up {
-  color: #00cc66; /* grøn */
-  font-weight: bold;
-}
-
-.down {
-  color: #ff3333; /* rød */
-  font-weight: bold;
-}
 

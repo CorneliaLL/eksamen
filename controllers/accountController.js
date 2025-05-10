@@ -1,16 +1,18 @@
 const { Account } = require("../models/accountModels");
 const { Banks } = require("../models/bankModels");
 
-async function fetchBanks(req, res) {
+// Henter alle banker fra databasen, som bruges til dropdown i UI
+async function fetchBanks() {
   try {
-    const banks = await Banks.getBanks(); // Fetch all banks from the database
-    return banks; // Return the list of banks
+    const banks = await Banks.getBanks();
+    //Returnerer banklisten til kaldende funktion 
+    return banks;
   } catch (err) {
-    console.error("Error fetching banks:", err.message);
     throw new Error("Failed to fetch banks");
   }
 }
 
+//Viser formularen til at oprette en ny konto
 async function renderCreateAccount(req, res) {
   try {
     const userID = req.session.userID;
@@ -18,88 +20,81 @@ async function renderCreateAccount(req, res) {
 
     res.render('createAccount');
   } catch (err) {
-    console.error(err.message);
     res.status(500).send("Failed to fetch accounts");
   }
 }
 
-// Create a new account
+// Opretter en ny konto baseret på brugerens input 
 async function createAccount(req, res) {
   try {
+    //Henter form-data fra brugerens req (POST)
     const { accountName, currency, balance, bankName } = req.body;
-    const userID = req.session.userID; //Accessing userID from session
+    const userID = req.session.userID;
     const registrationDate = new Date();
-    const accountStatus = true;
+    const accountStatus = true; //Kontoen oprettes som aktiv 
 
     if (!userID) {
       return res.status(401).send("Unauthorized");
     }
 
-    // Fetch all banks and validate the bankID
-    //const banks = await findBankByName(bankName);
+ 
+    //Validerer at den angivne bank eksisterer
     const validBank = await Banks.findBankByName(bankName);
     if (!validBank) {
       return res.status(400).send("Invalid bank ID");
     }
 
-    // Extract bankID from the bank chosen by user, so we can use it in createNewAccount function
+    // Henter bankID fra  valideret objekt 
     const bankID = validBank.bankID;
+    //Opretter et nyt instans af account og kalder metoden til at gemme det
     const account = new Account(null, userID, accountName, currency, balance, registrationDate, accountStatus, bankID, null);
     await account.createNewAccount();
 
     res.redirect("/account"); // After creating account go back to overview
   } catch (err) {
-    console.error("Error creating account:", err.message);
-    res.status(500).send("Failed to create account");
+   res.status(500).send("Failed to create account");
   }
 }
 
-// Show list of all accounts
+// Viser alle konti for den enkelte bruger
 async function getAccounts(req, res) {
     try {
-      console.log("Session data:", req.session); // Debugging: Check session data
-      const userID = req.session.userID; // Accessing userID from session
+      const userID = req.session.userID;
 
-      //Check if the userID is set in the session
-      //If not it will return 401 error
       if (!userID) {
         return res.status(401).send("Unauthorized");
       }
-      //Fetch all accounts for the user
+      
+      //Henter alle konti tilknyttet brugeren 
       const accounts = await Account.getAllAccounts(userID);
-      console.log("Fetched accounts:", accounts);
       res.render("account", { accounts });
     } catch (err) {
       res.status(500).send("Failed to fetch accounts");
     }
   }
 
-//Async function that fecthes the accountID from the database
+//Henter detaljer om en specifik konto baseret på ID
 async function getAccountByID(req, res){
     try{
-      const accountID = req.params.accountID;
+      const accountID = req.params.accountID; //Henter konto-ID fra URL
       const account = await Account.findAccountByID(accountID);
       if (!account) {
           return res.status(404).json({ error: "Account not found" });
       } else {
 
-          //change to res.render
           res.render("accountDashboard", { 
             account, 
             portfolios: req.portfolios, 
-            totalAcquisitionPrice: req.totalAcquisitionPrice,
-            labels: ['AAPL', 'MSFT'],
-            values: [50, 50] 
+            totalAcquisitionPrice: req.totalAcquisitionPrice
           });
       } 
 
     } catch (err) {
-      console.error("Error in getAccountByID", err);
       res.status(500).json({ error: "Server error" });
     }
 }
   
-  // Deactivate an account (set status = 0)
+// Deaktiverer en konto. Sætter konto status til 0
 async function handleDeactivateAccount(req, res) {
     try {
       const { accountID } = req.params;
@@ -107,57 +102,21 @@ async function handleDeactivateAccount(req, res) {
       await Account.deactivateAccount(accountID, deactivationDate);
       res.redirect("/account");
     } catch (err) {
-      console.error("Error deactivating account:", err.message);
       res.status(500).send("Failed to deactivate account");
     }
   }
   
-  // Reactivate a deactivated account (set status = 1)
+ //Genaktiverer konto ved at sætte status til 1
 async function handleReactivateAccount(req, res) {
     try {
       const { accountID } = req.params;
       await Account.reactivateAccount(accountID);
       res.redirect("/account");
     } catch (err) {
-      console.error("Error reactivating account:", err.message);
       res.status(500).send("Failed to reactivate account");
     }
   }
 
- /* //NOT DONE YET mangler ordentlig redirect
-async function handleUpdateAccountBalance(req, res){
-  try{
-    const { accountID } = req.params;
-    //ADD INPUTS IN EJS THAT CORRELATES
-    const { amount, type } = req.body;
-
-    const account = await Account.findAccountByID(accountID);
-    if (account.accountStatus === false) {
-      return res.status(403).send("Cannot update balance for a deactivated account");
-    }
-    const updatedBalance = parseFloat(amount);
-
-    //Checks and validates that the amount is a number and is greater than 0
-    if (isNaN(updatedBalance) || updatedBalance <= 0) {
-      return res.status(400).send("Invalid amount provided.");
-    }
-
-    if (type === "deposit"){
-      await Account.updateAccountBalance(accountID, updatedBalance)
-    } else if (type === "withdrawal"){
-      await Account.updateAccountBalance(accountID, -updatedBalance)
-    } else {
-      return res.status(400).send("Invalid transaction type. Must be 'deposit' or 'withdraw'.");
-    } 
-    res.redirect(`/account/${accountID}`);
-    }catch (err) {
-    console.error("Error updating account balance:", err.message);
-    res.status(500).send("Failed to update account balance");
-  }
-}*/
-
-  //Create functions about inserting amount on accounts
-  //Withdrawal, plus making transfers not possible on deactivated accounts
 module.exports = {
   fetchBanks,
   renderCreateAccount,

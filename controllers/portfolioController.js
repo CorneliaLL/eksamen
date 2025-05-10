@@ -9,25 +9,23 @@ async function getPortfolios(req, res, next) {
     if (!userID) return res.status(401).send("Unauthorized");
 
     const accountID = req.params.accountID ? parseInt(req.params.accountID, 10) : null;
-
     let portfolios = await Portfolio.getAllPortfolios(userID);
 
     if (accountID) {
-      console.log("Account ID fra URL:", accountID);
-      console.log("Account IDs i portfolios:", portfolios.map(p => p.accountID));
-      portfolios = portfolios.filter(p => p.accountID === accountID);
+      portfolios = portfolios.filter(p => p.accountID === accountID); // filterer efter 
     }
-
+    
     let totalAcquisitionPrice = 0;
     let totalRealizedValue = 0;
     let totalUnrealizedGain = 0;
 
     // Beregning af anskaffelsespris, realiseret værdi og urealiseret gevinst for hver portfølje 
+    //For-loop gennem hver portefølje for beregningerne 
     for (const p of portfolios) {
       p.acquisitionPrice = await Portfolio.calculateAcquisitionPrice(p.portfolioID);
       totalAcquisitionPrice += p.acquisitionPrice || 0;
 
-    //Looper gennem holdings for at beregne realiseret værdi og urealiseret gevinst
+    //Henter holdings i porteføljen og looper igennem for at beregne totalerne
     const holdings = await Portfolio.getHoldings(p.portfolioID);
     for (const h of holdings) {
       totalRealizedValue += h.realizedValue || 0;
@@ -36,13 +34,7 @@ async function getPortfolios(req, res, next) {
     
     }
 
-    console.log("User portfolios:", portfolios);
-    console.log("Acquisition:", totalAcquisitionPrice);
-    console.log("Realized:", totalRealizedValue);
-    console.log("Unrealized:", totalUnrealizedGain);
-
-
-    // Tilføj beregnede værdier til portføljerne for at vise dem i UI
+    // Gemmer resultaterne i req-objekt til brug i UI
     req.portfolios = portfolios;
     req.totalAcquisitionPrice = totalAcquisitionPrice;
     req.totalRealizedValue = totalRealizedValue;
@@ -50,50 +42,48 @@ async function getPortfolios(req, res, next) {
 
     next(); // Bruger next() til at gå videre til næste route-handler 
   } catch (err) {
-    console.error(err.message);
     res.status(500).send("Failed to fetch portfolios");
   }
 }
 
 
-// Vis portfølje med ID for detaljeret portfolio-side
+// Henter information om specifik portefølje
 async function getPortfolioByID(req, res) {
   try {
     const userID = req.session.userID;
     if (!userID) return res.status(401).send("Unauthorized");
 
+    // Henter portefølje og kontoID fra URL
     const { accountID, portfolioID } = req.params;
 
+    //Henter portefølje baseret på ID
     const portfolio = await Portfolio.findPortfolioByID(portfolioID);
     if (!portfolio)
       return res.status(404).send("Portfolio not found"); // returnerer 404 hvis porteføljen ikke findes 
 
-    console.log(portfolio);
-
-    const account = await Account.findAccountByID(accountID); // Henter konto med den bestemte accountID
-    console.log(account);
+    //Henter konto knyttet til porteføljen 
+    const account = await Account.findAccountByID(accountID);
 
     if (!account) {
-      console.log("Account not found for ID:", accountID);
       return res.status(404).send("Account not found");
     }
 
-    const holdings = await Portfolio.getHoldings(portfolioID); // Henter alle holdings for den bestemte portefølje
-    const acquisitionPrice = await Portfolio.calculateAcquisitionPrice(portfolioID); // Henter anskaffelsesprisen for porteføljen
+    // Henter alle holdings og anskaffelsesprisen for den bestemte portefølje
+    const holdings = await Portfolio.getHoldings(portfolioID); 
+    const acquisitionPrice = await Portfolio.calculateAcquisitionPrice(portfolioID);
 
     let totalRealizedValue = 0;
     let totalUnrealizedGain = 0;
 
-    // Loop through holdings to compute realized and unrealized values
     // looper gennem holdings for at beregne realiseret værdi og urealiseret gevinst
-    // tilføjer værdierne til totalRealizedValue og totalUnrealizedGain
     for (const h of holdings) {
-      const expected = await Portfolio.calculateRealizedValue(portfolioID, h.ticker); // Henter den realiserede værdi for hver holding
-      const gain = await Portfolio.calculateUnrealizedGain(portfolioID, h.ticker); // Henter den urealiserede gevinst for hver holding
-      const gak = await Portfolio.calculateGAK(portfolioID, h.ticker); // Henter gennemsnitsanskaffelsesprisen for hver holding (GAK)
-      const priceInfo = await PriceHistory.getPriceInfo(h.ticker); // TILFØJET: Henter prisinfo fra PriceHistory 
-      const dbStock = await Stocks.findStockByTicker(h.ticker); // TILFØJET: Henter tickerInfo
+      const expected = await Portfolio.calculateRealizedValue(portfolioID, h.ticker);
+      const gain = await Portfolio.calculateUnrealizedGain(portfolioID, h.ticker); 
+      const gak = await Portfolio.calculateGAK(portfolioID, h.ticker); 
+      const priceInfo = await PriceHistory.getPriceInfo(h.ticker);
+      const dbStock = await Stocks.findStockByTicker(h.ticker); 
 
+      // tilføjer værdierne til totalRealizedValue og totalUnrealizedGain i holdings
       h.realizedValue = expected !== null ? expected : 0; 
       h.unrealizedGain = gain !== null ? gain : 0;
       h.gak = gak !== null ? gak : 0;
@@ -106,8 +96,7 @@ async function getPortfolioByID(req, res) {
       totalUnrealizedGain += h.unrealizedGain;
     }
 
-    // render portefølje med alle holdings og deres værdier 
-    console.log("Holdings:", holdings);
+    // render portefølje med alle holdings og deres værdier
     res.render("portfolio", {
       portfolio,
       holdings,
@@ -118,70 +107,63 @@ async function getPortfolioByID(req, res) {
       stockID: holdings.stockID
     });
   } catch (err) {
-    console.error(err.message);
     res.status(500).send("Failed to fetch portfolio");
   }
 }
 
-// Vis oprettelsesformular for ny portefølje 
-// Henter alle konti for den pågælgende bruger for at kunne vælge en konto til porteføljen 
+// Render oprettelsesformular for ny portefølje 
 async function renderCreatePortfolio(req, res) {
   try {
     const userID = req.session.userID;
     if (!userID) return res.status(401).send("Unauthorized");
 
+    // Henter alle konti for den pågælgende bruger for at kunne vælge en konto til porteføljen 
     const accounts = await Account.getAllAccounts(userID);
     res.render('createPortfolio', { accounts });
   } catch (err) {
-    console.error(err.message);
     res.status(500).send("Failed to fetch accounts");
   }
 }
 
 
 // Behandler oprettelse af en ny portfolio, mens renderCreatePortfolio viser formularen
-// Henter kontoID og porteføljenavn fra formularen og opretter en ny portefølje samt registreringsdato
 async function handleCreatePortfolio(req, res) {
   try {
     const userID = req.session.userID;
     if (!userID) return res.status(401).send("Unauthorized");
 
+    // Henter kontoID og porteføljenavn fra formularen og opretter en ny portefølje samt registreringsdato
     const { accountID, portfolioName } = req.body;
     const account = await Account.findAccountByID(accountID);
     if (!account) return res.status(400).send("Invalid account ID");
 
-    const registrationDate = new Date(); // Registreringsdato sættes til nuværende dato
+    //Opretter ny portefølje
+    const registrationDate = new Date(); //Nuværende tidspunkt
     const portfolio = new Portfolio(null, accountID, portfolioName, registrationDate);
     const portfolioID = await portfolio.createNewPortfolio({ accountID, portfolioName, registrationDate });
  
-    res.redirect(`/portfolio/${portfolioID}`); // Redirect til den oprettede portefølje 
+    // Redirect til den oprettede portefølje 
+    res.redirect(`/portfolio/${portfolioID}`);
   } catch (err) {
-    console.error(err.message);
     res.status(500).send("Failed to create portfolio");
   }
 }
 
 
-// Henter grafdata for porteføljen baseret på porteføljeID
+// Henter grafdata for porteføljens udvikling over tid baseret på porteføljeID 
 async function getPortfolioGraphData(req, res) {
   const { portfolioID } = req.params;
   try {
+    //Henter historiske priser for alle aktier i porteføljen
     const raw = await Portfolio.getAllStocksPriceHistory(portfolioID);
 
-    // get users portfolio
     const holdings = await Portfolio.getHoldings(portfolioID);
 
-    console.log({holdings})
 
-
-
-    // now we have price histor AND portfoio
-    // Give me an agrugated history of the portfolio
-
-
-    // Gruppér data efter ticker
+    // Opretter en liste af prisændringer over tid 
     const seriesMap = {};
 
+    //Oversætter månedskoder til navne 
     const months = {
       "2025-01": "January",
       "2025-02": "Febuary",
@@ -191,6 +173,7 @@ async function getPortfolioGraphData(req, res) {
       "2025-06": "June",
     }
 
+    // Organiserer prisdata i seriesMap efter ticker
     raw.forEach(row => {
       const ticker = row.ticker;
       if (!seriesMap[ticker]) seriesMap[ticker] = [];
@@ -203,7 +186,6 @@ async function getPortfolioGraphData(req, res) {
     });
 
     const monthOrder = ["January", "Febuary", "March", "April", "May", "June"];
-    const monthKeys = Object.keys(months); // ["2025-01", "2025-02", ..., "2025-06"]
     
     let resultArray = []
     holdings.forEach(holding => {
@@ -216,8 +198,6 @@ async function getPortfolioGraphData(req, res) {
     
         if (!monthName) return;
     
-        // If we divide value by the number og days in THAT month the value will actually make sense
-        //need to know the days of very month to do it. not in the middle of the month
         const value = holding.quantity * entry.price;
     
         if (!monthlyAggregate[monthName]) {
@@ -227,18 +207,14 @@ async function getPortfolioGraphData(req, res) {
         monthlyAggregate[monthName] += value;
       });
     
-      // Create positional array
+      // Oprette en array hvor hver position svarer til en månedsværdi 
       resultArray = monthOrder.map(month => monthlyAggregate[month] || 0);
+      });
     
-      console.log(`Positional monthly values for ${holding.ticker}:`, resultArray);
-    });
-    
-
+    // Returnerer data i jsonformat 
     return res.json(resultArray)
 
-    res.json(seriesMap); // fx { AAPL: [...], MSFT: [...] }
   } catch (err) {
-    console.error('Fejl i grafdata:', err);
     res.status(500).json({ error: 'Serverfejl' });
   }
 }

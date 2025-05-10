@@ -9,7 +9,7 @@ async function showTransactions(req, res) {
     const transactions = await Transaction.getTransactions(accountID); //Henter alle transactioner for den givne konto
     const account = await Account.findAccountByID(accountID); // Henter konto info for den givne konto
   
-    // renderer 'transactions' view og sender alle hentede trasactioner
+    // renderer transactions view og sender alle hentede trasactioner
     res.render("transactions", { transactions, account });
 
   } catch (err) {
@@ -49,9 +49,5 @@ async function handleAccountTransaction(req, res) {
     res.status(500).send("Failed to update account balance");
   }
 }
-
-//Evt få det sendt til account ejs fil frem for portfolio
-//Få det indsat direkte i account ejs filen frem for at have seperate ejs fil
-//På den måde cutter vi ned på antallet af ejs filer og gør det mere overskueligt
 
 module.exports = { showTransactions, handleAccountTransaction };
