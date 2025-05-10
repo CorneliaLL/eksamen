@@ -1,34 +1,36 @@
 <html lang="en">
 <%- include ('./partials/head.ejs') %>
 
-<!--link to dashboard stylesheet-->
+<!-- Linker til dashboard stylesheet -->
 <link rel="stylesheet" href="/dashboard.css">
 
 <body>
-  <div class="layout">
-    <!--main content-->
-    <!--nav-->
+  <div class="layout"> <!-- Wrapper til hele layoutet -->
     <%- include ('./partials/nav.ejs') %>
+    <!-- Main content-container -->
     <div class="container">
-      <!--title-->
+      <!-- Titel på dashboardet -->
       <div class="containerTitle">
         <h1>Dashboard</h1>
       </div>
 
-      <!-- Summary value boxes -->
+      <!-- Container -->
       <div class="summaryRow">
+        <!-- Total Acquisition Price -->
         <div class="summaryBox">
           <div class="summaryHeader">Total Value</div>
           <div class="summaryAmount">
             <%= typeof totalAcquisitionPrice !== 'undefined' ? totalAcquisitionPrice.toFixed(2) : '0.00' %>
           </div>
         </div>
+        <!-- Total Realized Value -->
         <div class="summaryBox">
           <div class="summaryHeader">Total Realized Value</div>
           <div class="summaryAmount">
             <%= typeof totalRealizedValue !== 'undefined' ? totalRealizedValue.toFixed(2) : '0.00' %>
           </div>
         </div>
+        <!-- Total Unrealized Gain -->
         <div class="summaryBox">
           <div class="summaryHeader">Total Unrealized Gain</div>
           <div class="summaryAmount">
@@ -38,7 +40,7 @@
       </div>
 
       <!-- Top 5 Unrealized Gains (baseret på profit) -->
-      <div class="valueBoxContainer">
+      <div class="valueBoxContainer"> <!-- Flex/grid-container til to bokse -->
       <div class="valueBox1">
         <h2>Top 5 Unrealized Gains</h2>
         <table>
@@ -56,12 +58,15 @@
                 <tr>
                   <td><%= item.ticker %></td>
                   <td><%= item.portfolioName %></td>
+                  <!-- Får rød/grøn klasse baseret på positiv eller negativ kursændring -->
                   <td class="<%= item.priceInfo && item.priceInfo.dailyChange >= 0 ? 'positive' : 'negative' %>">
+                    <!-- Viser + foran positive ændringer -->
                     <%= item.priceInfo ? (item.priceInfo.dailyChange >= 0 ? '+' : '') + item.priceInfo.dailyChange.toFixed(2) : 'N/A' %> </td>
                   <td><%= item.totalValue.toFixed(2) %> DKK</td>
                 </tr>
               <% }) %>
             <% } else { %>
+              <!-- Hvis der ikke er data -->
               <tr>
                 <td colspan="4">No data available</td>
               </tr>

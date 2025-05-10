@@ -6,47 +6,40 @@ body {
 }
 
 .container {
-  flex-grow: 1;
+  flex-grow: 1; /* Lader container vokse hvis der er plads */
   padding: 40px;
-  max-width: 1400px;
+  max-width: 1400px; /* Begrænser bredde af browser */
   width: 100%;
-  box-sizing: border-box;
+  box-sizing: border-box; /* Inkluder padding og border i width/højde */
   margin: 0 auto;
 }
 
 .layout {
-  display: flex;
-  min-height: 100vh;
-  width: 100vw;
+  display: flex; /* Bruger flexbox til layoutstruktur */
+  min-height: 100vh; /* Fylder hele browserhøjden */
+  width: 100vw; /* Fylder hele browserbredden */
 }
 
 .containerTitle {
   display: flex;
-  text-align: left;
+  text-align: left; /* Tekst justeret til venstre */
   padding: 20px;
 }
 
 .containerTitle.with-button {
-  display: flex;
-  justify-content: space-between;
+  display: flex; /* Flex for at kunne placere button og tekst */
+  justify-content: space-between; /* Titel til venstre og knap til højre */
   align-items: center;
   padding: 20px;
 }
 
 .boxContainer {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: 2fr 1fr; /* To kolonner, venstre dobbelt så bred */
   gap: 20px;
   padding: 20px;
   max-width: 1400px;
   margin: 0 auto;
-  box-sizing: border-box;
-}
-
-.boxContainer {
-  display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: 20px;
   box-sizing: border-box;
 }
 
@@ -82,7 +75,7 @@ h3 {
 }
 
 a {
-  color: white;
+  color: white; /* Alle link href er hvide */
 }
 
 input {
@@ -102,7 +95,7 @@ button {
 
 form {
   display: flex;
-  flex-direction: column;
+  flex-direction: column; /* Formularfelter placeres under hinanden */
   gap: 10px;
   margin-bottom: 2rem;
   width: 300px;

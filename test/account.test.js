@@ -21,7 +21,7 @@ describe('createAccount()', () => {
     };
   });
 
-  // Efter hver test: rydder alle stubs og mocks op
+  // Efter hver test: rydder alle stubs op
   afterEach(() => {
     sinon.restore();
   });
