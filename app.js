@@ -1,10 +1,9 @@
 const express = require("express");
 const session = require("express-session");
 const app = express()
-const cors = require("cors") //middleware package
 const { connectToDB } = require('./database.js');
 
-app.use(cors()) //without we get errors when we get request to the endpoints 
+
 app.use(express.json()) //without this we coukd not return json like we do in the /users  endpoint 
 app.use(express.urlencoded({ extended: true })); //makes it possible to read data from html-formulares
 app.use(express.static("public")); //makes content in public visible and accessible in the browser 
@@ -64,15 +63,7 @@ app.use("/", portfolioRoutes);
 app.use('/stocks', stockRoutes);
 app.use('/', tradeRoutes);
 app.use('/', transactionRoutes); 
-app.use(express.static('public'));
 
-
-//Standard routes
-//endpoint = URL
-//This is a API endpoint bc it returns data and not a html-page 
-app.get("/data", (req, res) => {
-    res.send("hello")
-})
 
 
 //port 3000
