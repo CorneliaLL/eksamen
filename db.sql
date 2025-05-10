@@ -20,13 +20,12 @@ CREATE TABLE Accounts (
   registrationDate DATETIME NOT NULL,
   accountStatus BIT NOT NULL,
   bankID INT NOT NULL,
+  deactivationDate DATETIME NULL,
 
   FOREIGN KEY (userID) REFERENCES Users(userID),
   FOREIGN KEY (bankID) REFERENCES Banks(bankID)
 );
 
-ALTER TABLE Accounts
-ADD deactivationDate DATETIME NULL;
 
 CREATE TABLE Portfolios (
   portfolioID INT PRIMARY KEY IDENTITY(1,1),
@@ -46,6 +45,7 @@ CREATE TABLE Stocks (
     stockCurrency NVARCHAR(100),
     stockName NVARCHAR(100) NOT NULL,
     stockType NVARCHAR(100)NOT NULL;
+
     FOREIGN KEY (portfolioID) REFERENCES Portfolios(portfolioID)
 );
 
@@ -55,8 +55,9 @@ CREATE TABLE Pricehistory (
   stockID INT NOT NULL,
   price DECIMAL (18,4) NOT NULL,
   priceDate DATETIME2 NOT NULL,
-  dailyChange DECIMAL (18,4) NOT NULL,
-  yearlyChange DECIMAL (18,4) NOT NULL
+  dailyChange DECIMAL (18,4),
+  yearlyChange DECIMAL (18,4),
+
   FOREIGN KEY (stockID) REFERENCES [dbo].[Stocks](stockID)
 );
 
@@ -78,34 +79,10 @@ CREATE TABLE Trades (
     FOREIGN KEY (accountID) REFERENCES Accounts(accountID)
 );
 
--- 1. Drop foreign key constraints first
-ALTER TABLE Transactions
-DROP CONSTRAINT FK__Transacti__trade__29221CFB;
-
--- 2. Drop primary key constraint on Trades
-ALTER TABLE Trades
-DROP CONSTRAINT PK__Trades__F7D149FD2A7F9344;
-
--- 3. Drop tradeID column
-ALTER TABLE Trades
-DROP COLUMN tradeID;
-
--- 4. Add tradeID again with IDENTITY and PRIMARY KEY
-ALTER TABLE Trades
-ADD tradeID INT IDENTITY(1,1) PRIMARY KEY;
-
-
-
-ALTER TABLE Trades
-ADD accountID INT NOT NULL;
--- Add a foreign key constraint to link accountID to the Accounts table
-ALTER TABLE Trades
-
-ADD CONSTRAINT FK_Trades_Accounts FOREIGN KEY (accountID) REFERENCES Accounts(accountID);
 
 CREATE TABLE Transactions (
     transactionID INT PRIMARY KEY,
-    tradeID INT NOT NULL,
+    tradeID INT,
     accountID INT NOT NULL,
     amount DECIMAL(18,4) NOT NULL,
     transactionDate DATETIME NOT NULL,
