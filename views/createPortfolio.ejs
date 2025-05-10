@@ -14,9 +14,12 @@
         <h1>Create new portfolio</h1> <!--gets username from database-->
     </div>
         <div class="portfolioForm">
+            <!-- Formular til at oprette en ny portefølje. Sender POST-request til /createPortfolio -->
                 <form action="/createPortfolio" method="POST" class="createPortfolios">
                 <label for="accountName">Select Account:</label>
+                <!-- Dropdown med tilgængelige konti -->
                 <select name="accountID" id="accountID" required>
+                <!-- Hvis accounts findes og ikke er tomt, vis konti -->
                     <% if (typeof accounts !== 'undefined' && accounts.length > 0) { %>
                         <% accounts.forEach(account => { %>
                             <option value="<%= account.accountID %>"><%= account.accountName %> - Balance: <%= account.balance %> <%= account.currency %></option>
@@ -27,6 +30,7 @@
                 </select>
                 <input type="text" name="portfolioName" placeholder="Portfolio name" required />
                 <button type="submit">Create portfolio</button>
+                <!-- Knap til at indsende formularen -->
                 </form>
         </div>
     </div>

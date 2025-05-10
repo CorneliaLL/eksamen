@@ -1,29 +1,30 @@
-<!--EJS file to give user an overview of all their accounts + create account-->
+<!--EJS-fil til visning af brugerens overview -->
 <html lang="en">
 <%- include ('./partials/head.ejs') %>
 
-<!--link to dashboard stylesheet-->
 <link rel="stylesheet" href="/dashboard.css">
 
 <body>
   <div class="layout">
-    <!--main content-->
     <%- include ('./partials/nav.ejs') %>
     <div class="container">
     <div class="containerTitle">
-        <h1>Create new account</h1> <!--gets username from database-->
+        <h1>Create new account</h1>
     </div>
         <div class="accountForm">
+          <!-- Formular der sender POST-request til /createAccount for at oprette en ny konto -->
             <form action="/createAccount" method="POST" class="createAccounts">
                   <input type="text" name="accountName" placeholder="Account name" required />
                   <input type="text" name="currency" placeholder="Currency" required />
                   <input type="number" name="balance" placeholder="Balance" required />
                   <label for="bankName">Select Bank:</label>
+                   <!-- Dropdown-menu til at vælge bank -->
                   <select name="bankName" id="bankName" required>
                     <option value="Danske Bank">Danske Bank</option>
                     <option value="Jyske Bank">Jyske Bank</option>
                     <option value="Nordea">Nordea</option>
                   </select>
+                  <!-- Knap til at indsende formularen -->
                   <button type="Create account">Create account</button>
             </form>
         </div>

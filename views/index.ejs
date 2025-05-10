@@ -6,18 +6,12 @@
 <link rel="stylesheet" href="style.css">
 
 <body>
-
-    <!--links to stylesheet-->
-<link rel="stylesheet" href="/style.css">
-
-<!-- user login formular -->
+<!-- Bruger login formular -->
 <div class="container"> 
-  <% if (typeof msg !== 'undefined' && msg) { %>
     <h1><%= msg %></h1>
-  <% } %>
 
     <h2>Log in</h2>
-    <!-- Login Form -->
+    <!-- Login formular  -->
     <form action="/user/login" method="POST">
     <div class="input-group">
       <input type="text" name="username" placeholder="Username" required />
@@ -25,34 +19,31 @@
     <div class="input-group">
       <input type="password" name="password" placeholder="Password" required />
     </div>
+    <!--Tilføjer submit knap til at indsende formularen-->
       <button type="submit">Login</button>
     </form>
 
-    <!-- Change password link -->
+    <!--Link til ændring af passwordk -->
   <a href="/user/change-password" class="change-password-link">Forgot Password?</a>
 </p>
 
 
     <h2>Sign up</h2>
-    <!-- Signup Form -->
+    <!-- Opretter en signup formular. Sender POST-request til /user/signup-->
     <form action="/user/signup" method="POST">
       <div class="input-group">
         <input type="text" name="name" placeholder="Insert name" required />
       </div>
-  
       <div class="input-group">
         <input type="text" name="username" placeholder="New username" required />
       </div>
-  
       <div class="input-group">
         <input type="text" name="age" placeholder="Insert age" required />
       </div>
-  
       <div class="input-group">
         <input type="text" name="email" placeholder="E-mail" required/>
       </div>
-        
-        <!-- NY password-del -->
+     <!--Sikrer at der bliver tastet gyldige værdier, ellers sendes en fejlbesked-->
     <div class="input-group <%= typeof error !== 'undefined' && error ? 'error' : '' %>">
       <input
         type="password"
@@ -64,23 +55,9 @@
         <div class="error-message"><%= error %></div>
       <% } %>
     </div> 
-
       <button type="submit">Signup</button>
     </form>
-
-  
-    <!-- 
-    <h2>Change password</h2>
-    <form action="/user/change-password" method="POST">
-      <input type="text" name="username" placeholder="Username" required />
-      <input type="password" name="oldPassword" placeholder="Old password" />
-      <input type="password" name="newPassword" placeholder="New password" />
-      <button type="submit">Change Password</button>
-    </form>-->
-
-    <!--adds footer-->
     <%- include('partials/footer') %>
 </div>
-
 </body>
 </html>

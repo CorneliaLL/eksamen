@@ -36,7 +36,6 @@ class Transaction {
             WHERE accountID = @accountID
           `);
       } catch (err) {
-        console.error("Error in registerTransaction:", err.message);
         throw err; 
       }
     }
@@ -65,7 +64,6 @@ class Transaction {
   
         return result.recordset;
       } catch (err) {
-        console.error("Error in getTransactions:", err.message);
         throw err; 
       }
     }

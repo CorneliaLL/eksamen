@@ -18,10 +18,6 @@ class Trade {
     //Metode der opretter en ny handel i databasen
     static async createTrade({ portfolioID, accountID, stockID, ticker, stockName, tradeType, quantity, price, fee, totalPrice, tradeDate }) {
         const pool = await connectToDB();
-
-        console.log("stop")
-        console.log({portfolioID, accountID, ticker, stockName, tradeType, quantity, price, fee, totalPrice, tradeDate})
-
         const result = await pool.request()
             .input("portfolioID", sql.Int, portfolioID)
             .input("accountID", sql.Int, accountID)

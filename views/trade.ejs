@@ -1,4 +1,4 @@
-se di<!-- EJS file to allows user to create a new trade (buy/sell stocks) -->
+<!-- EJS-fil der lader brugeren oprette en ny handel (købe/sælge aktier) -->
 <html lang="en">
 <%- include('./partials/head.ejs') %>
 
@@ -13,41 +13,38 @@ se di<!-- EJS file to allows user to create a new trade (buy/sell stocks) -->
     <div class="containerTitle">
       <h1>Trade Stocks</h1>
     </div>
-
-
     <div class="tradeContainer">
       <div class="tradeBox">
-        <!--search section that allows users to search for a stock by ticker-->
+          <!-- Søgesektion hvor brugeren kan søge efter en aktie med ticker -->
         <div class="search-section">
         <h2>Search Stock</h2> 
 
-        <!--connection to search functionality-->
-        <!--search form. sends post req to /search endpoint-->
+        <!-- Søgeformular: sender POST-request til /trade/:portfolioID/:accountID -->
         <form action="/trade/<%= portfolioID %>/<%= accountID %>" method="POST" id="searchForm">
           <div class="searchContainer">
-            <!--input field for stock ticker-->
+            <!-- Aktie-header med navn og ticker -->
             <input type="text" name="ticker" id="tickerSearch" placeholder="Enter stock ticker (e.g. AAPL for Apple )" required>
             <button type="submit" class="search-button">Search</button>
           </div>
         </form>
       </div>
 
-        <!--stock info section. Only shown if stockData is available from server-->
-        <% if (stockData) { %> <!--checks if stockData exists in the local variables-->
-          <!--værdier fra stockdata sende fra res.render i controlleren-->
-          <div class="stock-card"> <!--card like container for stock info - visuelt-->
-            <div class="stock-header"> <!--shows stock name and ticker-->
+        <!-- Aktiedetaljer: vises kun, hvis stockData er tilgængelig fra serveren -->
+        <% if (stockData) { %>
+          <div class="stock-card"> 
+            <!-- Aktie-header med navn og ticker -->
+            <div class="stock-header">
               <h3><%= stockData.stockName %> (<%= stockData.ticker %>)</h3>
             </div>
-            <!--shows the stock newest current price and currency-->
-            <div class="stock-details"> <!--current price with currency, 24-hour price change, (uses dynamic css classes if price change is positive or negative?)-->
+            <!-- Aktiedetaljer: pris og 24 timers ændring -->
+            <div class="stock-details"> 
               <div class="detail-item"> 
                 <span class="label">Current Price</span>
                 <span class="value"><%= stockData.closePrice %> <%= stockData.stockCurrency %></span>
               </div>
 
-              <!--24 hour price change -->
-              <% if (stockData.priceChange) { %> <!--if price change exist--> <!--Findes priceChange?? Eller skal det være dailyChange-->
+              <!-- 24 timers prisændring med positiv/negativ CSS-klasse -->
+              <% if (stockData.priceChange) { %> 
                 <div class="detail-item">
                   <span class="label">24h Change</span>
                   <span class="value <%= parseFloat(stockData.priceChange) >= 0 ? 'positive' : 'negative' %>"> <!--make pos and neg, green and red with css?-->
@@ -59,29 +56,23 @@ se di<!-- EJS file to allows user to create a new trade (buy/sell stocks) -->
           </div>
           <% } %>
 
-        <!--connection to trade form-->
+        <!-- Trade handel sektion -->
+        <!-- Formular til at udføre handel. Sender POST-request til /trade -->
         <div class="trade-section">
-        <!--trade form section that allows user to execute a trade-->
         <h2>Create Trade</h2>
-        <!--form that sends post req to /trade endpoint with trade info-->
         <form action="/trade" method="POST" class="tradeForm">
-          <!--hidden input to store the selected stock ticker--> 
+          <!-- Skjulte felter til at sende ticker og stockID -->
           <input type="hidden" name="ticker" value="<%= stockData ? stockData.ticker : '' %>"> 
           <input type="hidden" name="stockID" value="<%= stockData ? stockData.stockID : '' %>">
           
-          <!--portfolio selection that user must select which portfolio to trade in-->
           <div class="form-group">
           <label for="portfolioID">Portfolio ID:</label><br>
           <input type="number" id="portfolioID" name="portfolioID" required class="form-input">
           </div>
-
-          <!--account selection that user must select which account to use for the trade-->
           <div class="form-group">
           <label for="accountID">Account ID:</label><br>
           <input type="number" id="accountID" name="accountID" required class="form-input">
         </div>
-
-          <!--trade type selection that user chooses between buy and sell-->
           <div class="form-group">
           <label for="tradeType">Trade Type:</label><br>
           <select id="tradeType" name="tradeType" required class="form-select">
@@ -89,22 +80,12 @@ se di<!-- EJS file to allows user to create a new trade (buy/sell stocks) -->
             <option value="sell">Sell</option>
           </select>
         </div>
-
-          <!--quantity input. Numbers of shares to buy or sell-->
           <div class="form-group">
           <label for="quantity">Quantity:</label><br>
           <input type="number" id="quantity" name="quantity" required class="form-input" min="1">
 
         </div>
-
-        <!--transaction fee skal ikke kunne ændres på side af bruger når der købes en stock-->
-        <!--transaction fee input field with a default value of 0, required by trade controller-->
-        <!--<div class="form-group">
-          <label for="fee">Transaction Fee:</label> <br>
-          <input type="number" id="fee" name="fee" required class="form-input" min="0" step="0.01" value="0">
-        </div>
-      -->
-          <!--submit button. only enabled when a stock has been selected-->
+          <!-- Submit-knap, kun tilgængelig hvis er valgt en aktie -->
           <div class="form-actions">
         <button type="submit" class="submit-button" <%= !stockData ? 'disabled' : ''  %>>Submit Trade</button>
       </div>
