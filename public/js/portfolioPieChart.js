@@ -10,12 +10,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 datasets: [{
                     label: 'Portfolio Distribution',
                     data: [35, 24, 12, 14], // Percentages
-                    backgroundColor: [
-                        '#facc15', // AAPL - yellow
-                        '#3b82f6', // MSFT - blue
-                        '#10b981', // GOOGL - green
-                        '#f97316'  // AMZN - orange
-                        ],
                         borderWidth: 1
                     }]
                 },
