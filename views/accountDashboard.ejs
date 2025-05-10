@@ -12,7 +12,7 @@
 <script src="/js/pieChart.js"></script> 
 
 <body>
-  <div class="layout">
+  <div class="layout"> <!-- Wrapper til hele layoutet -->
     <%- include ('./partials/nav.ejs') %>
     <div class="container">
       <!--Titelsektion-->
@@ -31,9 +31,6 @@
       <!--Henter Total Value fra controller og til kontoens valuta og sætter til 2 decimaler -->
       <h4>Total value in <%= account.currency %></h4>
         <h4><%= totalAcquisitionPrice.toFixed(2) %> <%= account.currency %></h4>
-    </div>
-    <div class="box priceChange">
-      <h4>Price change</h4>
     </div>
     </div>
     <div class="box piechart">

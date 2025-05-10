@@ -92,7 +92,7 @@ class PriceHistory{
         this.yearlyChange = yearlyChange;
     }
 
-    //Metode der gemmer aktiepriser i databasen
+// Gemmer en ny pris i PriceHistory-tabellen men kun hvis den ikke allerede findes (MERGE) da den kører cron-job hver dag
     static async storePriceHistory({stockID, price, priceDate, dailyChange, yearlyChange}) {    
         const pool = await connectToDB();
     
@@ -110,9 +110,10 @@ class PriceHistory{
                 INSERT (stockID, price, priceDate, dailyChange, yearlyChange)
                 VALUES (@stockID, @price, @priceDate, @dailyChange, @yearlyChange);
         `);
-        
+        // MERGE sikrer, at vi ikke indsætter samme dato to gange for samme aktie //kilde
     }
     
+    // Henter den nyeste prisinfo (pris og dagsændring) for en given ticker
     static async getPriceInfo(ticker) {
         const pool = await connectToDB();
         const result = await pool.request()
@@ -124,7 +125,8 @@ class PriceHistory{
             WHERE S.ticker = @ticker
             ORDER BY PH.priceDate DESC
             `);
-        return result.recordset[0];
+        // Returnerer den nyeste pris og ændring for den valgte aktie
+        return result.recordset[0]; // Returnerer første (og eneste) række som objekt
     }
 
 }
