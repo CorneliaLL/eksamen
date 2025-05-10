@@ -1,49 +1,16 @@
-//stockController controls the flow between users req, service and model. Takes in post and get req from browser. 
-//uses services to get data from api, uses models to save and get data from database, sends res to user.
 const cron = require('node-cron');
 const { fetchStockData } = require("../services/fetchStockData.js"); //imports service that gets stockdata from alpha vantage
 const { Stocks } = require("../models/stockModels.js"); //imports stock model (database access)
 const { PriceHistory } = require("../models/stockModels.js");
-const { Portfolio } = require("../models/portfolioModels.js");
-
-//Handles fetching stock data from the API and storing it in our database. Adds new stock to db from aplha vantage api
-async function handleFetchStock(req,res) {//adds new stock to db
-    try { 
-        const { ticker, portfolioID } = req.body; //gets ticker and portfolioID from req body (post)
-        const stockData = await fetchStockData(ticker); //gets stockData from api 
-        
-        const stock = new Stocks (
-        stockData.ticker, //stock ticker
-        stockData.latestDate, //date for latest stock - latest dat kan nemt misforståes og date er datoen for datapunktet
-        portfolioID, //ID for the portfolio stock 
-        stockData.stockName, //stock name
-        stockData.stockCurrency, //eks. DKK
-        stockData.closePrice, //latest closeprice
-        stockData.stockType, //type
-        );
-
-        stock.dailyChange = stockData.dailyChange; // dailyChange er i objektet, men bruges kun midlertidigt, så nedenstående 'await' gemmer ikke daily change i databasen
-
-        await Stocks.storeStock(stock); //saves stock in database 
-        
-        res.status(201).send('Stock saved'); //sends message 
-        } catch (err) { 
-         console.error(err); //send erro message
-         res.status(500).send('error saving stock');
-        }
-    }; //forklaring: følger objekt orienteret (pensum), struktureret, data api til stock model til database, controller styrer flow, service henter data og model gemmer data (mvc struktur)
 
     
-//Used for our search function in frontend
-//Gets specific stock data from our DB for chart view 
+//Henter og viser data til graf for en bestemt aktie 
 async function handleGetStockByTicker(req, res) {
-    const { ticker } = req.params; //gets ticker from url
-    const result = await Stocks.getStockByTicker(ticker);
+    const { ticker } = req.params; //Henter ticker fra URL
 
     try {
-        const stock = new Stocks();
-        const result = await Stocks.getStockByTicker(ticker); //get stocks data from db
- 
+        const result = await Stocks.getStockByTicker(ticker); 
+
         res.render('stockChart', { 
             ticker: ticker,
             dates: result.dates, 
@@ -51,20 +18,16 @@ async function handleGetStockByTicker(req, res) {
         });
     
       } catch (error) { //error message 
-        console.error('Error getting stock data:', error);
         res.status(500).send('Server error');
       }
 }
 
-//handles stock search by ticker from frontend form 
-//håndterer aktiesøgning fra en ticker - bindeled mellem trade.ejs og db
+//Håndterer søgning efter aktie baseret på ticker fra trade-siden
 async function handleStockSearch(req, res) {
     const { ticker } = req.body; // Henter ticker fra POST
     const { portfolioID, accountID } = req.params; // Henter fra URL
   
-    try {
-      console.log(portfolioID, accountID);
-  
+    try {  
       if (!ticker) {
         // Hvis brugeren ikke har indtastet ticker, returnerer den error
         return res.render("trade", {
@@ -76,7 +39,7 @@ async function handleStockSearch(req, res) {
         });
       }
   
-      // Søger i DB efter nyeste version af aktier
+      // Forsøger at finde aktien i databasen
       let dbStock = await Stocks.findStockByTicker(ticker);
   
       // Hvis aktien ikk findes i DB, henter den fra API
@@ -135,17 +98,13 @@ async function handleStockSearch(req, res) {
     }
   }
   
-//renders chart page for a specific stock 
-//handles visualizing of graph for one stock 
+
+//Viser siden til graf (kun ticker, resten hentes i frontend)
 async function showChart(req, res){
     const { ticker } = req.params; // gets ticker from URL
     res.render('stockChart', { ticker }); //sends ticker to ejs 
 };
 
-// Funktion: Opdaterer dailyChange for alle aktier én gang om dagen
-// Henter alle aktier fra DB
-// Bruger fetchStockData() til at hente nyeste data fra Alpha Vantage
-// Beregner dailyChange og gemmer det midlertidigt i stockChanges
 
 // Funktion til at opdatere pris-historikken for alle aktier i databasen
 async function updatePriceHistory() {
@@ -153,11 +112,10 @@ async function updatePriceHistory() {
     // Hent alle aktier fra databasen
     const stocks = await Stocks.getAllStocks();
 
+    //Looper igennem hver aktie, henter nyeste data, beregner ændringer og gemmer 
     for (const stock of stocks) {
-      // Udtræk aktie-ID og ticker-symbol
       const { stockID: stockID, ticker: ticker } = stock;
 
-      // Hent aktiedata fra ekstern API baseret på ticker
       const stockData = await fetchStockData(ticker);
       const changes = stockData.timeSeries;
 
@@ -166,17 +124,10 @@ async function updatePriceHistory() {
         .sort((a, b) => new Date(b) - new Date(a));
         console.log("Sorterede datoer:", stockDates.slice(0, 5));
 
-      // CES comment:
-      // Før loopet over stockDates, bør du filtrere, så kun dagens data behandles (når funktionen bruges som cron job)
-      // Men kald funktionen én gang først uden dette filter for at initialisere historikken
-
       // Loop igennem aktiedata (undtagen sidste indeks for at kunne sammenligne med foregående dag)
       for (let i = 0; i < stockDates.length - 1; i++) {
         const currentDate = stockDates[i];
         const previousDate = stockDates[i + 1];
-        const currentStock = changes[currentDate];
-
-       // console.log(currentStock);
 
         // Udtræk og konverter lukkekurser
         const currentClose = parseFloat(changes[currentDate]['4. close']);
@@ -187,24 +138,12 @@ async function updatePriceHistory() {
         const dailyChangePercent = parseFloat(dailyChange / previousClose) * 100;
 
         // Find datoer og priser til år-til-dato sammenligning
-        const latestDate = stockDates[0];
-        const oldestDate = stockDates[stockDates.length - 1];
         const firstClose = parseFloat(changes[stockDates[stockDates.length - 1]]['4. close']);
-        
-        //sletter måske 
-        const latestClose = parseFloat(changes[latestDate]['4. close']);
-        const oldestClose = parseFloat(changes[oldestDate]['4. close']);
-
+  
         // Beregn årlig ændring og procent
         const yearlyChange = currentClose - firstClose;
         const yearlyChangePercent = (yearlyChange / firstClose) * 100;
 
-        // Debug-udskrift
-       /* console.log(yearlyChangePercent.toFixed(2));
-        console.log(dailyChange.toFixed(2));
-        console.log(`\nOverall Change (from ${oldestDate} to ${latestDate}):`);
-        console.log(`Change: ${yearlyChange.toFixed(2)} (${yearlyChangePercent.toFixed(2)}%)`);
-*/
         // Gem data i pris-historik databasen
         await PriceHistory.storePriceHistory({
           stockID,
@@ -213,9 +152,6 @@ async function updatePriceHistory() {
           dailyChange: dailyChangePercent.toFixed(2),
           yearlyChange: yearlyChangePercent.toFixed(2),
         });
-
-        // Udskriv opsummering for aktien
-    //  console.log(`Price history saved for ${ticker}: Daily ${dailyChange.toFixed(2)}%, Yearly ${yearlyChange?.toFixed(2) || 'N/A'}%`);
       
       }
     }
@@ -229,10 +165,9 @@ updatePriceHistory();
 
 // Cron-job: opdater daglig ændring hver dag kl. 17:00 (serverens tidszone)
 // Format: 'minutter timer dag måned ugedag'
-//cron.schedule('0 17 * * *', updatePriceHistory); // Then you can also comment this one out
+cron.schedule('0 17 * * *', updatePriceHistory);
 
 module.exports = {
-    handleFetchStock, //post: add new stock
     handleGetStockByTicker, //get specific stock 
     handleStockSearch, //search ticker 
     showChart, //shows side for stock graph 

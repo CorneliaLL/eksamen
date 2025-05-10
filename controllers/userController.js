@@ -1,41 +1,36 @@
 const { User } = require("../models/userModels");
-const { Account } = require("../models/accountModels");
 const { Portfolio } = require("../models/portfolioModels");
 const { PriceHistory} = require("../models/stockModels")
  
-//validates password and return an error-message if not true 
+//Validerer om password opfylder kravene 
  function validatePassword(password){
-  //checks if password is long enough
   if (!password || password.length < 8){
     return "Password has to be at least 8 characters";
   }
-  //checks if password has at least one lowercase letter
   if(!/[a-z]/.test(password)){
     return "Password has to include a lowercase letter";
   }
-  //checks if password has at least one uppercase letter
   if(!/[A-Z]/.test(password)){
     return "Password must include an uppercase letter";
   }
-  //checks if password has at least one number 
   if (!/[0-9]/.test(password)){
     return "Password has to include a number";
   }
-  //if all criteria are fulfilled then returns null 
-  return null; //password is valid 
+  return null;
   }
 
-// SIGNUP controller – handles user registration and stores the new user in our DB
+
+//Behandler POST-request til oprettelse af ny bruger
 async function signup (req, res){
     try {
       const { name, username, email, password, age } = req.body;
 
-  //Signup validation - username must be at least 3 characters
+  //Validering af brugernavn
       if (!username || username.length < 3) {
         return res.status(400).json({ error: "Username must be at least 3 characters" });
       }
       
-      //validates password from function
+      //Validerer password vha metoden validatePassword()
       const passwordError = validatePassword(password);
       if (passwordError){
         return res.render("index", {
@@ -43,19 +38,19 @@ async function signup (req, res){
           msg: null
         });
       }
-  
-      // Variable that calls the createUser function from userModels to save the user in our DB
+
+      //Opretter en ny bruger-instans og gemmer i databasen
       const user = new User(null, name, username, email, password, age );
       await user.createUser();
 
       res.redirect("/user/dashboard");
       
-      //Catch error that sends server error respons if sign up is a fail
     } catch (err) {
       res.status(500).json({ error: err.message });
     }
   };
 
+  //Henter og viser brugerens dashboard med porteføljeoversigt
   async function renderDashboard(req, res) {
     try {
       const userID = req.session.userID;
@@ -68,23 +63,24 @@ async function signup (req, res){
       }
 
 
-
+      //Henter summerede værdier fra portfoliomodels
       const totalAcquisitionPrice = req.totalAcquisitionPrice;
       const totalRealizedValue = req.totalRealizedValue;
       const totalUnrealizedGain = req.totalUnrealizedGain;
+
+      //Henter top-porteføljeværdier
       const topUnrealizedGains = await Portfolio.getTopUnrealizedGains(userID);
       const topRealizedValues = await Portfolio.getTopTotalValues(userID);
       
-       // Hent prisinfo for topUnrealizedGains
+       //Tilføjer prisinfo til hvert aktie i toplistrrne 
         for (let item of topUnrealizedGains) {
             const priceInfo = await PriceHistory.getPriceInfo(item.ticker);
-            item.priceInfo = priceInfo; // Tilføj prisinfo til hvert element
+            item.priceInfo = priceInfo; 
         }
 
-        // Hent prisinfo for topRealizedValues
         for (let item of topRealizedValues) {
             const priceInfo = await PriceHistory.getPriceInfo(item.ticker);
-            item.priceInfo = priceInfo; // Tilføj prisinfo til hvert element
+            item.priceInfo = priceInfo; 
         }
       
       res.render("dashboard", {
@@ -97,15 +93,14 @@ async function signup (req, res){
       });
 
     } catch (err) {
-      console.error("Error in renderDashboard;", err.message);
       res.status(500).send("Failed to render dashboard");
     }
   }
 
+  //Logger en bruger ind ved at matche brugernavn og password (POST-req)
   async function login(req, res) {
     try {
       const { username, password } = req.body;
-      //Måske skal være static
       const user = await User.findUserByUsername(username);
   
       if (!user) {
@@ -114,7 +109,7 @@ async function signup (req, res){
         return res.status(401).render("login", { error: "Incorrect password" });
       } else {
       
-        req.session.userID = user.userID; // Store user in session
+        req.session.userID = user.userID; //gemmer userID i session
         res.redirect("/user/dashboard");
     }
     } catch (err) {
@@ -123,16 +118,17 @@ async function signup (req, res){
   }
 
 
+  //Logger brugeren ud ved ar bryde session
   async function logout(req, res) {
     req.session.destroy((err) => {
       if (err) {
-        console.error("Error destroying session:", err);
         return res.status(500).send("Failed to log out");
       }
       res.redirect("/");
     });
   }
 
+//Viser formularen til at ændre adgangskoden
 async function renderChangePassword(req, res) {
   try {
     const userID = req.session.userID;
@@ -142,17 +138,15 @@ async function renderChangePassword(req, res) {
 
     res.render("change-password");
   } catch (err) {
-    console.error("Error rendering change password page:", err);
     res.status(500).send("Failed to load page");
   }
 }
 
+//Hådterer ændring af adgangskode efter login
 async function changePassword(req, res) {
   try {
     const { username, oldPassword, newPassword } = req.body;
 
-    /*await ensures that the code waits for the result before continuing.
-    Without await, the code would continue with the next line before the user has been retrieved, which can cause errors*/
     const user = await User.findUserByUsername(username);
 
     if (!user) {
@@ -160,18 +154,16 @@ async function changePassword(req, res) {
     }
 
     if (user.password !== oldPassword) {
-      return res.status(401).json({ error: "Old password is incorrect" });
+      return res.status.send("Old password is incorrect" );
     }
 
-    // Update the user's password
+    // Opdaterer password i databasen
     await User.updateUserPassword(username, newPassword);
-    //res.status(200).json({ message: "Password changed successfully" });
     res.redirect("/user/dashboard");
   } catch (err) {
     // Catch and handle any error
-    res.status(500).json({ error: "Something went wrong while changing the password. Try again" });
+    res.status(500).send("Something went wrong while changing the password. Try again" )
   }
 }
-
 
 module.exports = { signup, login, renderChangePassword, changePassword, logout, renderDashboard }
