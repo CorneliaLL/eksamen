@@ -60,7 +60,7 @@
         <!-- Formular til at udføre handel. Sender POST-request til /trade -->
         <div class="trade-section">
         <h2>Create Trade</h2>
-        <form action="/trade" method="POST" class="tradeForm">
+        <form action="/trade/<%= portfolioID %>/<%= accountID %>" method="POST" class="tradeForm">
           <!-- Skjulte felter til at sende ticker og stockID -->
           <input type="hidden" name="ticker" value="<%= stockData ? stockData.ticker : '' %>"> 
           <input type="hidden" name="stockID" value="<%= stockData ? stockData.stockID : '' %>">

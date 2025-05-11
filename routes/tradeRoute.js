@@ -4,7 +4,7 @@ const { handleTrade } = require("../controllers/tradeController");
 const { handleStockSearch } = require("../controllers/stockController");
 
 
-router.get('/trade', handleTrade)
+router.get('/trade/:portfolioID/:accountID', handleTrade)
 router.get("/trade/:portfolioID/:accountID/stocksearch", handleStockSearch);
 
 
