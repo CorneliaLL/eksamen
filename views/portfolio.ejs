@@ -99,8 +99,6 @@
       <div class="buttonRow">
         <!--Tilbage til kontovisning-->
         <a href="/account/<%= account.accountID %>" class="btn">← Back to my portfolios</a>
-        <!--Til oversigt over transaktioner i den aktuelle portefølje-->
-        <a href="/transactions/<%= portfolio.portfolioID %>" class="btn">View Transactions</a>
         <!--Til trade-side for denne portefølje-->
         <a href="/trade/<%= portfolio.portfolioID %>/<%= account.accountID %>" class="btn">Trade Stock</a>
       </div>
