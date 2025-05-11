@@ -23,7 +23,7 @@ const { PriceHistory} = require("../models/stockModels")
 //Behandler POST-request til oprettelse af ny bruger
 async function signup (req, res){
     try {
-      const { name, username, email, password, age } = req.body;
+      const { name, username, email, password } = req.body;
 
   //Validering af brugernavn
       if (!username || username.length < 3) {
@@ -40,7 +40,7 @@ async function signup (req, res){
       }
 
       //Opretter en ny bruger-instans og gemmer i databasen
-      const user = new User(null, name, username, email, password, age );
+      const user = new User(null, name, username, email, password);
       await user.createUser();
 
       res.redirect("/user/dashboard");
