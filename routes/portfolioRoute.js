@@ -3,6 +3,7 @@ const router = express.Router();
 const portfolioController = require("../controllers/portfolioController");
 const accountController = require("../controllers/accountController");
 
+router.get('/portfolio/:portfolioID', portfolioController.handleCreatePortfolio);
 router.get('/createPortfolio', portfolioController.renderCreatePortfolio);
 router.get("/portfolio", portfolioController.getPortfolios, accountController.getAccountByID);
 router.get("/portfolio/:portfolioID/:accountID", portfolioController.getPortfolioByID);
