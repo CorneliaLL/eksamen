@@ -1,10 +1,13 @@
+/*Grundlæggende layout*/
+/*Grundlæggende side indstillinger*/
 body {
-    background-color: black;
-    font-family: arial;
+    background-color: black; /*Baggrund til hele siden*/
+    font-family: arial; /*Standard skrifttype*/
 }
 
+/*Grundlæggende layout formular*/
 form {
-    display: flex;
+    display: flex; 
     flex-direction: column;
     gap: 10px;
     width: 300px;              
@@ -13,10 +16,11 @@ form {
     padding: 20px; 
   }
 
+  /*Input felt*/
   input {
     padding: 10px;
     border: 1px solid #ccc;
-    border-radius: 5px;
+    border-radius: 5px; /*Afrundede hjørner*/
   }
 
   button {
@@ -28,24 +32,26 @@ form {
     cursor: pointer;
   }
 
+  /*Hovedoverskrift*/ 
   h1 {
     color: white;
     text-align: center;
     margin-top: 20px;
   }
 
+  /*Underoverskrift*/
   h2 {
     color: white;
     margin-bottom: 10px;
     text-align: center;
   }
 
+  /*Almindelig tekst*/
   p {
    margin: 30px; 
   }
 
-
-/*Styling til link til "Change password"*/
+/*Link til "Change password"*/
   .change-password-link {
     color: #4a90e2;
     font-size: smaller;
@@ -53,6 +59,8 @@ form {
     display: block;
     margin-top: -20px;
   }
+
+  /*Tilbage link*/
   .back-link {
     color: #4a90e2;
     font-size: smaller;
@@ -61,7 +69,7 @@ form {
     margin-top: -50px;
   }
 
-/*Styling til fejlhåndtering for password/
+/*Fejlhåndtering for password og input grupper*/
 /*Wrapper omkring input, label og fejlbesked*/
 .input-group {
   color: #333; 
@@ -72,7 +80,7 @@ form {
   width: 100%; 
 }
 
-/*Label-styling*/
+/*Etiket styling*/
 label {
   display: block; 
   margin-bottom: 2px; 
@@ -91,7 +99,7 @@ label {
   box-sizing: border-box; 
 }
 
-/*Styling til fejlmeddelelse under inputfelt*/
+/*Fejlmeddelelse under inputfelt*/
 .error-message {
   color: #cc0033; 
   display: inline-block; 

@@ -1,3 +1,4 @@
+/*Styrer den overordnede sidelayout*/
 /*Fælles layout og struktur*/
 body {
   margin: 0;
@@ -5,37 +6,42 @@ body {
   font-family: arial;
 }
 
+/*Hovedcontainer der rummer alt indhold*/
 .container {
-  flex-grow: 1; /* Lader container vokse hvis der er plads */
+  flex-grow: 1; /*Lader container vokse hvis der er plads*/
   padding: 40px;
-  max-width: 1400px; /* Begrænser bredde af browser */
+  max-width: 1400px; /*Begrænser bredde af browser*/
   width: 100%;
-  box-sizing: border-box; /* Inkluder padding og border i width/højde */
+  box-sizing: border-box; /*Inkluder padding og border i width/højde*/
   margin: 0 auto;
 }
 
+/*Fuld sidelayout med flexbox*/
 .layout {
-  display: flex; /* Bruger flexbox til layoutstruktur */
-  min-height: 100vh; /* Fylder hele browserhøjden */
-  width: 100vw; /* Fylder hele browserbredden */
+  display: flex; /*Bruger flexbox til layoutstruktur*/
+  min-height: 100vh; /*Fylder hele browserhøjden*/
+  width: 100vw; /*Fylder hele browserbredden*/
 }
 
+/*Titel container*/
 .containerTitle {
   display: flex;
-  text-align: left; /* Tekst justeret til venstre */
+  text-align: left; /*Tekst justeret til venstre*/
   padding: 20px;
 }
 
+/*Titel container når den indeholder en knap*/
 .containerTitle.with-button {
-  display: flex; /* Flex for at kunne placere button og tekst */
-  justify-content: space-between; /* Titel til venstre og knap til højre */
+  display: flex; /*Flex for at kunne placere button og tekst*/
+  justify-content: space-between; /*Titel til venstre og knap til højre*/
   align-items: center;
   padding: 20px;
 }
 
+/*Grid layout til bokse - grafer og diagrammer*/
 .boxContainer {
   display: grid;
-  grid-template-columns: 2fr 1fr; /* To kolonner, venstre dobbelt så bred */
+  grid-template-columns: 2fr 1fr; /*To kolonner, venstre dobbelt så bred*/
   gap: 20px;
   padding: 20px;
   max-width: 1400px;
@@ -43,6 +49,7 @@ body {
   box-sizing: border-box;
 }
 
+/*Container til account og trade sektioner*/
 .accountContainer,
 .tradeContainer {
   display: flex;
@@ -50,6 +57,7 @@ body {
   align-items: center;
 }
 
+/*Grid layout til værdibokse*/
 .valueBoxContainer {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -58,26 +66,30 @@ body {
   box-sizing: border-box;
 }
 
-
 /*Typografi og grundelementer*/
-
+/*Styler tekst, links og formularer*/
+/*Hovedoverskrift*/
 h1 {
   color: white;
 }
 
+/*Sektionsoverskrift*/
 h2 {
   text-align: center;
 }
 
+/*Underoverskrift*/
 h3 {
   text-align: center;
   color: white;
 }
 
+/*Links*/
 a {
-  color: white; /* Alle link href er hvide */
+  color: white; /*Alle link href er hvide*/
 }
 
+/*Formular inputs*/
 input {
   padding: 10px;
   border: 1px solid #ccc;
@@ -93,9 +105,10 @@ button {
   cursor: pointer;
 }
 
+/*Formular container*/
 form {
   display: flex;
-  flex-direction: column; /* Formularfelter placeres under hinanden */
+  flex-direction: column; /*Formularfelter placeres under hinanden*/
   gap: 10px;
   margin-bottom: 2rem;
   width: 300px;
@@ -117,6 +130,7 @@ form {
   justify-content: center;
 }
 
+/*Opret konto formular container*/
 .createAccounts {
   display: flex;
   flex-direction: column;
@@ -129,11 +143,13 @@ form {
   max-width: 400px;
 }
 
+/*Formular etiketter*/
 .createAccounts label {
   color: white;
   font-weight: bold;
 }
 
+/*Formular inputs*/
 .createAccounts input,
 .createAccounts select {
   padding: 10px;
@@ -142,10 +158,12 @@ form {
   font-size: 1rem;
 }
 
+/*Input felter*/
 .createAccounts input {
   background-color: white;
 }
 
+/*Dropdown*/
 .createAccounts select {
   background-color: #f2f2f2;
 }
@@ -177,9 +195,10 @@ form {
   box-sizing: border-box;
   width: 100%;
   max-width: 600px;
-  margin: 0 auto; /* centrer horisontalt */
+  margin: 0 auto; /*Centrer horisontalt*/
 }
 
+/*Container til opret portefølje*/
 .createPortfolios {
   display: flex;
   flex-direction: column;
@@ -192,11 +211,13 @@ form {
   box-sizing: border-box;
 }
 
+/*Formular etiketter*/
 .createPortfolios label {
   color: white;
   font-weight: bold;
 }
 
+/*Formular input*/
 .createPortfolios select,
 .createPortfolios input {
   padding: 10px;
@@ -205,10 +226,12 @@ form {
   font-size: 1rem;
 }
 
+/*Input felter*/
 .createPortfolios input {
   background-color: white;
 }
 
+/*Dropdown*/
 .createPortfolios select {
   background-color: #f2f2f2;
 }
@@ -228,6 +251,7 @@ form {
   background-color: #357ab8;
 }
 
+/*Portefølje opret sektion*/
 .createPortfolio {
   background-color: 1B1B19;
   color: white;
@@ -243,6 +267,7 @@ form {
   min-height: 180px;
 }
 
+/*Opret portefølje knap*/
 .createPortfolioBtn {
   padding: 10px 16px;
   height: auto;
@@ -255,7 +280,7 @@ form {
   margin-top: 0;
 }
 
-/*Dashboard & data-visning*/
+/*Dashboard og data visning*/
 .accountBox,
 .tradeBox{
   background-color: 1B1B19;
@@ -279,7 +304,7 @@ form {
   height: 100%;
   box-sizing: border-box;
 }
-
+/*Visning af total værdi*/
 .totalValue,
 .priceChange {
   background-color: 1B1B19;
@@ -296,6 +321,7 @@ form {
   box-sizing: border-box;
 }
 
+/*Diagram container*/
 .piechart, .donutchart {
   background-color: 1B1B19;
   color: white;
@@ -328,6 +354,7 @@ form {
   box-sizing: border-box;
 }
 
+/*Værdiboks til visning af data - f.eks porteføljeværdier*/
 .valueBox1,
 .valueBox2 {
   background-color: #1B1B19;
@@ -338,6 +365,7 @@ form {
   box-sizing: border-box;
 }
 
+/*Tabeller i værdibokse*/
 .valueBox1 table,
 .valueBox2 table {
   width: 100%;
@@ -352,11 +380,12 @@ form {
   text-align: left;
 }
 
-/*Konto-handlinger*/
+/*Konto handlinger*/
 .updateBalance {
   align-items: center;
 }
 
+/*Dropdown*/
 .updateBalance select {
   padding: 10px;
   border-radius: 6px;
@@ -368,6 +397,7 @@ form {
   align-items: center;
 }
 
+/*Opret ny konto knap*/
 .createNewAccountBtn {
   background-color: gray;
   align-self: center;
@@ -376,6 +406,7 @@ form {
   font-size: 0.9rem;
 }
 
+/*Deaktiver konto formular*/
 .deactivateForm,
 .reactivateForm {
   display: flex;
@@ -391,8 +422,7 @@ form {
   background-color: seagreen;
 }
 
-
-/*Tabeller og porteføljedata*/
+/*Datatabeller og porteføljedata*/
 .tableContainer {
   width: 100%;
   color: white;
@@ -403,6 +433,7 @@ form {
   text-align: left;
 }
 
+/*Tabelceller */
 .tableContainer td,
 .tableContainer th {
   color: white;
@@ -411,6 +442,7 @@ form {
   white-space: nowrap;
 }
 
+/*Portefølje*/
 .portfolioContainer {
   width: 100%;
   max-width: 1400px;
@@ -418,13 +450,14 @@ form {
   box-sizing: border-box;
 }
 
+/*Porteføljetitel*/
 .portfolioContainer h1,
 .portfolioContainer h2,
 .portfolioContainer p {
   color: white;
 }
 
-/*Resuméboks og oversigt*/
+/*Resuméboks og oversigt til portefølje*/
 .summaryRow {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -435,7 +468,7 @@ form {
   box-sizing: border-box;
 }
 
-
+/*Individuel resuméboks*/
 .summaryBox {
   background-color: #1B1B19;
   color: white;
@@ -448,17 +481,20 @@ form {
   box-sizing: border-box;
 }
 
+/*Resuméboks overskrift*/
 .summaryHeader {
   font-size: 0.9rem;
   color: #aaa;
   margin-bottom: 5px;
 }
 
+/*Resuméboks beløb*/
 .summaryAmount {
   font-size: 1.4rem;
   font-weight: bold;
 }
 
+/*Bokse til grafer og diagrammer*/
 .dashboardBox1, .dashboardBox2, .dashboardBox3 {
   background-color: #1B1B19;
   border-radius: 12px;
@@ -467,6 +503,7 @@ form {
   box-sizing: border-box;
 }
 
+/*Styling af 3 boks*/
 .dashboardBox3 {
   max-width: 1400px;
   margin: 0 auto;
@@ -475,6 +512,7 @@ form {
 }
 
 /*Grafik og farver*/
+/*Canvas elementer*/
 canvas {
   width: 100%;
   height: auto;
@@ -482,10 +520,12 @@ canvas {
   display: block;
 }
 
+/*Positiv værdi*/
 .positive {
   color: #00cc66;
 }
 
+/*Negativ værdi*/
 .negative {
   color: #ff3333;
 }
