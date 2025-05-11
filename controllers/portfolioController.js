@@ -148,7 +148,7 @@ async function handleCreatePortfolio(req, res) {
     const portfolioID = await portfolio.createNewPortfolio();
  
     // Redirect til den oprettede portefølje 
-    res.redirect(`/portfolio/${portfolioID}`);
+    res.redirect(`/portfolio/${portfolioID}/${accountID}`);
   } catch (err) {
     res.status(500).send("Failed to create portfolio");
   }
