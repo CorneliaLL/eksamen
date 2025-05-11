@@ -20,7 +20,7 @@
         <h2>Search Stock</h2> 
 
         <!-- Søgeformular: sender POST-request til /trade/:portfolioID/:accountID -->
-        <form action="/trade/<%= portfolioID %>/<%= accountID %>/stocksearch" method="POST" id="searchForm">
+        <form action="/trade/<%= portfolioID %>/<%= accountID %>" method="POST" id="searchForm">
           <div class="searchContainer">
             <!-- Aktie-header med navn og ticker -->
             <input type="text" name="ticker" id="tickerSearch" placeholder="Enter stock ticker (e.g. AAPL for Apple )" required>
@@ -60,7 +60,7 @@
         <!-- Formular til at udføre handel. Sender POST-request til /trade -->
         <div class="trade-section">
         <h2>Create Trade</h2>
-        <form action="/trade/<%= portfolioID %>/<%= accountID %>" method="POST" class="tradeForm">
+        <form action="/trade" method="POST" class="tradeForm">
           <!-- Skjulte felter til at sende ticker og stockID -->
           <input type="hidden" name="ticker" value="<%= stockData ? stockData.ticker : '' %>"> 
           <input type="hidden" name="stockID" value="<%= stockData ? stockData.stockID : '' %>">
