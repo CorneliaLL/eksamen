@@ -8,8 +8,9 @@
 <body>
 <!-- Bruger login formular -->
 <div class="container"> 
+  <% if (typeof msg !== 'undefined' && msg) { %>
     <h1><%= msg %></h1>
-
+  <% } %>
     <h2>Log in</h2>
     <!-- Login formular  -->
     <form action="/user/login" method="POST">
