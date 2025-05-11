@@ -145,7 +145,7 @@ async function handleCreatePortfolio(req, res) {
     //Opretter ny portefølje
     const registrationDate = new Date(); //Nuværende tidspunkt
     const portfolio = new Portfolio(null, accountID, portfolioName, registrationDate);
-    const portfolioID = await portfolio.createNewPortfolio({ accountID, portfolioName, registrationDate });
+    const portfolioID = await portfolio.createNewPortfolio();
  
     // Redirect til den oprettede portefølje 
     res.redirect(`/portfolio/${portfolioID}`);

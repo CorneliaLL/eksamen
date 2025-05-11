@@ -27,7 +27,7 @@ async createUser(){
       VALUES (@name, @username, @email, @password)
     `);
 
-    return { username, email };
+    return { username: this.username, email: this.email };
     }
 
 //Metode der finder en bruger i databasen ved at matche brugerID
