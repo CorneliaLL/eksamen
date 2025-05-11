@@ -14,7 +14,7 @@ async createUser(){
     const pool = await connectToDB();
 
     //Indsætter en ny bruger i databasen
-    await pool.request()
+    const result = await pool.request()
     .input("name", sql.NVarChar, this.name)
     .input("username", sql.NVarChar, this.username)
     .input("email", sql.NVarChar, this.email)
@@ -24,10 +24,13 @@ async createUser(){
     //.query er en metode som håndterer SQL forespørgsler til vores DB
     .query(`
       INSERT INTO dbo.Users (name, username, email, password)
+      OUTPUT INSERTED.userID
       VALUES (@name, @username, @email, @password)
     `);
+    const userID = result.recordset[0].userID;
+    this.userID = userID;
 
-    return { username: this.username, email: this.email };
+    return { userID, username: this.username };
     }
 
 //Metode der finder en bruger i databasen ved at matche brugerID
