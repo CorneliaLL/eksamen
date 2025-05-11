@@ -10,12 +10,13 @@ class Portfolio {
   }
 
   //Metode til at oprette en ny portefølje i databasen 
-  async createNewPortfolio({ accountID, portfolioName, registrationDate }) {
+  async createNewPortfolio() {
     const pool = await connectToDB(); // opretter forbindelse til databasen 
     const result = await pool.request() // opretter en forespørgsel til databsen 
-      .input("accountID", sql.Int, accountID)
-      .input("portfolioName", sql.NVarChar, portfolioName)
-      .input("registrationDate", sql.DateTime, registrationDate)
+
+      .input("accountID", sql.Int, this.accountID)
+      .input("portfolioName", sql.NVarChar, this.portfolioName)
+      .input("registrationDate", sql.DateTime, this.registrationDate)
       .query(`
         INSERT INTO Portfolios (accountID, portfolioName, registrationDate)
         OUTPUT INSERTED.portfolioID -- returnerer det oprettede portfolioID

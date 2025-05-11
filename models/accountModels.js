@@ -14,17 +14,17 @@ class Account {
   }
 
 //Metode der opretter en ny konto i databasen
-async createNewAccount({ userID, accountName, currency, balance, registrationDate, accountStatus, bankID }) {
+async createNewAccount() {
   const pool = await connectToDB();
 
   await pool.request()
-    .input("userID", sql.Int, userID)
-    .input("accountName", sql.NVarChar, accountName)
-    .input("currency", sql.VarChar, currency)
-    .input("balance", sql.Decimal(18, 2), balance)
-    .input("registrationDate", sql.DateTime, registrationDate)
-    .input("accountStatus", sql.Bit, accountStatus)
-    .input("bankID", sql.Int, bankID)
+    .input("userID", sql.Int, this.userID)
+    .input("accountName", sql.NVarChar, this.accountName)
+    .input("currency", sql.VarChar, this.currency)
+    .input("balance", sql.Decimal(18, 2), this.balance)
+    .input("registrationDate", sql.DateTime, this.registrationDate)
+    .input("accountStatus", sql.Bit, this.accountStatus)
+    .input("bankID", sql.Int, this.bankID)
     .query(`
       INSERT INTO Accounts (userID, currency, balance, registrationDate, accountStatus, bankID, accountName)
       VALUES (@userID, @currency, @balance, @registrationDate, @accountStatus, @bankID, @accountName)
