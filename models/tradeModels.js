@@ -16,7 +16,7 @@ class Trade {
     }
 
     //Metode der opretter en ny handel i databasen
-    static async createTrade({ portfolioID, accountID, stockID, ticker, stockName, tradeType, quantity, price, fee, totalPrice, tradeDate }) {
+    static async createTrade({ portfolioID, accountID, stockID, ticker, tradeType, quantity, price, fee, totalPrice, tradeDate }) {
         const pool = await connectToDB();
         const result = await pool.request()
             .input("portfolioID", sql.Int, portfolioID)
