@@ -41,7 +41,10 @@ async function signup (req, res){
 
       //Opretter en ny bruger-instans og gemmer i databasen
       const user = new User(null, name, username, email, password);
-      await user.createUser();
+      const createdUser = await user.createUser();
+      
+      //Gemmer den nye bruger i session så man kan tilgå dashboard automatisk
+      req.session.userID = createdUser.userID;
 
       res.redirect("/user/dashboard");
       
