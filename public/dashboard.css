@@ -76,6 +76,7 @@ h1 {
 /*Sektionsoverskrift*/
 h2 {
   text-align: center;
+  color: white;
 }
 
 /*Underoverskrift*/
@@ -87,6 +88,10 @@ h3 {
 /*Links*/
 a {
   color: white; /*Alle link href er hvide*/
+}
+
+p {
+  color: white
 }
 
 /*Formular inputs*/
