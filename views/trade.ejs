@@ -20,7 +20,7 @@
         <h2>Search Stock</h2> 
 
         <!-- Søgeformular: sender POST-request til /trade/:portfolioID/:accountID -->
-        <form action="/trade/<%= portfolioID %>/<%= accountID %>" method="POST" id="searchForm">
+        <form action="/trade/<%= portfolioID %>/<%= accountID %>/stocksearch" method="POST" id="searchForm">
           <div class="searchContainer">
             <!-- Aktie-header med navn og ticker -->
             <input type="text" name="ticker" id="tickerSearch" placeholder="Enter stock ticker (e.g. AAPL for Apple )" required>

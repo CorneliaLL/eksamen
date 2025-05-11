@@ -5,11 +5,11 @@ const { handleStockSearch } = require("../controllers/stockController");
 
 
 router.get('/trade', handleTrade)
-router.get("/trade/:portfolioID/:accountID", handleStockSearch);
+router.get("/trade/:portfolioID/:accountID/stocksearch", handleStockSearch);
 
 
 router.post("/search", handleStockSearch);
-router.post("/trade/:portfolioID/:accountID", handleStockSearch);
-router.post("/trade", handleTrade);
+router.post("/trade/:portfolioID/:accountID/stocksearch", handleStockSearch);
+router.post("/trade/:portfolioID/:accountID", handleTrade);
 
 module.exports = router;

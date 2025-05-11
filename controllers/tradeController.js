@@ -9,9 +9,8 @@ async function handleTrade(req, res) {
     try {
         const userID = req.session.userID;
         if (!userID) return res.status(401).send("Unauthorized"); 
-        const { portfolioID, accountID } = req.params;
         // Henter nødvendige værdier fra formularen
-        let { ticker, tradeType, quantity } = req.body;
+        let { portfolioID, accountID, ticker, tradeType, quantity } = req.body;
 
         // Validerer at alle felter er udfyldt
         if (!portfolioID || !accountID || !ticker || !tradeType || !quantity) {
